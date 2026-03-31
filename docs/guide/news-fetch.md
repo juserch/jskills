@@ -9,13 +9,13 @@
 ### Claude Code（推荐）
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserch/juserch-skills
 ```
 
 ### 通用单行安装
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/news-fetch/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserch/juserch-skills/main/skills/news-fetch/SKILL.md
 ```
 
 > **零依赖** — News Fetch 不需要 API Key，利用 WebSearch 和公开新闻源获取数据。

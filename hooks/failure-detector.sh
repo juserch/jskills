@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Block Break failure detector — counts Bash failures and escalates pressure
 # Called by hooks.json on PostToolUse (Bash)
-# Reads exit code from environment, updates ~/.jskills/block-break-state.json
+# Reads exit code from environment, updates ~/.juserch-skills/block-break-state.json
 
-STATE_DIR="$HOME/.jskills"
+STATE_DIR="$HOME/.juserch-skills"
 STATE_FILE="$STATE_DIR/block-break-state.json"
 
 mkdir -p "$STATE_DIR"

@@ -52,7 +52,7 @@ hooks/session-restore.sh                       # 状态恢复
 
 ## 状态持久化
 
-- 状态文件：`~/.jskills/block-break-state.json`
+- 状态文件：`~/.juserch-skills/block-break-state.json`
 - 由 `hooks/failure-detector.sh` 写入
 - 由 `hooks/session-restore.sh` 读取
 - PreCompact hook 保存上下文状态

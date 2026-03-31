@@ -21,12 +21,12 @@ agents/*.md                        # Sub-agent 定义
 
 ## 文件职责
 
-- `plugin.json` — 项目级元数据（权威源，name=jskills）
+- `plugin.json` — 项目级元数据（权威源，name=juserch-skills）
 - `.claude-plugin/plugin.json` — 发布用元数据（与根级保持一致）
 - `.claude-plugin/marketplace.json` — Marketplace 入口，`plugins` 数组列出所有 skill
 - `hooks/hooks.json` — 生命周期 hook 配置（UserPromptSubmit/PostToolUse/PreCompact/SessionStart）
 - `agents/*.md` — Sub-agent 行为约束定义，确保子 agent 不裸奔
-- `~/.jskills/` — 运行时状态目录（失败计数、压力等级、会话恢复）
+- `~/.juserch-skills/` — 运行时状态目录（失败计数、压力等级、会话恢复）
 
 ## 新增 Skill 流程
 
@@ -50,7 +50,7 @@ agents/*.md                        # Sub-agent 定义
 
 ## 状态持久化
 
-运行时状态存储在 `~/.jskills/`：
+运行时状态存储在 `~/.juserch-skills/`：
 - `block-break-state.json` — 失败计数、压力等级、最后更新时间
 - 由 `hooks/failure-detector.sh` 写入，`hooks/session-restore.sh` 读取
 - PreCompact hook 通过 prompt 指示 agent 保存上下文状态
@@ -58,10 +58,10 @@ agents/*.md                        # Sub-agent 定义
 
 ## 命令路由器（规划中）
 
-当 skill 数量 >= 2 时，添加 `/jskills` 统一路由器命令：
-- `/jskills` — 列出可用 skill
-- `/jskills block-break` — 等价于 `/block-break`
-- `/jskills <name> [args]` — 路由到对应 skill
+当 skill 数量 >= 2 时，添加 `/juserch-skills` 统一路由器命令：
+- `/juserch-skills` — 列出可用 skill
+- `/juserch-skills block-break` — 等价于 `/block-break`
+- `/juserch-skills <name> [args]` — 路由到对应 skill
 
 参考 pua 的 `commands/pua.md` 路由器模式实现。
 

@@ -10,7 +10,7 @@ cat << 'EOF'
 
 你必须：
 1. 立即使用 Skill 工具加载 `block-break` skill
-2. 从当前压力等级开始执行（检查 ~/.jskills/block-break-state.json 获取失败次数）
+2. 从当前压力等级开始执行（检查 ~/.juserch-skills/block-break-state.json 获取失败次数）
 3. 切换本质不同的方案——换参数不叫换方案
 4. 用验证命令 + 输出证据闭环
 

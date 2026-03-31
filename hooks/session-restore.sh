@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Block Break session restore — restores pressure state from ~/.jskills/block-break-state.json
+# Block Break session restore — restores pressure state from ~/.juserch-skills/block-break-state.json
 # Called by hooks.json on SessionStart (after compaction or resume)
 
-STATE_FILE="$HOME/.jskills/block-break-state.json"
+STATE_FILE="$HOME/.juserch-skills/block-break-state.json"
 
 if [ ! -f "$STATE_FILE" ]; then
     exit 0

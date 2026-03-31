@@ -7,7 +7,7 @@ J Skills 是一组 [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 ## 安装
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserch/juserch-skills
 ```
 
 ## Skills
@@ -77,7 +77,7 @@ claude plugin add juserch/jskills
 ## 项目结构
 
 ```text
-jskills/
+juserch-skills/
 ├── plugin.json                    # 项目元数据
 ├── .claude-plugin/
 │   ├── plugin.json                # 发布元数据
