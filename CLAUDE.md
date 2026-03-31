@@ -12,6 +12,8 @@ skills/<skill>/SKILL.md            # skill 核心定义（精简）
 skills/<skill>/references/*.md     # 按需加载的详细内容
 evals/<skill>/scenarios.md         # 评估场景
 evals/<skill>/run-trigger-test.sh  # 自动化触发测试
+docs/guide/<skill>.md              # 使用手册
+docs/plans/<topic>-design.md       # 设计文档
 hooks/hooks.json                   # Hook 配置
 hooks/*.sh                         # Hook 脚本
 agents/*.md                        # Sub-agent 定义

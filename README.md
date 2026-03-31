@@ -79,6 +79,9 @@ jskills/
 │   └── <skill>/
 │       ├── scenarios.md           # 评估场景
 │       └── run-trigger-test.sh    # 自动化触发测试
+├── docs/
+│   ├── guide/                     # 各 skill 使用手册
+│   └── plans/                     # 设计文档
 └── CLAUDE.md                      # 开发指南
 ```
 
