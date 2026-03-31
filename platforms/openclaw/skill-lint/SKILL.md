@@ -1,0 +1,69 @@
+---
+name: skill-lint
+description: "Skill Lint — AI agent skill 校验工具。Bash 结构检查 + AI 语义检查，校验 frontmatter、目录完整性、marketplace 元数据一致性。可校验任意 AI agent plugin 项目。"
+license: MIT
+---
+
+# Skill Lint — AI Agent Skill 校验工具
+
+校验 AI agent plugin 项目中 skill 文件的结构完整性和语义质量。
+
+## 工作流
+
+1. 确定目标路径（用户参数或当前目录）
+2. 运行结构检查脚本（如可用）或手动检查目录结构
+3. 读取目标路径下所有 skill 文件，执行语义检查
+4. 合并输出，按 error > warning > passed 排列
+
+## 结构检查
+
+如果 `scripts/skill-lint.sh` 可用，运行脚本自动检查。否则手动检查以下项目：
+
+1. **plugin.json 存在性** — 根目录的 plugin.json 是否存在
+2. **Marketplace 元数据存在性** — marketplace 入口文件是否存在
+3. **SKILL.md 存在性** — `skills/<name>/SKILL.md` 是否存在
+4. **Frontmatter 必填字段** — 每个 SKILL.md 必须有 `name` 和 `description`
+5. **Marketplace 条目** — 每个 skill 是否在 marketplace 元数据中注册
+6. **References 引用检查** — SKILL.md 中引用的 `references/` 文件是否实际存在
+7. **Evals 目录** — `evals/<name>/scenarios.md` 是否存在
+
+输出 JSON：`{"errors": [...], "warnings": [...], "passed": [...]}`
+
+解析结果，errors 非空则标记结构检查失败。
+
+## 语义检查（AI 执行）
+
+在结构检查完成后，读取各 skill 文件并检查：
+
+1. **Description 质量** — 是否清晰描述 skill 用途和触发条件，不能只有名字重复
+2. **Frontmatter 一致性**：
+   - `name` 与目录名是否一致（`skills/foo/SKILL.md` 的 name 应为 `foo`）
+   - `description` 在 SKILL.md 和 marketplace 元数据间是否语义对齐
+3. **References 内容连贯性** — SKILL.md 引用的 references 内容是否与主文件逻辑一致、无孤立文件
+4. **Eval 场景覆盖度** — `scenarios.md` 是否覆盖 skill 的核心功能路径（至少 5 个场景）
+
+语义检查发现问题标记为 warning（非阻断性），因为涉及判断。
+
+## 输出格式
+
+```text
+Skill Lint 完成
+┌──────────┬───────────────────────────────┐
+│ 目标路径 │ /path/to/plugin               │
+├──────────┼───────────────────────────────┤
+│ 结构检查 │ ✓ 5 passed · ✗ 2 errors      │
+├──────────┼───────────────────────────────┤
+│ 语义检查 │ ✓ 3 passed · ⚠ 1 warning     │
+└──────────┴───────────────────────────────┘
+
+Errors:
+  1. skills/foo/SKILL.md: missing required field 'description'
+  2. marketplace metadata: skill 'foo' not listed
+
+Warnings:
+  1. skills/foo/SKILL.md: description 与 marketplace 元数据不一致
+```
+
+## 规则详情
+
+完整规则说明见 `references/rules.md`。
