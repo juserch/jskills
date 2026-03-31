@@ -28,9 +28,15 @@
 
 ### S05: Commands 对应
 
-- **检查**: 每个 `skills/<name>/` 是否有对应的 `commands/<name>.md`
+- **检查**: 每个 `skills/<name>/` 是否有对应的 `skills/<name>/commands/<name>.md`（或 legacy `commands/<name>.md`）
 - **级别**: warning
 - **说明**: 没有 command 入口的 skill 无法通过 `/name` 直接调用，但可作为被引用 skill
+
+### S05b: Per-skill plugin.json
+
+- **检查**: 每个 `skills/<name>/` 是否有自己的 `plugin.json`
+- **级别**: warning
+- **说明**: 没有 plugin.json 的 skill 在 plugin 列表中会显示集合名而非 skill 名
 
 ### S06: marketplace.json 条目
 

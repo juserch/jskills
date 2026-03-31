@@ -77,24 +77,20 @@ claude plugin add juserch/jskills
 ## 项目结构
 
 ```text
-juserch-skills/
-├── plugin.json                    # 项目元数据
+jskills/
+├── plugin.json                    # 集合级元数据
 ├── .claude-plugin/
 │   ├── plugin.json                # 发布元数据
-│   └── marketplace.json           # Marketplace 入口
-├── hooks/
-│   ├── hooks.json                 # Hook 配置（挫败检测/失败计数/状态管理）
-│   ├── frustration-trigger.sh     # 用户挫败情绪检测
-│   ├── failure-detector.sh        # Bash 失败自动计数 + 压力升级
-│   └── session-restore.sh         # 会话恢复状态
-├── agents/
-│   └── block-break-worker.md      # Sub-agent 行为约束定义
-├── commands/
-│   └── <skill>.md                 # 各 skill 的 /command 入口
+│   └── marketplace.json           # Marketplace 入口（source 指向各 skill）
 ├── skills/
-│   └── <skill>/
+│   └── <skill>/                   # 每个 skill 是自包含 plugin 单元
+│       ├── plugin.json            # skill 级元数据（决定显示名）
 │       ├── SKILL.md               # 核心定义
-│       └── references/            # 按需加载的详细内容
+│       ├── commands/<skill>.md    # /command 入口
+│       ├── references/            # 按需加载的详细内容
+│       ├── scripts/               # 辅助脚本（按需）
+│       ├── hooks/                 # Hook 配置和脚本（按需）
+│       └── agents/                # Sub-agent 定义（按需）
 ├── evals/
 │   └── <skill>/
 │       ├── scenarios.md           # 评估场景
@@ -107,11 +103,12 @@ juserch-skills/
 
 ## 贡献新 Skill
 
-1. `skills/<name>/SKILL.md` — 核心定义（精简），详细内容放 `references/`
-2. `commands/<name>.md` — `/name` 命令入口
-3. `evals/<name>/scenarios.md` + `run-trigger-test.sh` — 评估场景 + 自动测试
-4. `.claude-plugin/marketplace.json` — `plugins` 数组追加条目
-5. 如需 hooks，在 `hooks/hooks.json` 中添加对应规则
+1. `skills/<name>/plugin.json` — skill 级元数据（name 决定 plugin 列表显示名）
+2. `skills/<name>/SKILL.md` — 核心定义（精简），详细内容放 `references/`
+3. `skills/<name>/commands/<name>.md` — `/name` 命令入口
+4. `evals/<name>/scenarios.md` + `run-trigger-test.sh` — 评估场景 + 自动测试
+5. `.claude-plugin/marketplace.json` — `plugins` 数组追加条目，`source` 指向 `./skills/<name>/`
+6. 如需 hooks，在 `skills/<name>/hooks/hooks.json` 中添加配置
 
 详见 [CLAUDE.md](CLAUDE.md) 开发规范。
 

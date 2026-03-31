@@ -89,10 +89,20 @@ for skill_name in "${SKILL_NAMES[@]}"; do
     fi
 
     # --- S05: Commands correspondence ---
-    if [ -f "$PLUGIN_ROOT/commands/$skill_name.md" ]; then
-        add_passed "S05: commands/$skill_name.md exists"
+    # Check both new structure (skill-local) and legacy structure (root commands/)
+    if [ -f "$SKILLS_DIR/$skill_name/commands/$skill_name.md" ]; then
+        add_passed "S05: skills/$skill_name/commands/$skill_name.md exists"
+    elif [ -f "$PLUGIN_ROOT/commands/$skill_name.md" ]; then
+        add_passed "S05: commands/$skill_name.md exists (legacy root location)"
     else
         add_warning "S05: commands/$skill_name.md missing — skill cannot be invoked via /$skill_name"
+    fi
+
+    # --- S05b: Per-skill plugin.json ---
+    if [ -f "$SKILLS_DIR/$skill_name/plugin.json" ]; then
+        add_passed "S05b: skills/$skill_name/plugin.json exists"
+    else
+        add_warning "S05b: skills/$skill_name/plugin.json missing — skill may not display its own name in plugin list"
     fi
 
     # --- S06: marketplace.json entry ---

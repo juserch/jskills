@@ -69,7 +69,7 @@ license: MIT
 
 ## Sub-agent 约束
 
-Spawn sub-agent 时必须注入行为约束。使用 `agents/block-break-worker.md` 定义的 agent，确保子 agent 也遵循三条红线。空白上下文的 sub-agent = 裸奔。
+Spawn sub-agent 时必须注入行为约束。使用 `juserch-skills:block-break-worker` 类型的 agent（定义在同目录 `agents/block-break-worker.md`），确保子 agent 也遵循三条红线。空白上下文的 sub-agent = 裸奔。
 
 ## 体面的退出
 
