@@ -25,6 +25,16 @@
                 "name": "juserch",
                 "url": "https://github.com/juserch"
             }
+        },
+        {
+            "name": "news-fetch",
+            "description": "News Fetch — 新闻获取工具。指定主题和时间段，获取新闻清单。三级网络降级策略（WebSearch → WebFetch国内源 → curl），Markdown 清单输出。零依赖。",
+            "version": "1.0.0",
+            "source": "./",
+            "author": {
+                "name": "juserch",
+                "url": "https://github.com/juserch"
+            }
         }
     ]
 }

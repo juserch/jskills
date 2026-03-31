@@ -52,6 +52,26 @@ claude plugin add juserch/jskills
 /skill-lint /path/to/plugin  # 校验指定路径
 ```
 
+### News Fetch — 新闻获取工具
+
+指定主题和时间段，获取新闻清单。内置三级网络降级策略，确保不同网络环境下都能工作。
+
+| 特性 | 说明 |
+|------|------|
+| **三级降级** | L1 WebSearch → L2 WebFetch 国内源 → L3 curl |
+| **去重合并** | 同一事件多来源自动合并，保留最高分条目 |
+| **相关性打分** | AI 根据主题匹配度打分排序 |
+| **概要补全** | 无摘要时自动抓取正文生成 |
+
+**使用**：
+
+```text
+/news-fetch AI                    # 本周 AI 新闻
+/news-fetch AI today              # 今日 AI 新闻
+/news-fetch 机器人 month          # 本月机器人新闻
+/news-fetch climate 2026-03-01~2026-03-31  # 指定时间段
+```
+
 *更多 skill 持续添加中...*
 
 ## 项目结构
