@@ -1,0 +1,71 @@
+---
+name: skill-lint
+description: "Skill Lint — Claude Code skill 校验工具。Bash 结构检查 + AI 语义检查，校验 frontmatter、目录完整性、marketplace.json 一致性。通用，可校验任意 Claude Code plugin 项目。"
+license: MIT
+---
+
+# Skill Lint — Claude Code Skill 校验工具
+
+校验 Claude Code plugin 项目中 skill 文件的结构完整性和语义质量。
+
+## 工作流
+
+1. 确定目标路径（用户参数或当前目录）
+2. 运行 `scripts/skill-lint.sh [path]` 获取结构检查 JSON 结果
+3. 读取目标路径下所有 skill 文件，执行语义检查
+4. 合并输出，按 error > warning > passed 排列
+
+## 结构检查（Bash 脚本）
+
+运行 `${SKILL_DIR}/scripts/skill-lint.sh [path]`，脚本自动检查：
+
+1. **plugin.json 存在性** — 根目录和 `.claude-plugin/` 下的 plugin.json 是否存在
+2. **marketplace.json 存在性** — `.claude-plugin/marketplace.json` 是否存在
+3. **SKILL.md 存在性** — `skills/<name>/SKILL.md` 是否存在
+4. **Frontmatter 必填字段** — 每个 SKILL.md 必须有 `name` 和 `description`
+5. **Commands 对应** — 每个 skill 是否有对应 `commands/<name>.md`
+6. **marketplace.json 条目** — 每个 skill 是否在 `plugins` 数组中
+7. **References 引用检查** — SKILL.md 中引用的 `references/` 文件是否实际存在
+8. **Evals 目录** — `evals/<name>/scenarios.md` 是否存在
+
+脚本输出 JSON：`{"errors": [...], "warnings": [...], "passed": [...]}`
+
+解析 JSON 结果，errors 非空则标记结构检查失败。
+
+## 语义检查（AI 执行）
+
+在结构检查完成后，读取各 skill 文件并检查：
+
+1. **Description 质量** — 是否清晰描述 skill 用途和触发条件，不能只有名字重复
+2. **Frontmatter 一致性**：
+   - `name` 与目录名是否一致（`skills/foo/SKILL.md` 的 name 应为 `foo`）
+   - `description` 在 SKILL.md 和 marketplace.json 间是否语义对齐
+3. **Command 路由逻辑** — `commands/<name>.md` 是否引用了正确的 skill 名称来加载
+4. **References 内容连贯性** — SKILL.md 引用的 references 内容是否与主文件逻辑一致、无孤立文件
+5. **Eval 场景覆盖度** — `scenarios.md` 是否覆盖 skill 的核心功能路径（至少 5 个场景）
+
+语义检查发现问题标记为 warning（非阻断性），因为涉及判断。
+
+## 输出格式
+
+```text
+Skill Lint 完成
+┌──────────┬───────────────────────────────┐
+│ 目标路径 │ /path/to/plugin               │
+├──────────┼───────────────────────────────┤
+│ 结构检查 │ ✓ 5 passed · ✗ 2 errors      │
+├──────────┼───────────────────────────────┤
+│ 语义检查 │ ✓ 3 passed · ⚠ 1 warning     │
+└──────────┴───────────────────────────────┘
+
+Errors:
+  1. skills/foo/SKILL.md: missing required field 'description'
+  2. .claude-plugin/marketplace.json: skill 'foo' not listed
+
+Warnings:
+  1. skills/foo/SKILL.md: description 与 marketplace.json 不一致
+```
+
+## 规则详情
+
+完整规则说明见 `references/rules.md`。

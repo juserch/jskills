@@ -15,6 +15,16 @@
                 "name": "juserch",
                 "url": "https://github.com/juserch"
             }
+        },
+        {
+            "name": "skill-lint",
+            "description": "Skill Lint — Claude Code skill 校验工具。Bash 结构检查 + AI 语义检查，校验 frontmatter、目录完整性、marketplace.json 一致性。通用，可校验任意 Claude Code plugin 项目。",
+            "version": "1.0.0",
+            "source": "./",
+            "author": {
+                "name": "juserch",
+                "url": "https://github.com/juserch"
+            }
         }
     ]
 }

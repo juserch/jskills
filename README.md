@@ -35,6 +35,23 @@ claude plugin add juserch/jskills
 
 也可通过自然语言触发：`try harder`、`别偷懒`、`又错了`、`stop spinning` 等（由 hooks 自动检测）。
 
+### Skill Lint — Claude Code Skill 校验工具
+
+校验 Claude Code plugin 项目中 skill 文件的结构完整性和语义质量。Bash 脚本做结构检查，AI 做语义检查，互补覆盖。
+
+| 检查类型 | 说明 |
+|----------|------|
+| **结构检查** | frontmatter 必填字段 / 文件存在性 / references 引用 / marketplace 条目 |
+| **语义检查** | description 质量 / name 一致性 / command 路由 / eval 覆盖度 |
+
+**使用**：
+
+```text
+/skill-lint              # 激活，显示说明
+/skill-lint .            # 校验当前项目
+/skill-lint /path/to/plugin  # 校验指定路径
+```
+
 *更多 skill 持续添加中...*
 
 ## 项目结构
