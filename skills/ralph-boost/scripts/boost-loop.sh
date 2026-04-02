@@ -2,7 +2,7 @@
 # Ralph Boost — Autonomous Development Loop Engine
 # Usage: bash boost-loop.sh [--project-dir <path>]
 #
-# Prerequisites: bash 4+, jq, claude (Claude Code CLI)
+# Prerequisites: bash 4+, jq OR python3, claude (Claude Code CLI)
 
 set -euo pipefail
 
@@ -44,8 +44,224 @@ die() {
     exit 1
 }
 
+# ============================================================
+# JSON Engine (jq / python3 dual support)
+# ============================================================
+
+JSON_ENGINE=""
+
+detect_json_engine() {
+    if command -v jq >/dev/null 2>&1; then
+        JSON_ENGINE="jq"
+    elif command -v python3 >/dev/null 2>&1; then
+        JSON_ENGINE="python3"
+    elif command -v python >/dev/null 2>&1; then
+        JSON_ENGINE="python"
+    else
+        die "Requires jq or python3, neither found"
+    fi
+    log "JSON engine: $JSON_ENGINE"
+}
+
+# Read a field from a JSON string on stdin. Args: jq_path, default
+json_get_str() {
+    local jq_path="$1" default="${2:-}"
+    case "$JSON_ENGINE" in
+        jq)
+            jq -r "${jq_path} // \"${default}\""
+            ;;
+        python3|python)
+            $JSON_ENGINE -c "
+import json, sys
+d = json.load(sys.stdin)
+path = '''${jq_path}'''.lstrip('.')
+keys = [k for k in path.split('.') if k]
+v = d
+for k in keys:
+    if isinstance(v, dict):
+        v = v.get(k)
+    else:
+        v = None
+    if v is None:
+        break
+if v is None:
+    print('''${default}''')
+else:
+    print(v)
+"
+            ;;
+    esac
+}
+
+# Read a field from a JSON file. Args: file, jq_path, default
+json_get_file() {
+    local file="$1" jq_path="$2" default="${3:-}"
+    cat "$file" | json_get_str "$jq_path" "$default"
+}
+
+# Set a field in a JSON string. Input on stdin. Args: dotpath, value_json
+# Outputs updated JSON string
+json_set_field() {
+    local dotpath="$1" value="$2"
+    case "$JSON_ENGINE" in
+        jq)
+            jq "${dotpath} = ${value}"
+            ;;
+        python3|python)
+            $JSON_ENGINE -c "
+import json, sys
+d = json.load(sys.stdin)
+path = '''${dotpath}'''.lstrip('.')
+keys = [k for k in path.split('.') if k]
+obj = d
+for k in keys[:-1]:
+    obj = obj[k]
+obj[keys[-1]] = json.loads('''${value}''')
+print(json.dumps(d, indent=2))
+"
+            ;;
+    esac
+}
+
+# Validate and pretty-print JSON from stdin
+json_format() {
+    case "$JSON_ENGINE" in
+        jq)
+            jq '.'
+            ;;
+        python3|python)
+            $JSON_ENGINE -c "import json,sys; print(json.dumps(json.load(sys.stdin),indent=2))"
+            ;;
+    esac
+}
+
+# Get length of array at path. Input on stdin. Args: jq_path
+json_array_length() {
+    local jq_path="$1"
+    case "$JSON_ENGINE" in
+        jq)
+            jq "${jq_path} | length"
+            ;;
+        python3|python)
+            $JSON_ENGINE -c "
+import json, sys
+d = json.load(sys.stdin)
+path = '''${jq_path}'''.lstrip('.')
+keys = [k for k in path.split('.') if k]
+v = d
+for k in keys:
+    if isinstance(v, dict):
+        v = v.get(k, [])
+    elif isinstance(v, list):
+        break
+print(len(v) if isinstance(v, list) else 0)
+"
+            ;;
+    esac
+}
+
+# Build a JSON object from key-value pairs. Args: key1 val1 key2 val2 ...
+# Values that are pure integers are treated as numbers, otherwise strings
+json_build() {
+    case "$JSON_ENGINE" in
+        jq)
+            local args=()
+            while [[ $# -ge 2 ]]; do
+                local key="$1" val="$2"
+                shift 2
+                if [[ "$val" =~ ^[0-9]+$ ]]; then
+                    args+=(--argjson "$key" "$val")
+                else
+                    args+=(--arg "$key" "$val")
+                fi
+            done
+            jq -n "${args[@]}" '$ARGS.named'
+            ;;
+        python3|python)
+            local pairs="{"
+            local first=true
+            while [[ $# -ge 2 ]]; do
+                local key="$1" val="$2"
+                shift 2
+                [[ "$first" == "true" ]] && first=false || pairs+=","
+                if [[ "$val" =~ ^[0-9]+$ ]]; then
+                    pairs+="\"$key\":$val"
+                else
+                    # Escape quotes in value
+                    val="${val//\\/\\\\}"
+                    val="${val//\"/\\\"}"
+                    pairs+="\"$key\":\"$val\""
+                fi
+            done
+            pairs+="}"
+            echo "$pairs"
+            ;;
+    esac
+}
+
+# Extract text from Claude CLI JSON output file. Args: output_file
+json_extract_claude_text() {
+    local output_file="$1"
+    case "$JSON_ENGINE" in
+        jq)
+            if jq -e '.result' "$output_file" >/dev/null 2>&1; then
+                jq -r '.result // ""' "$output_file"
+            elif jq -e '.[].message' "$output_file" >/dev/null 2>&1; then
+                jq -r '.[] | select(.type == "assistant") | .message // ""' "$output_file" 2>/dev/null || true
+            else
+                cat "$output_file"
+            fi
+            ;;
+        python3|python)
+            $JSON_ENGINE -c "
+import json
+with open('''${output_file}''') as f:
+    try:
+        d = json.load(f)
+    except:
+        with open('''${output_file}''') as f2:
+            print(f2.read())
+        exit()
+if isinstance(d, dict) and 'result' in d:
+    print(d.get('result', ''))
+elif isinstance(d, list):
+    for item in d:
+        if isinstance(item, dict) and item.get('type') == 'assistant':
+            print(item.get('message', ''))
+            break
+else:
+    with open('''${output_file}''') as f2:
+        print(f2.read())
+" 2>/dev/null || cat "$output_file"
+            ;;
+    esac
+}
+
+# Extract session ID from Claude CLI JSON output file. Args: output_file
+json_extract_session_id() {
+    local output_file="$1"
+    case "$JSON_ENGINE" in
+        jq)
+            jq -r '.session_id // .sessionId // empty' "$output_file" 2>/dev/null || true
+            ;;
+        python3|python)
+            $JSON_ENGINE -c "
+import json
+with open('''${output_file}''') as f:
+    try:
+        d = json.load(f)
+    except:
+        exit()
+sid = d.get('session_id', d.get('sessionId', ''))
+if sid:
+    print(sid)
+" 2>/dev/null || true
+            ;;
+    esac
+}
+
 check_dependencies() {
-    command -v jq >/dev/null 2>&1 || die "jq is required but not installed"
+    detect_json_engine
     command -v claude >/dev/null 2>&1 || die "claude CLI is required but not installed"
     [[ -d "$BOOST_DIR" ]] || die "$BOOST_DIR directory not found. Run '/ralph-boost setup' first"
     [[ -f "$CONFIG_FILE" ]] || die "$CONFIG_FILE not found"
@@ -58,19 +274,34 @@ check_dependencies() {
 # ============================================================
 
 load_config() {
-    MAX_CALLS_PER_HOUR=$(jq -r '.max_calls_per_hour // 100' "$CONFIG_FILE")
-    CLAUDE_TIMEOUT_MINUTES=$(jq -r '.claude_timeout_minutes // 15' "$CONFIG_FILE")
-    CLAUDE_MODEL=$(jq -r '.claude_model // ""' "$CONFIG_FILE")
-    SESSION_EXPIRY_HOURS=$(jq -r '.session_expiry_hours // 24' "$CONFIG_FILE")
-    NO_PROGRESS_THRESHOLD=$(jq -r '.no_progress_threshold // 7' "$CONFIG_FILE")
-    SAME_ERROR_THRESHOLD=$(jq -r '.same_error_threshold // 8' "$CONFIG_FILE")
-    SLEEP_SECONDS=$(jq -r '.sleep_seconds // 3600' "$CONFIG_FILE")
+    MAX_CALLS_PER_HOUR=$(json_get_file "$CONFIG_FILE" ".max_calls_per_hour" "100")
+    CLAUDE_TIMEOUT_MINUTES=$(json_get_file "$CONFIG_FILE" ".claude_timeout_minutes" "15")
+    CLAUDE_MODEL=$(json_get_file "$CONFIG_FILE" ".claude_model" "")
+    SESSION_EXPIRY_HOURS=$(json_get_file "$CONFIG_FILE" ".session_expiry_hours" "24")
+    NO_PROGRESS_THRESHOLD=$(json_get_file "$CONFIG_FILE" ".no_progress_threshold" "7")
+    SAME_ERROR_THRESHOLD=$(json_get_file "$CONFIG_FILE" ".same_error_threshold" "8")
+    SLEEP_SECONDS=$(json_get_file "$CONFIG_FILE" ".sleep_seconds" "3600")
 
-    local tools_json
-    tools_json=$(jq -r '.allowed_tools // empty' "$CONFIG_FILE")
-    if [[ -n "$tools_json" ]]; then
-        mapfile -t ALLOWED_TOOLS < <(jq -r '.allowed_tools[]' "$CONFIG_FILE")
-    fi
+    case "$JSON_ENGINE" in
+        jq)
+            local tools_json
+            tools_json=$(jq -r '.allowed_tools // empty' "$CONFIG_FILE")
+            if [[ -n "$tools_json" ]]; then
+                mapfile -t ALLOWED_TOOLS < <(jq -r '.allowed_tools[]' "$CONFIG_FILE")
+            fi
+            ;;
+        python3|python)
+            local tools_csv
+            tools_csv=$($JSON_ENGINE -c "
+import json
+with open('${CONFIG_FILE}') as f: d = json.load(f)
+for t in d.get('allowed_tools', []): print(t)
+")
+            if [[ -n "$tools_csv" ]]; then
+                mapfile -t ALLOWED_TOOLS <<< "$tools_csv"
+            fi
+            ;;
+    esac
 }
 
 # ============================================================
@@ -83,9 +314,9 @@ read_state() {
 
 write_state() {
     local new_state="$1"
-    # Validate JSON before writing
-    if echo "$new_state" | jq empty 2>/dev/null; then
-        echo "$new_state" | jq '.' > "$STATE_FILE.tmp"
+    local formatted
+    if formatted=$(echo "$new_state" | json_format 2>/dev/null); then
+        echo "$formatted" > "$STATE_FILE.tmp"
         mv "$STATE_FILE.tmp" "$STATE_FILE"
     else
         log "WARNING: Invalid JSON state, not writing"
@@ -94,12 +325,12 @@ write_state() {
 
 get_field() {
     local state="$1" path="$2"
-    echo "$state" | jq -r "$path // empty"
+    echo "$state" | json_get_str "$path" ""
 }
 
 get_field_int() {
     local state="$1" path="$2"
-    echo "$state" | jq -r "$path // 0"
+    echo "$state" | json_get_str "$path" "0"
 }
 
 # ============================================================
@@ -170,7 +401,7 @@ build_loop_context() {
         [[ -n "$paside" ]] && context+=" ${paside}"
 
         local tried_count
-        tried_count=$(echo "$state" | jq '.pressure.tried_approaches | length')
+        tried_count=$(echo "$state" | json_array_length ".pressure.tried_approaches")
         context+=" Tried approaches: ${tried_count}."
     fi
 
@@ -269,16 +500,7 @@ parse_boost_status() {
 
     # Try to extract BOOST_STATUS block from JSON output
     local raw_text=""
-    if jq -e '.result' "$output_file" >/dev/null 2>&1; then
-        # Claude CLI JSON format: .result contains the text
-        raw_text=$(jq -r '.result // ""' "$output_file")
-    elif jq -e '.[].message' "$output_file" >/dev/null 2>&1; then
-        # Array format: find assistant message
-        raw_text=$(jq -r '.[] | select(.type == "assistant") | .message // ""' "$output_file" 2>/dev/null || true)
-    else
-        # Fallback: treat as plain text
-        raw_text=$(cat "$output_file")
-    fi
+    raw_text=$(json_extract_claude_text "$output_file")
 
     # Extract BOOST_STATUS block
     local status_block=""
@@ -310,25 +532,15 @@ parse_boost_status() {
     fi
 
     # Build result JSON
-    jq -n \
-        --arg status "$status" \
-        --arg exit_signal "$exit_signal" \
-        --argjson files_modified "$files_modified" \
-        --argjson tasks_completed "$tasks_completed" \
-        --arg tests_status "$tests_status" \
-        --arg work_type "$work_type" \
-        --arg pressure_level "$pressure_level" \
-        --argjson tried_count "$tried_count" \
-        '{
-            status: $status,
-            exit_signal: $exit_signal,
-            files_modified: $files_modified,
-            tasks_completed: $tasks_completed,
-            tests_status: $tests_status,
-            work_type: $work_type,
-            pressure_level: $pressure_level,
-            tried_count: $tried_count
-        }'
+    json_build \
+        status "$status" \
+        exit_signal "$exit_signal" \
+        files_modified "$files_modified" \
+        tasks_completed "$tasks_completed" \
+        tests_status "$tests_status" \
+        work_type "$work_type" \
+        pressure_level "$pressure_level" \
+        tried_count "$tried_count"
 }
 
 # ============================================================
@@ -351,21 +563,21 @@ detect_progress() {
 
     # Check FILES_MODIFIED from status report
     local files_modified
-    files_modified=$(echo "$parse_result" | jq -r '.files_modified // 0')
+    files_modified=$(echo "$parse_result" | json_get_str ".files_modified" "0")
     if [[ $files_modified -gt 0 ]]; then
         has_progress=true
     fi
 
     # Check explicit completion
     local status
-    status=$(echo "$parse_result" | jq -r '.status // "UNKNOWN"')
+    status=$(echo "$parse_result" | json_get_str ".status" "UNKNOWN")
     if [[ "$status" == "COMPLETE" ]]; then
         has_progress=true
     fi
 
     # Check tasks completed
     local tasks_completed
-    tasks_completed=$(echo "$parse_result" | jq -r '.tasks_completed // 0')
+    tasks_completed=$(echo "$parse_result" | json_get_str ".tasks_completed" "0")
     if [[ $tasks_completed -gt 0 ]]; then
         has_progress=true
     fi
@@ -413,14 +625,12 @@ update_circuit_breaker() {
 
     if [[ "$has_progress" == "true" ]]; then
         # Progress detected — reset everything
-        new_state=$(echo "$new_state" | jq '
-            .circuit_breaker.state = "CLOSED" |
-            .circuit_breaker.consecutive_no_progress = 0 |
-            .circuit_breaker.consecutive_same_error = 0 |
-            .circuit_breaker.last_progress_loop = '"$loop_count"' |
-            .circuit_breaker.reason = "Progress detected" |
-            .pressure.level = 0
-        ')
+        new_state=$(echo "$new_state" | json_set_field ".circuit_breaker.state" '"CLOSED"' \
+            | json_set_field ".circuit_breaker.consecutive_no_progress" '0' \
+            | json_set_field ".circuit_breaker.consecutive_same_error" '0' \
+            | json_set_field ".circuit_breaker.last_progress_loop" "$loop_count" \
+            | json_set_field ".circuit_breaker.reason" '"Progress detected"' \
+            | json_set_field ".pressure.level" '0')
         log "Circuit breaker: CLOSED (progress detected)"
     else
         # No progress
@@ -460,13 +670,11 @@ update_circuit_breaker() {
             reason="Monitoring: ${consecutive_no_progress} loops without progress"
         fi
 
-        new_state=$(echo "$new_state" | jq '
-            .circuit_breaker.state = "'"$new_cb_state"'" |
-            .circuit_breaker.consecutive_no_progress = '"$consecutive_no_progress"' |
-            .circuit_breaker.consecutive_same_error = '"$consecutive_same_error"' |
-            .circuit_breaker.reason = "'"$reason"'" |
-            .pressure.level = '"$pressure"'
-        ')
+        new_state=$(echo "$new_state" | json_set_field ".circuit_breaker.state" "\"$new_cb_state\"" \
+            | json_set_field ".circuit_breaker.consecutive_no_progress" "$consecutive_no_progress" \
+            | json_set_field ".circuit_breaker.consecutive_same_error" "$consecutive_same_error" \
+            | json_set_field ".circuit_breaker.reason" "\"$reason\"" \
+            | json_set_field ".pressure.level" "$pressure")
 
         local pname
         pname=$(pressure_name "$pressure")
@@ -498,10 +706,8 @@ check_rate_limit() {
 
     if [[ "$last_reset_hour" != "$current_hour" ]]; then
         # New hour — reset counter
-        echo "$state" | jq '
-            .rate_limit.call_count = 0 |
-            .rate_limit.last_reset_hour = "'"$current_hour"'"
-        '
+        echo "$state" | json_set_field ".rate_limit.call_count" '0' \
+            | json_set_field ".rate_limit.last_reset_hour" "\"$current_hour\""
         return
     fi
 
@@ -510,10 +716,10 @@ check_rate_limit() {
         local seconds_left
         seconds_left=$(( 3600 - $(date -u +%s) % 3600 ))
         sleep "$seconds_left"
-        echo "$state" | jq '
-            .rate_limit.call_count = 0 |
-            .rate_limit.last_reset_hour = "'"$(date -u +"%Y-%m-%dT%H")"'"
-        '
+        local new_hour
+        new_hour=$(date -u +"%Y-%m-%dT%H")
+        echo "$state" | json_set_field ".rate_limit.call_count" '0' \
+            | json_set_field ".rate_limit.last_reset_hour" "\"$new_hour\""
         return
     fi
 
@@ -522,7 +728,10 @@ check_rate_limit() {
 
 increment_call_count() {
     local state="$1"
-    echo "$state" | jq '.rate_limit.call_count += 1'
+    local cc
+    cc=$(echo "$state" | json_get_str ".rate_limit.call_count" "0")
+    cc=$((cc + 1))
+    echo "$state" | json_set_field ".rate_limit.call_count" "$cc"
 }
 
 # ============================================================
@@ -559,21 +768,24 @@ update_session() {
 
     # Try to extract session ID from Claude output
     if [[ -f "$output_file" ]]; then
-        new_session_id=$(jq -r '.session_id // .sessionId // empty' "$output_file" 2>/dev/null || true)
+        new_session_id=$(json_extract_session_id "$output_file")
     fi
 
     local current_id
     current_id=$(get_field "$state" ".session.id")
 
     if [[ -n "$new_session_id" ]] && [[ "$new_session_id" != "$current_id" ]]; then
-        state=$(echo "$state" | jq '
-            .session.id = "'"$new_session_id"'" |
-            .session.created_at = "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"
-        ')
+        local now_ts
+        now_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        state=$(echo "$state" | json_set_field ".session.id" "\"$new_session_id\"" \
+            | json_set_field ".session.created_at" "\"$now_ts\"")
     fi
 
     # Increment loop count
-    state=$(echo "$state" | jq '.session.loop_count += 1')
+    local lc
+    lc=$(echo "$state" | json_get_str ".session.loop_count" "0")
+    lc=$((lc + 1))
+    state=$(echo "$state" | json_set_field ".session.loop_count" "$lc")
 
     echo "$state"
 }
@@ -585,7 +797,7 @@ update_session() {
 check_exit_signal() {
     local parse_result="$1"
     local exit_signal
-    exit_signal=$(echo "$parse_result" | jq -r '.exit_signal // "false"')
+    exit_signal=$(echo "$parse_result" | json_get_str ".exit_signal" "false")
     [[ "$exit_signal" == "true" ]]
 }
 
@@ -666,7 +878,10 @@ main() {
 
         # Halt check
         if should_halt "$state"; then
-            state=$(echo "$state" | jq '.circuit_breaker.total_opens += 1')
+            local to
+            to=$(echo "$state" | json_get_str ".circuit_breaker.total_opens" "0")
+            to=$((to + 1))
+            state=$(echo "$state" | json_set_field ".circuit_breaker.total_opens" "$to")
             write_state "$state"
             show_halt_message "$state"
             break
@@ -705,7 +920,9 @@ main() {
         state=$(update_session "$state" "$output_file")
 
         # Update timestamp
-        state=$(echo "$state" | jq '.last_updated = "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"')
+        local now_ts
+        now_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        state=$(echo "$state" | json_set_field ".last_updated" "\"$now_ts\"")
 
         # Write state
         write_state "$state"
