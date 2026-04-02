@@ -20,20 +20,20 @@ license: MIT
 
 ### 1. 数据获取（三级降级）
 
-**L1 — WebSearch**：
+**L1 — WebSearch 搜索**：
 - 构造查询：`{主题} 新闻 {时间段描述}`
 - 使用搜索工具搜索
 - 如果中文主题，额外搜一次英文翻译版扩大覆盖
 - 成功且结果 ≥ 3 条 → 跳到步骤 2
 
-**L2 — 国内新闻源网页抓取**（L1 失败或结果不足时）：
+**L2 — WebFetch 国内新闻源**（L1 失败或结果不足时）：
 - 依次尝试以下 URL，抓取并解析 HTML：
   - 百度新闻：`https://news.baidu.com/ns?word={主题}&pn=0&cl=2&ct=0&tn=news&rn=10&ie=utf-8`
   - 新浪新闻：`https://search.sina.com.cn/?q={主题}&c=news&range=all`
   - 网易新闻：`https://www.163.com/search?keyword={主题}`
 - 任一成功 → 跳到步骤 2
 
-**L3 — Shell curl**（L2 全部失败时）：
+**L3 — Bash curl**（L2 全部失败时）：
 - 运行 `scripts/news-fallback.sh {主题}`
 - 脚本依次 curl 上述三个源，超时 10 秒/源
 - 返回 HTML 内容供解析
@@ -82,4 +82,19 @@ TOP {N} 条
 - L3 curl 百度新闻: {失败原因}
 
 建议: 检查网络连接，或稍后重试。
+```
+
+**语言检测规则**: 如果用户输入包含中日韩字符，使用中文模板；否则使用英文模板。
+
+### 英文失败输出 / English Failure Output
+
+```markdown
+## {Topic} News | Fetch Failed
+
+Attempted:
+- L1 WebSearch: {reason}
+- L2 WebFetch: {reason}
+- L3 curl: {reason}
+
+Suggestion: Check your network connection, or try again later.
 ```

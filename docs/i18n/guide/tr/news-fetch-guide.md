@@ -11,13 +11,13 @@ Hata ayiklamaktan tukendin mi? 2 dakika ayir, dunyada neler olup bittigine bak v
 ### Claude Code (onerilen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Evrensel tek satirlik kurulum
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/news-fetch/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/news-fetch/SKILL.md
 ```
 
 > **Sifir bagimlilik** -- News Fetch hicbir harici servise veya API anahtarina ihtiyac duymaz. Kur ve basla.
@@ -121,6 +121,29 @@ Tum katmanlar basarisiz oldugunda, her kaynak icin basarisizlik nedenini listele
 
 ---
 
+## Relevance Scoring
+
+Each article is scored 0-300 based on how well its title and summary match the requested topic:
+
+| Score Range | Meaning |
+|-------------|---------|
+| 200-300 | Highly relevant — topic is the primary subject |
+| 100-199 | Moderately relevant — topic is mentioned significantly |
+| 0-99 | Tangentially relevant — topic appears in passing |
+
+Articles are sorted by score in descending order. The scoring is heuristic and based on keyword density, title match, and contextual relevance.
+
+## Network Fallback Troubleshooting
+
+| Symptom | Likely Cause | Fix |
+|---------|-------------|-----|
+| L1 returns 0 results | WebSearch tool unavailable or query too specific | Broaden the topic keyword |
+| L2 all sources fail | Domestic news sites blocking automated access | Wait and retry, or check if curl works manually |
+| L3 curl timeouts | Network connectivity issue | Check curl -I https://news.baidu.com |
+| All tiers fail | No internet access or all sources down | Verify network; the failure report lists each source's error |
+
+---
+
 ## SSS
 
 ### API anahtarina ihtiyacim var mi?
@@ -143,4 +166,4 @@ En fazla 20 (tekillestime sonrasi). Gercek sayi, veri kaynaklarinin dondurdugune
 
 ## Lisans
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

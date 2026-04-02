@@ -1,4 +1,4 @@
-# J Skills
+# Forge
 
 > Daha çok çalış, sonra bir mola ver. Claude Code ile daha iyi bir kodlama ritmi için 4 skill.
 
@@ -34,24 +34,29 @@ Block Break 🔥 Activated
 
 ```bash
 # Claude Code (tek komut)
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 
 # OpenClaw
-git clone https://github.com/juserch/jskills.git
-cp -r jskills/platforms/openclaw/* ~/.openclaw/skills/
+git clone https://github.com/juserai/forge.git
+cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 ```
 
 ## Skill'ler
 
-### Daha çok çalış
+### Hammer
 
 | Skill | Ne yapar | Dene |
 |-------|----------|------|
 | **block-break** | Pes etmeden önce tüm yaklaşımları denemeye zorlar | `/block-break` |
 | **ralph-boost** | Yakınsama garantili otonom geliştirme döngüleri | `/ralph-boost setup` |
+
+### Anvil
+
+| Skill | Ne yapar | Dene |
+|-------|----------|------|
 | **skill-lint** | Herhangi bir Claude Code skill plugin'ini doğrular | `/skill-lint .` |
 
-### Bir mola ver
+### Quench
 
 | Skill | Ne yapar | Dene |
 |-------|----------|------|
@@ -154,7 +159,7 @@ Diğer üç skill seni daha çok çalışmaya zorlar. Bu skill nefes almayı hat
 ## Proje Yapısı
 
 ```text
-jskills/
+forge/
 ├── skills/                        # Claude Code platformu
 │   └── <skill>/
 │       ├── SKILL.md               # Skill tanımı
@@ -191,4 +196,4 @@ Tam geliştirme yönergeleri için [CLAUDE.md](../../CLAUDE.md) dosyasına bak.
 
 ## Lisans
 
-[MIT](../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

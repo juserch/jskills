@@ -1,26 +1,48 @@
 #!/usr/bin/env bash
 # Block Break failure detector — counts Bash failures and escalates pressure
 # Called by hooks.json on PostToolUse (Bash)
-# Reads exit code from environment, updates ~/.juserch-skills/block-break-state.json
+# Reads exit code from environment, updates ~/.forge/block-break-state.json
+# JSON engine: jq preferred, python fallback
 
-STATE_DIR="$HOME/.juserch-skills"
+STATE_DIR="$HOME/.forge"
 STATE_FILE="$STATE_DIR/block-break-state.json"
 
 mkdir -p "$STATE_DIR"
+
+# --- JSON engine abstraction (jq preferred, python fallback) ---
+if command -v jq >/dev/null 2>&1; then
+    json_get() { jq -r "$1 // \"$2\"" "$STATE_FILE" 2>/dev/null || echo "$2"; }
+    json_update() {
+        local tmp; tmp=$(jq \
+            --argjson fc "$1" --argjson pl "$2" --arg ts "$3" \
+            '.failure_count=$fc | .pressure_level=$pl | .last_updated=$ts' \
+            "$STATE_FILE" 2>/dev/null) && echo "$tmp" > "$STATE_FILE"
+    }
+elif command -v python >/dev/null 2>&1; then
+    json_get() { python -c "import json; d=json.load(open('$STATE_FILE')); print(d.get(${1//./,}, $2))" 2>/dev/null || echo "$2"; }
+    json_update() {
+        python -c "
+import json, sys
+d=json.load(open('$STATE_FILE'))
+d['failure_count']=$1; d['pressure_level']=$2; d['last_updated']='$3'
+json.dump(d, open('$STATE_FILE','w'), indent=2)" 2>/dev/null
+    }
+else
+    exit 0  # No JSON engine available, skip silently
+fi
 
 # Initialize state if not exists
 if [ ! -f "$STATE_FILE" ]; then
     echo '{"failure_count":0,"pressure_level":0,"session_id":"","last_updated":""}' > "$STATE_FILE"
 fi
 
-# Check if the last tool result indicates failure (non-zero exit)
 # The hook receives tool result via stdin
 INPUT=$(cat)
 
 # Detect failure patterns in Bash output
 if echo "$INPUT" | grep -qiE '(error|failed|fatal|exception|traceback|command not found|permission denied|no such file|exit code [1-9])'; then
     # Read current state
-    FAILURES=$(python -c "import json; d=json.load(open('$STATE_FILE')); print(d.get('failure_count',0))" 2>/dev/null || echo "0")
+    FAILURES=$(json_get '.failure_count' '0')
     NEW_FAILURES=$((FAILURES + 1))
 
     # Calculate pressure level
@@ -37,16 +59,10 @@ if echo "$INPUT" | grep -qiE '(error|failed|fatal|exception|traceback|command no
     fi
 
     # Update state
-    python -c "
-import json, datetime
-d = json.load(open('$STATE_FILE'))
-d['failure_count'] = $NEW_FAILURES
-d['pressure_level'] = $LEVEL
-d['last_updated'] = datetime.datetime.now().isoformat()
-json.dump(d, open('$STATE_FILE','w'), indent=2)
-" 2>/dev/null
+    TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%S)
+    json_update "$NEW_FAILURES" "$LEVEL" "$TIMESTAMP"
 
-    # Output pressure escalation if level increased
+    # Output pressure escalation if level >= 2
     if [ "$LEVEL" -ge 2 ]; then
         cat << BLOCK_BREAK_EOF
 

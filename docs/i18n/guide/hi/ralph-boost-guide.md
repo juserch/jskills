@@ -9,13 +9,13 @@
 ### Claude Code (recommended)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Universal one-line install
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Zero dependencies** -- Ralph Boost ralph-claude-code, block-break, या किसी external service पर depend नहीं करता। Primary path (Agent loop) में zero external dependencies हैं; fallback path के लिए `jq` या `python` और `claude` CLI चाहिए।
@@ -58,10 +58,10 @@ Claude current session में directly autonomous loop drive करता ह
 
 ```bash
 # Foreground
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Background
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Status monitor करें
@@ -315,7 +315,7 @@ Ralph Boost Block Break के core mechanisms (pressure escalation, 5-step meth
 | Activation | Hooks auto-trigger | Agent loop / loop script में built-in |
 | Detection | PostToolUse hook | Agent loop progress detection / script progress detection |
 | Control | Hook-injected prompts | Agent prompt injection / --append-system-prompt |
-| State | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| State | `~/.forge/` | `.ralph-boost/state.json` |
 
 Code पूरी तरह independent है; concepts shared हैं।
 
@@ -331,7 +331,7 @@ Code पूरी तरह independent है; concepts shared हैं।
 
 ### Loop script कहाँ है?
 
-jskills plugin install करने के बाद, fallback script `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh` पर है। आप इसे कहीं भी copy करके वहाँ से run कर सकते हैं। Script अपना JSON engine (jq या python) auto-detect करता है।
+forge plugin install करने के बाद, fallback script `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh` पर है। आप इसे कहीं भी copy करके वहाँ से run कर सकते हैं। Script अपना JSON engine (jq या python) auto-detect करता है।
 
 ### Loop logs कैसे देखें?
 
@@ -367,4 +367,4 @@ Currently Claude Code (Agent loop primary path) supported है। Fallback bas
 
 ## License
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

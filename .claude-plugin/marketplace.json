@@ -1,9 +1,9 @@
 {
-    "name": "jskills",
-    "description": "J Skills — Work harder, then take a break. Behavioral constraints, autonomous loops, skill validation, and quick news for your coding rhythm. Zero dependencies.",
+    "name": "forge",
+    "description": "Forge — Forge stronger AI agents. Behavioral constraints, autonomous loops, skill validation, and quick news for your coding rhythm. Zero dependencies.",
     "owner": {
-        "name": "juserch",
-        "url": "https://github.com/juserch"
+        "name": "Juneq Cheung",
+        "url": "https://github.com/juserai"
     },
     "plugins": [
         {
@@ -12,8 +12,8 @@
             "version": "1.0.0",
             "source": "./",
             "author": {
-                "name": "juserch",
-                "url": "https://github.com/juserch"
+                "name": "Juneq Cheung",
+                "url": "https://github.com/juserai"
             },
             "skills": [
                 "./skills/block-break"
@@ -25,8 +25,8 @@
             "version": "1.0.0",
             "source": "./",
             "author": {
-                "name": "juserch",
-                "url": "https://github.com/juserch"
+                "name": "Juneq Cheung",
+                "url": "https://github.com/juserai"
             },
             "skills": [
                 "./skills/ralph-boost"
@@ -38,8 +38,8 @@
             "version": "1.0.0",
             "source": "./",
             "author": {
-                "name": "juserch",
-                "url": "https://github.com/juserch"
+                "name": "Juneq Cheung",
+                "url": "https://github.com/juserai"
             },
             "skills": [
                 "./skills/skill-lint"
@@ -51,8 +51,8 @@
             "version": "1.0.0",
             "source": "./",
             "author": {
-                "name": "juserch",
-                "url": "https://github.com/juserch"
+                "name": "Juneq Cheung",
+                "url": "https://github.com/juserai"
             },
             "skills": [
                 "./skills/news-fetch"

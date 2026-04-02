@@ -9,13 +9,13 @@
 ### Claude Code (recomendado)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Instalacion universal en una linea
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Cero dependencias** — Ralph Boost no depende de ralph-claude-code, block-break ni ningun servicio externo. La ruta principal (Agent loop) tiene cero dependencias externas; la ruta alternativa requiere `jq` o `python` y la CLI `claude`.
@@ -58,10 +58,10 @@ Claude controla el bucle autonomo directamente dentro de la sesion actual (modo 
 
 ```bash
 # Primer plano
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Segundo plano
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Monitorear estado
@@ -315,7 +315,7 @@ Ralph Boost adapta los mecanismos centrales de Block Break (escalado de presion,
 | Activacion | Los hooks se auto-activan | Integrado en Agent loop / script del bucle |
 | Deteccion | Hook PostToolUse | Deteccion de progreso Agent loop / deteccion de progreso del script |
 | Control | Prompts inyectados por hook | Inyeccion de prompt Agent / --append-system-prompt |
-| Estado | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| Estado | `~/.forge/` | `.ralph-boost/state.json` |
 
 El codigo es completamente independiente; los conceptos son compartidos.
 
@@ -331,7 +331,7 @@ El codigo es completamente independiente; los conceptos son compartidos.
 
 ### Donde esta el script del bucle?
 
-Despues de instalar el plugin jskills, el script alternativo esta en `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh`. Tambien puedes copiarlo a cualquier lugar y ejecutarlo desde alli. El script auto-detecta jq o python como su motor JSON.
+Despues de instalar el plugin forge, el script alternativo esta en `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh`. Tambien puedes copiarlo a cualquier lugar y ejecutarlo desde alli. El script auto-detecta jq o python como su motor JSON.
 
 ### Como veo los logs del bucle?
 
@@ -367,4 +367,4 @@ Usa [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ## Licencia
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

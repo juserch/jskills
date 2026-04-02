@@ -11,13 +11,13 @@ User frustration detected. Block Break behavioral constraint engine activated.
 
 You MUST:
 1. Immediately load `block-break` skill using the Skill tool
-2. Start from current pressure level (check ~/.juserch-skills/block-break-state.json for failure count)
+2. Start from current pressure level (check ~/.forge/block-break-state.json for failure count)
 3. Switch to a fundamentally different approach — changing parameters is NOT a different approach
 4. Close the loop with verification commands + output evidence
 
 你必须：
 1. 立即使用 Skill 工具加载 `block-break` skill
-2. 从当前压力等级开始执行（检查 ~/.juserch-skills/block-break-state.json 获取失败次数）
+2. 从当前压力等级开始执行（检查 ~/.forge/block-break-state.json 获取失败次数）
 3. 切换本质不同的方案——换参数不叫换方案
 4. 用验证命令 + 输出证据闭环
 

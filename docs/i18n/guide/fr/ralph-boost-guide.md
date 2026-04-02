@@ -9,13 +9,13 @@
 ### Claude Code (recommande)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Installation universelle en une ligne
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Zero dependance** -- Ralph Boost ne depend ni de ralph-claude-code, ni de block-break, ni d'aucun service externe. Le chemin principal (boucle Agent) n'a aucune dependance externe ; le chemin de secours necessite `jq` ou `python` et le CLI `claude`.
@@ -58,10 +58,10 @@ Claude pilote la boucle autonome directement dans la session en cours (mode bouc
 
 ```bash
 # Premier plan
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Arriere-plan
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Suivre l'etat
@@ -315,7 +315,7 @@ Ralph Boost adapte les mecanismes principaux de Block Break (escalade de pressio
 | Activation | Declenchement automatique par hooks | Integre dans la boucle Agent / le script de boucle |
 | Detection | Hook PostToolUse | Detection de progression de la boucle Agent / du script |
 | Controle | Prompts injectes par hook | Injection de prompt Agent / --append-system-prompt |
-| Etat | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| Etat | `~/.forge/` | `.ralph-boost/state.json` |
 
 Le code est totalement independant ; les concepts sont partages.
 
@@ -331,7 +331,7 @@ Le code est totalement independant ; les concepts sont partages.
 
 ### Ou se trouve le script de boucle ?
 
-Apres l'installation du plugin jskills, le script de secours se trouve dans `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh`. Vous pouvez egalement le copier n'importe ou et l'executer depuis la. Le script detecte automatiquement jq ou python comme moteur JSON.
+Apres l'installation du plugin forge, le script de secours se trouve dans `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh`. Vous pouvez egalement le copier n'importe ou et l'executer depuis la. Le script detecte automatiquement jq ou python comme moteur JSON.
 
 ### Comment consulter les journaux de la boucle ?
 
@@ -367,4 +367,4 @@ Utilisez [Skill Lint](skill-lint-guide.md) : `/skill-lint .`
 
 ## Licence
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -11,13 +11,13 @@ Epuise par le debogage ? Prenez 2 minutes, rattrapez l'actualite du monde, et re
 ### Claude Code (recommande)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Installation universelle en une ligne
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/news-fetch/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/news-fetch/SKILL.md
 ```
 
 > **Zero dependance** -- News Fetch ne necessite aucun service externe ni cle API. Installez et c'est parti.
@@ -121,6 +121,29 @@ Lorsque tous les niveaux echouent, un rapport d'echec structure est produit, lis
 
 ---
 
+## Relevance Scoring
+
+Each article is scored 0-300 based on how well its title and summary match the requested topic:
+
+| Score Range | Meaning |
+|-------------|---------|
+| 200-300 | Highly relevant — topic is the primary subject |
+| 100-199 | Moderately relevant — topic is mentioned significantly |
+| 0-99 | Tangentially relevant — topic appears in passing |
+
+Articles are sorted by score in descending order. The scoring is heuristic and based on keyword density, title match, and contextual relevance.
+
+## Network Fallback Troubleshooting
+
+| Symptom | Likely Cause | Fix |
+|---------|-------------|-----|
+| L1 returns 0 results | WebSearch tool unavailable or query too specific | Broaden the topic keyword |
+| L2 all sources fail | Domestic news sites blocking automated access | Wait and retry, or check if curl works manually |
+| L3 curl timeouts | Network connectivity issue | Check curl -I https://news.baidu.com |
+| All tiers fail | No internet access or all sources down | Verify network; the failure report lists each source's error |
+
+---
+
 ## FAQ
 
 ### Ai-je besoin d'une cle API ?
@@ -143,4 +166,4 @@ Jusqu'a 20 (apres deduplication). Le nombre reel depend de ce que retournent les
 
 ## Licence
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

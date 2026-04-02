@@ -9,13 +9,13 @@
 ### Claude Code (рекомендуется)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Универсальная установка одной строкой
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/skill-lint/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/skill-lint/SKILL.md
 ```
 
 > **Ноль зависимостей** -- Skill Lint не требует внешних сервисов или API. Установи и работай.
@@ -145,7 +145,7 @@ bash skills/skill-lint/scripts/skill-lint.sh .
 
 Это выведет чистый JSON без AI-семантического анализа.
 
-### Работает ли на проектах вне jskills?
+### Работает ли на проектах вне forge?
 
 Да. Любая директория, следующая стандартной структуре Claude Code plugin (`skills/`, `commands/`, `.claude-plugin/`), может быть проверена.
 
@@ -154,9 +154,9 @@ bash skills/skill-lint/scripts/skill-lint.sh .
 - **error**: Структурные проблемы, которые помешают skill загрузиться или опубликоваться правильно
 - **warning**: Проблемы качества, которые не сломают функциональность, но влияют на поддерживаемость и обнаруживаемость
 
-### Другие инструменты jskills
+### Другие инструменты forge
 
-Skill Lint -- часть коллекции jskills и отлично работает вместе с этими skills:
+Skill Lint -- часть коллекции forge и отлично работает вместе с этими skills:
 
 - [Block Break](block-break-guide.md) -- Высокоактивный движок поведенческих ограничений, заставляющий AI исчерпать все подходы
 - [Ralph Boost](ralph-boost-guide.md) -- Движок автономного dev-цикла со встроенными гарантиями сходимости Block Break
@@ -167,4 +167,4 @@ Skill Lint -- часть коллекции jskills и отлично работ
 
 ## Лицензия
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

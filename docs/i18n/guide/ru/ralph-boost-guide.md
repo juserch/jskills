@@ -9,13 +9,13 @@
 ### Claude Code (рекомендуется)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Универсальная установка одной строкой
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Ноль зависимостей** -- Ralph Boost не зависит от ralph-claude-code, block-break или каких-либо внешних сервисов. Основной путь (Agent loop) не имеет внешних зависимостей; запасной путь требует `jq` или `python` и CLI `claude`.
@@ -58,10 +58,10 @@ Claude управляет автономным циклом прямо в тек
 
 ```bash
 # Передний план
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Фон
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Мониторинг статуса
@@ -315,7 +315,7 @@ Ralph Boost адаптирует основные механизмы Block Break
 | Активация | Хуки автоматически срабатывают | Встроено в Agent loop / скрипт цикла |
 | Детекция | Хук PostToolUse | Детекция прогресса Agent loop / скрипта |
 | Управление | Промпты через хуки | Инъекция промптов Agent / --append-system-prompt |
-| Состояние | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| Состояние | `~/.forge/` | `.ralph-boost/state.json` |
 
 Код полностью независим; концепции общие.
 
@@ -331,7 +331,7 @@ Ralph Boost адаптирует основные механизмы Block Break
 
 ### Где находится скрипт цикла?
 
-После установки плагина jskills запасной скрипт находится по пути `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh`. Можешь скопировать его куда угодно и запускать оттуда. Скрипт автоматически определяет jq или python как JSON-движок.
+После установки плагина forge запасной скрипт находится по пути `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh`. Можешь скопировать его куда угодно и запускать оттуда. Скрипт автоматически определяет jq или python как JSON-движок.
 
 ### Как смотреть логи цикла?
 
@@ -367,4 +367,4 @@ tail -f .ralph-boost/logs/boost.log
 
 ## Лицензия
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

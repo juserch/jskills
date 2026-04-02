@@ -9,13 +9,13 @@
 ### Claude Code（推荐）
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### 通用单行安装
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/news-fetch/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/news-fetch/SKILL.md
 ```
 
 > **零依赖** — News Fetch 不依赖任何外部服务或 API。安装即用。
@@ -116,6 +116,29 @@ News Fetch 内置三级降级策略，确保不同网络环境下都能获取新
 
 ---
 
+## 相关性评分
+
+每篇文章根据标题和摘要与请求主题的匹配程度，获得 0-300 的评分：
+
+| 评分范围 | 含义 |
+|----------|------|
+| 200-300 | 高度相关 — 主题是文章的核心内容 |
+| 100-199 | 中度相关 — 主题被显著提及 |
+| 0-99 | 边缘相关 — 主题仅附带出现 |
+
+文章按评分从高到低排序。评分基于关键词密度、标题匹配度和上下文相关性的启发式算法。
+
+## 网络降级故障排查
+
+| 症状 | 可能原因 | 解决方法 |
+|------|---------|---------|
+| L1 返回 0 条结果 | WebSearch 工具不可用或查询词过于具体 | 扩大主题关键词范围 |
+| L2 所有源均失败 | 国内新闻网站阻止了自动化访问 | 等待重试，或检查 curl 是否能手动访问 |
+| L3 curl 超时 | 网络连接问题 | 检查 curl -I https://news.baidu.com |
+| 所有层级均失败 | 无网络访问或所有源不可用 | 检查网络；失败报告中列出了每个源的错误信息 |
+
+---
+
 ## FAQ
 
 ### 需要 API Key 吗？
@@ -138,4 +161,4 @@ News Fetch 内置三级降级策略，确保不同网络环境下都能获取新
 
 ## License
 
-[MIT](LICENSE) - [juserch](https://github.com/juserch)
+[MIT](LICENSE) - [Juneq Cheung](https://github.com/juserai)

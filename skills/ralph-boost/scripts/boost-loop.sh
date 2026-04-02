@@ -508,21 +508,25 @@ parse_boost_status() {
     local tasks_completed=0 tests_status="NOT_RUN" work_type="UNKNOWN"
     local pressure_level="L0" tried_count=0
 
+    # POSIX-compatible field extraction (no grep -oP dependency)
+    _extract_field() {
+        echo "$status_block" | sed -n "s/^[[:space:]]*$1:[[:space:]]*//p" | head -1
+    }
+
     if [[ -n "$status_block" ]]; then
-        status=$(echo "$status_block" | grep -oP 'STATUS:\s*\K\S+' | head -1 || echo "UNKNOWN")
-        exit_signal=$(echo "$status_block" | grep -oP 'EXIT_SIGNAL:\s*\K\S+' | head -1 || echo "false")
-        files_modified=$(echo "$status_block" | grep -oP 'FILES_MODIFIED:\s*\K\d+' | head -1 || echo "0")
-        tasks_completed=$(echo "$status_block" | grep -oP 'TASKS_COMPLETED_THIS_LOOP:\s*\K\d+' | head -1 || echo "0")
-        tests_status=$(echo "$status_block" | grep -oP 'TESTS_STATUS:\s*\K\S+' | head -1 || echo "NOT_RUN")
-        work_type=$(echo "$status_block" | grep -oP 'WORK_TYPE:\s*\K\S+' | head -1 || echo "UNKNOWN")
-        pressure_level=$(echo "$status_block" | grep -oP 'PRESSURE_LEVEL:\s*\K\S+' | head -1 || echo "L0")
-        tried_count=$(echo "$status_block" | grep -oP 'TRIED_COUNT:\s*\K\d+' | head -1 || echo "0")
+        status=$(_extract_field "STATUS"); status=${status:-UNKNOWN}
+        exit_signal=$(_extract_field "EXIT_SIGNAL"); exit_signal=${exit_signal:-false}
+        files_modified=$(_extract_field "FILES_MODIFIED"); files_modified=${files_modified:-0}
+        tasks_completed=$(_extract_field "TASKS_COMPLETED_THIS_LOOP"); tasks_completed=${tasks_completed:-0}
+        tests_status=$(_extract_field "TESTS_STATUS"); tests_status=${tests_status:-NOT_RUN}
+        work_type=$(_extract_field "WORK_TYPE"); work_type=${work_type:-UNKNOWN}
+        pressure_level=$(_extract_field "PRESSURE_LEVEL"); pressure_level=${pressure_level:-L0}
+        tried_count=$(_extract_field "TRIED_COUNT"); tried_count=${tried_count:-0}
 
         # Extract recommendation summary for next loop context
-        local recommendation
-        recommendation=$(echo "$status_block" | grep -oP 'CURRENT_APPROACH:\s*\K.*' | head -1 || echo "")
-        local result_text
-        result_text=$(echo "$status_block" | grep -oP 'RESULT:\s*\K.*' | head -1 || echo "")
+        local recommendation result_text
+        recommendation=$(_extract_field "CURRENT_APPROACH"); recommendation=${recommendation:-}
+        result_text=$(_extract_field "RESULT"); result_text=${result_text:-}
         echo "${recommendation}: ${result_text}" > "$LOG_DIR/last_summary.txt"
     fi
 
@@ -743,7 +747,10 @@ get_session_id() {
     # Check session expiry
     if [[ -n "$session_id" ]] && [[ -n "$created_at" ]]; then
         local created_epoch
-        created_epoch=$(date -d "$created_at" +%s 2>/dev/null || echo 0)
+        # GNU date -d / BSD date -j fallback
+        created_epoch=$(date -d "$created_at" +%s 2>/dev/null \
+            || date -j -f "%Y-%m-%dT%H:%M:%S" "$created_at" +%s 2>/dev/null \
+            || echo 0)
         local now_epoch
         now_epoch=$(date -u +%s)
         local expiry_seconds=$((SESSION_EXPIRY_HOURS * 3600))

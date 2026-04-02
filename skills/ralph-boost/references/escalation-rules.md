@@ -12,8 +12,8 @@ Detailed reference for interactive `/ralph-boost` calls. This file is NOT inject
   2 轮 → L2 拷问
   3 轮 → L3 绩效
   4 轮 → L4 毕业
-  5+ 轮（无交接）→ 保持 L4（强制完成交接）
-  5+ 轮（有交接）→ OPEN 停机
+  4-N 轮（无交接）→ 保持 L4（强制完成交接）
+  N 轮（有交接）→ OPEN 停机（N = no_progress_threshold，默认 7）
 ```
 
 ## L0 — 信任期
@@ -142,7 +142,7 @@ Tried approaches: 2. MANDATORY: Read the error word-by-word. Search 50+ lines of
 |------|---------------------|----------------------|
 | 压力检测 | PostToolUse hook 检测 Bash 失败 | 循环脚本检测 consecutive_no_progress |
 | 升级控制 | hook 注入 `<BLOCK_BREAK_PRESSURE_ESCALATION>` | `--append-system-prompt` 注入指令 |
-| 状态存储 | `~/.juserch-skills/block-break-state.json` | `.ralph-boost/state.json` |
+| 状态存储 | `~/.forge/block-break-state.json` | `.ralph-boost/state.json` |
 | 重置条件 | 2 小时过期 | 检测到进展即重置 |
 | 隐喻/旁白 | 同 | 同（概念复用） |
 | 五步方法论 | references/methodology.md 按需加载 | 压缩版烘焙在 PROMPT.md 中 |

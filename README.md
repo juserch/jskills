@@ -1,6 +1,6 @@
-# J Skills
+# Forge
 
-> Work harder, then take a break. 4 skills for a better coding rhythm with Claude Code.
+> Forge stronger AI agents. 4 skills for a better coding rhythm with Claude Code.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-4-blue.svg)]()
@@ -34,24 +34,29 @@ Block Break 🔥 Activated
 
 ```bash
 # Claude Code (one command)
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 
 # OpenClaw
-git clone https://github.com/juserch/jskills.git
-cp -r jskills/platforms/openclaw/* ~/.openclaw/skills/
+git clone https://github.com/juserai/forge.git
+cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 ```
 
 ## Skills
 
-### Work harder
+### Hammer
 
 | Skill | What it does | Try it |
 |-------|-------------|--------|
 | **block-break** | Forces exhaustive problem-solving before giving up | `/block-break` |
 | **ralph-boost** | Autonomous dev loops with convergence guarantee | `/ralph-boost setup` |
+
+### Anvil
+
+| Skill | What it does | Try it |
+|-------|-------------|--------|
 | **skill-lint** | Validate any Claude Code skill plugin | `/skill-lint .` |
 
-### Take a break
+### Quench
 
 | Skill | What it does | Try it |
 |-------|-------------|--------|
@@ -154,7 +159,7 @@ The other three skills push you to work harder. This one reminds you to take a b
 ## Project Structure
 
 ```text
-jskills/
+forge/
 ├── skills/                        # Claude Code platform
 │   └── <skill>/
 │       ├── SKILL.md               # Skill definition
@@ -191,4 +196,4 @@ See [CLAUDE.md](CLAUDE.md) for full development guidelines.
 
 ## License
 
-[MIT](LICENSE) - [juserch](https://github.com/juserch)
+[MIT](LICENSE) - [Juneq Cheung](https://github.com/juserai)

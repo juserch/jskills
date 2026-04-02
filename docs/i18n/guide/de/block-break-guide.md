@@ -9,13 +9,13 @@
 ### Claude Code (empfohlen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Universelle Einzeilige Installation
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/block-break/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/block-break/SKILL.md
 ```
 
 > **Keine Abhaengigkeiten** -- Block Break benoetigt keine externen Dienste oder APIs. Installieren und loslegen.
@@ -245,10 +245,26 @@ Block Break nutzt das Hook-System fuer automatisches Verhalten -- keine manuelle
 |------|-----------|-----------|
 | `UserPromptSubmit` | Benutzereingabe entspricht Frustrations-Schluesselwoertern | Aktiviert Block Break automatisch |
 | `PostToolUse` | Nach Ausfuehrung eines Bash-Befehls | Erkennt Fehlschlaege, zaehlt und eskaliert automatisch |
-| `PreCompact` | Vor der Kontextkomprimierung | Speichert den Zustand in `~/.juserch-skills/` |
+| `PreCompact` | Vor der Kontextkomprimierung | Speichert den Zustand in `~/.forge/` |
 | `SessionStart` | Sitzungswiederaufnahme/-neustart | Stellt die Druckstufe wieder her (2h gueltig) |
 
-> **Der Zustand bleibt erhalten** -- Die Druckstufe wird in `~/.juserch-skills/block-break-state.json` gespeichert. Kontextkomprimierung und Sitzungsunterbrechungen setzen die Fehlerzaehler nicht zurueck. Kein Entkommen.
+> **Der Zustand bleibt erhalten** -- Die Druckstufe wird in `~/.forge/block-break-state.json` gespeichert. Kontextkomprimierung und Sitzungsunterbrechungen setzen die Fehlerzaehler nicht zurueck. Kein Entkommen.
+
+### Hooks setup
+
+When installed via `claude plugin add juserai/forge`, hooks are automatically configured. The hook scripts require either `jq` (preferred) or `python` as a JSON engine — at least one must be available on your system.
+
+If hooks aren't firing, verify the configuration:
+
+```bash
+cat ~/.claude/settings.json  # Should contain hooks entries referencing forge plugin
+```
+
+### State expiry
+
+State auto-expires after **2 hours** of inactivity. This prevents stale pressure from a previous debugging session carrying over to unrelated work. After 2 hours, the session restore hook silently skips restoration and you start fresh at L0.
+
+To manually reset at any time: `rm ~/.forge/block-break-state.json`
 
 ---
 
@@ -258,12 +274,24 @@ Beim Starten von Sub-Agents muessen Verhaltenseinschraenkungen injiziert werden,
 
 ```javascript
 Agent({
-  subagent_type: "juserch-skills:block-break-worker",
+  subagent_type: "forge:block-break-worker",
   prompt: "Fix the login timeout bug..."
 })
 ```
 
 `block-break-worker` stellt sicher, dass Sub-Agents ebenfalls die 3 roten Linien, die 5-Schritte-Methodik und die Closed-Loop-Verifizierung einhalten.
+
+---
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Hooks don't auto-trigger | Plugin not installed or hooks not in settings.json | Re-run `claude plugin add juserai/forge` |
+| State not persisting | Neither `jq` nor `python` available | Install one: `apt install jq` or ensure `python` is on PATH |
+| Pressure stuck at L4 | State file accumulated too many failures | Reset: `rm ~/.forge/block-break-state.json` |
+| Session restore shows old state | State < 2h old from previous session | Expected behavior; wait 2h or reset manually |
+| `/block-break` not recognized | Skill not loaded in current session | Re-install plugin or use universal one-liner install |
 
 ---
 
@@ -279,7 +307,7 @@ Die Dichte der Seitennachrichten ist kontrolliert: 2 Zeilen fuer einfache Aufgab
 
 ### Wie setze ich die Druckstufe zurueck?
 
-Loeschen Sie die Zustandsdatei: `rm ~/.juserch-skills/block-break-state.json`. Oder warten Sie 2 Stunden -- der Zustand laeuft automatisch ab.
+Loeschen Sie die Zustandsdatei: `rm ~/.forge/block-break-state.json`. Oder warten Sie 2 Stunden -- der Zustand laeuft automatisch ab (see [State expiry](#state-expiry) above).
 
 ### Kann ich es ausserhalb von Claude Code verwenden?
 
@@ -297,4 +325,4 @@ Verwenden Sie [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ## Lizenz
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

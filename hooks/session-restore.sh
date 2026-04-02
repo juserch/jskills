@@ -1,36 +1,51 @@
 #!/usr/bin/env bash
-# Block Break session restore — restores pressure state from ~/.juserch-skills/block-break-state.json
+# Block Break session restore — restores pressure state from ~/.forge/block-break-state.json
 # Called by hooks.json on SessionStart (after compaction or resume)
+# JSON engine: jq preferred, python fallback
 
-STATE_FILE="$HOME/.juserch-skills/block-break-state.json"
+STATE_FILE="$HOME/.forge/block-break-state.json"
 
 if [ ! -f "$STATE_FILE" ]; then
     exit 0
 fi
 
-# Check if state is fresh enough (within 2 hours)
-LAST_UPDATED=$(python -c "
-import json, datetime
-try:
-    d = json.load(open('$STATE_FILE'))
-    ts = d.get('last_updated', '')
-    if ts:
-        dt = datetime.datetime.fromisoformat(ts)
-        age = (datetime.datetime.now() - dt).total_seconds()
-        print(int(age))
-    else:
-        print(99999)
-except:
-    print(99999)
-" 2>/dev/null || echo "99999")
+# --- JSON engine abstraction (jq preferred, python fallback) ---
+if command -v jq >/dev/null 2>&1; then
+    json_get() { jq -r "$1 // \"$2\"" "$STATE_FILE" 2>/dev/null || echo "$2"; }
+elif command -v python >/dev/null 2>&1; then
+    json_get() { python -c "import json; d=json.load(open('$STATE_FILE')); print(d.get('${1//.}', '$2'))" 2>/dev/null || echo "$2"; }
+else
+    exit 0  # No JSON engine available, skip silently
+fi
 
-# Only restore if within 2 hours (7200 seconds)
-if [ "$LAST_UPDATED" -gt 7200 ]; then
+# Check if state is fresh enough (within 2 hours / 7200 seconds)
+LAST_UPDATED=$(json_get '.last_updated' '')
+if [ -z "$LAST_UPDATED" ]; then
     exit 0
 fi
 
-FAILURES=$(python -c "import json; print(json.load(open('$STATE_FILE')).get('failure_count',0))" 2>/dev/null || echo "0")
-LEVEL=$(python -c "import json; print(json.load(open('$STATE_FILE')).get('pressure_level',0))" 2>/dev/null || echo "0")
+# Calculate age in seconds (POSIX-compatible)
+if command -v jq >/dev/null 2>&1 && command -v date >/dev/null 2>&1; then
+    THEN=$(date -d "$LAST_UPDATED" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%S" "$LAST_UPDATED" +%s 2>/dev/null || echo "0")
+    NOW=$(date +%s)
+    AGE=$(( NOW - THEN ))
+elif command -v python >/dev/null 2>&1; then
+    AGE=$(python -c "
+import datetime
+try:
+    dt=datetime.datetime.fromisoformat('$LAST_UPDATED')
+    print(int((datetime.datetime.now()-dt).total_seconds()))
+except: print(99999)" 2>/dev/null || echo "99999")
+else
+    AGE=99999
+fi
+
+if [ "$AGE" -gt 7200 ]; then
+    exit 0
+fi
+
+FAILURES=$(json_get '.failure_count' '0')
+LEVEL=$(json_get '.pressure_level' '0')
 
 if [ "$FAILURES" -gt 0 ]; then
     cat << EOF

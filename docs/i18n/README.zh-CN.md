@@ -1,4 +1,4 @@
-# J Skills
+# Forge
 
 > 张弛有度。4 个 skill，让你和 AI 的编码节奏更好。
 
@@ -14,24 +14,29 @@
 
 ```bash
 # Claude Code（一条命令）
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 
 # OpenClaw
-git clone https://github.com/juserch/jskills.git
-cp -r jskills/platforms/openclaw/* ~/.openclaw/skills/
+git clone https://github.com/juserai/forge.git
+cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 ```
 
 ## Skills
 
-### 拼命干
+### Hammer
 
 | Skill | 功能 | 试试看 |
 |-------|------|--------|
 | **block-break** | 强制穷尽一切方案，不轻言放弃 | `/block-break` |
 | **ralph-boost** | 自主开发循环，保证收敛 | `/ralph-boost setup` |
+
+### Anvil
+
+| Skill | 功能 | 试试看 |
+|-------|------|--------|
 | **skill-lint** | 校验任意 Claude Code skill 插件 | `/skill-lint .` |
 
-### 歇一歇
+### Quench
 
 | Skill | 功能 | 试试看 |
 |-------|------|--------|
@@ -134,7 +139,7 @@ debug 累了？`/news-fetch` — 2 分钟的合法摸鱼。
 ## 项目结构
 
 ```text
-jskills/
+forge/
 ├── skills/                        # Claude Code 平台
 │   └── <skill>/
 │       ├── SKILL.md               # Skill 定义
@@ -166,4 +171,4 @@ jskills/
 
 ## License
 
-[MIT](../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

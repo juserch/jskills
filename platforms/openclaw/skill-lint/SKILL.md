@@ -11,13 +11,13 @@ license: MIT
 ## 工作流
 
 1. 确定目标路径（用户参数或当前目录）
-2. 运行结构检查脚本（如可用）或手动检查目录结构
-3. 读取目标路径下所有 skill 文件，执行语义检查
+2. 运行结构检查脚本（如可用）；无脚本环境下按下方清单逐项人工检查
+3. 读取目标路径下所有 skill 文件，执行 AI 语义检查
 4. 合并输出，按 error > warning > passed 排列
 
 ## 结构检查
 
-如果 `scripts/skill-lint.sh` 可用，运行脚本自动检查。否则手动检查以下项目：
+优先运行 `scripts/skill-lint.sh` 自动检查。如果平台不支持脚本执行，则按以下清单逐项人工检查（AI 辅助判断）：
 
 1. **plugin.json 存在性** — 根目录的 plugin.json 是否存在
 2. **Marketplace 元数据存在性** — marketplace 入口文件是否存在

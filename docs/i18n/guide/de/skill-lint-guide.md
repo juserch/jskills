@@ -9,13 +9,13 @@
 ### Claude Code (empfohlen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Universelle Einzeilige Installation
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/skill-lint/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/skill-lint/SKILL.md
 ```
 
 > **Keine Abhaengigkeiten** -- Skill Lint benoetigt keine externen Dienste oder APIs. Installieren und loslegen.
@@ -145,7 +145,7 @@ bash skills/skill-lint/scripts/skill-lint.sh .
 
 Dies liefert reines JSON ohne semantische KI-Analyse.
 
-### Funktioniert es bei Nicht-jskills-Projekten?
+### Funktioniert es bei Nicht-forge-Projekten?
 
 Ja. Jedes Verzeichnis, das der Standard-Claude-Code-Plugin-Struktur folgt (`skills/`, `commands/`, `.claude-plugin/`), kann validiert werden.
 
@@ -154,9 +154,9 @@ Ja. Jedes Verzeichnis, das der Standard-Claude-Code-Plugin-Struktur folgt (`skil
 - **error**: Strukturelle Probleme, die das Laden oder Veroeffentlichen des Skills verhindern
 - **warning**: Qualitaetsprobleme, die die Funktionalitaet nicht beeintraechtigen, aber die Wartbarkeit und Auffindbarkeit betreffen
 
-### Weitere jskills-Werkzeuge
+### Weitere forge-Werkzeuge
 
-Skill Lint ist Teil der jskills-Sammlung und funktioniert gut zusammen mit diesen Skills:
+Skill Lint ist Teil der forge-Sammlung und funktioniert gut zusammen mit diesen Skills:
 
 - [Block Break](block-break-guide.md) -- Hochenergetischer Verhaltenseinschraenkungs-Engine, der die KI zwingt, jeden Ansatz auszuschoepfen
 - [Ralph Boost](ralph-boost-guide.md) -- Autonomer Entwicklungsschleifen-Engine mit integrierten Block Break-Konvergenzgarantien
@@ -167,4 +167,4 @@ Nachdem Sie einen neuen Skill entwickelt haben, fuehren Sie `/skill-lint .` aus,
 
 ## Lizenz
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

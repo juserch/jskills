@@ -11,13 +11,13 @@
 ### Claude Code（推奨）
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### ワンライン・ユニバーサルインストール
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/news-fetch/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/news-fetch/SKILL.md
 ```
 
 > **ゼロ依存** — News Fetch は外部サービスや API キーを一切必要としません。インストールしたらすぐ使えます。
@@ -121,6 +121,29 @@ News Fetch には、さまざまなネットワーク環境でニュース取得
 
 ---
 
+## 関連性スコアリング
+
+各記事は、タイトルと要約がリクエストされたトピックとどの程度一致するかに基づいて、0〜300のスコアが付けられます：
+
+| スコア範囲 | 意味 |
+|-----------|------|
+| 200-300 | 高関連性 — トピックが記事の主題 |
+| 100-199 | 中関連性 — トピックが有意に言及されている |
+| 0-99 | 低関連性 — トピックが付随的に登場する程度 |
+
+記事はスコアの降順でソートされます。スコアリングはキーワード密度、タイトルの一致度、文脈的関連性に基づくヒューリスティックです。
+
+## ネットワークフォールバックのトラブルシューティング
+
+| 症状 | 考えられる原因 | 対処法 |
+|------|--------------|--------|
+| L1 が 0 件を返す | WebSearch ツールが利用不可、またはクエリが具体的すぎる | トピックのキーワードを広げる |
+| L2 の全ソースが失敗 | 国内ニュースサイトが自動アクセスをブロック | 待ってからリトライ、または curl が手動で動作するか確認 |
+| L3 の curl がタイムアウト | ネットワーク接続の問題 | curl -I https://news.baidu.com で確認 |
+| 全階層が失敗 | インターネット接続なし、または全ソースがダウン | ネットワークを確認；失敗レポートに各ソースのエラーが記載されています |
+
+---
+
 ## よくある質問
 
 ### API キーは必要ですか？
@@ -143,4 +166,4 @@ News Fetch には、さまざまなネットワーク環境でニュース取得
 
 ## ライセンス
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

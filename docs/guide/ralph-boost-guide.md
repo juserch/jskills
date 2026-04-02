@@ -9,13 +9,13 @@
 ### Claude Code (recommended)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Universal one-line install
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Zero dependencies** — Ralph Boost does not depend on ralph-claude-code, block-break, or any external service. The primary path (Agent loop) has zero external dependencies; the fallback path requires `jq` or `python` and the `claude` CLI.
@@ -58,10 +58,10 @@ Claude drives the autonomous loop directly within the current session (Agent loo
 
 ```bash
 # Foreground
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Background
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Monitor status
@@ -315,7 +315,7 @@ Ralph Boost adapts Block Break's core mechanisms (pressure escalation, 5-step me
 | Activation | Hooks auto-trigger | Built into Agent loop / loop script |
 | Detection | PostToolUse hook | Agent loop progress detection / script progress detection |
 | Control | Hook-injected prompts | Agent prompt injection / --append-system-prompt |
-| State | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| State | `~/.forge/` | `.ralph-boost/state.json` |
 
 Code is fully independent; concepts are shared.
 
@@ -331,7 +331,7 @@ Code is fully independent; concepts are shared.
 
 ### Where is the loop script located?
 
-After installing the jskills plugin, the fallback script is at `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh`. You can also copy it anywhere and run it from there. The script auto-detects jq or python as its JSON engine.
+After installing the forge plugin, the fallback script is at `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh`. You can also copy it anywhere and run it from there. The script auto-detects jq or python as its JSON engine.
 
 ### How do I view the loop logs?
 
@@ -367,4 +367,4 @@ Use [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ## License
 
-[MIT](../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

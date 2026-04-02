@@ -1,4 +1,4 @@
-# J Skills
+# Forge
 
 > Trabaja más duro, luego tómate un descanso. 4 skills para un mejor ritmo de programación con Claude Code.
 
@@ -34,24 +34,29 @@ Block Break 🔥 Activated
 
 ```bash
 # Claude Code (un solo comando)
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 
 # OpenClaw
-git clone https://github.com/juserch/jskills.git
-cp -r jskills/platforms/openclaw/* ~/.openclaw/skills/
+git clone https://github.com/juserai/forge.git
+cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 ```
 
 ## Skills
 
-### Trabaja más duro
+### Hammer
 
 | Skill | Qué hace | Pruébalo |
 |-------|----------|----------|
 | **block-break** | Fuerza una resolución exhaustiva antes de rendirse | `/block-break` |
 | **ralph-boost** | Ciclos de desarrollo autónomos con garantía de convergencia | `/ralph-boost setup` |
+
+### Anvil
+
+| Skill | Qué hace | Pruébalo |
+|-------|----------|----------|
 | **skill-lint** | Valida cualquier skill plugin de Claude Code | `/skill-lint .` |
 
-### Tómate un descanso
+### Quench
 
 | Skill | Qué hace | Pruébalo |
 |-------|----------|----------|
@@ -154,7 +159,7 @@ Los otros tres skills te empujan a trabajar más duro. Este te recuerda respirar
 ## Estructura del proyecto
 
 ```text
-jskills/
+forge/
 ├── skills/                        # Plataforma Claude Code
 │   └── <skill>/
 │       ├── SKILL.md               # Definición del skill
@@ -191,4 +196,4 @@ Consulta [CLAUDE.md](../../CLAUDE.md) para las directrices completas de desarrol
 
 ## Licencia
 
-[MIT](../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

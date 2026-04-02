@@ -26,17 +26,19 @@
 - **级别**: error
 - **说明**: name 用于 skill 路由，description 用于 marketplace 展示和触发匹配
 
-### S05: Commands 对应
+### S05: Commands 对应（可选，仅在项目使用 commands routing 时检查）
 
-- **检查**: 每个 `skills/<name>/` 是否有对应的 `skills/<name>/commands/<name>.md`（或 legacy `commands/<name>.md`）
+- **检查**: 每个 `skills/<name>/` 是否有对应的 `skills/<name>/commands/<name>.md`
 - **级别**: warning
-- **说明**: 没有 command 入口的 skill 无法通过 `/name` 直接调用，但可作为被引用 skill
+- **说明**: 没有 command 入口的 skill 无法通过 `/name` 直接调用，但可作为被引用 skill。许多项目不使用 commands 目录，此规则跳过
+- **脚本实现**: 未实现（AI 语义检查时按需判断）
 
-### S05b: Per-skill plugin.json
+### S05b: Per-skill plugin.json（可选）
 
 - **检查**: 每个 `skills/<name>/` 是否有自己的 `plugin.json`
 - **级别**: warning
 - **说明**: 没有 plugin.json 的 skill 在 plugin 列表中会显示集合名而非 skill 名
+- **脚本实现**: 未实现（AI 语义检查时按需判断）
 
 ### S06: marketplace.json 条目
 
@@ -72,11 +74,11 @@
   - `description` 在 SKILL.md 和 marketplace.json 的对应条目间是否语义对齐（不要求完全相同，但不能矛盾）
 - **级别**: warning
 
-### M03: Command 路由逻辑
+### M03: Command 路由逻辑（可选，仅在项目使用 commands routing 时检查）
 
 - **检查**: `commands/<name>.md` 中是否正确引用了对应 skill 名称（如 "使用 Skill 工具加载 `<name>` skill"）
 - **级别**: warning
-- **说明**: 错误的路由会导致 `/name` 加载错误的 skill
+- **说明**: 错误的路由会导致 `/name` 加载错误的 skill。许多项目不使用 commands 目录，此规则跳过
 
 ### M04: References 内容连贯性
 
@@ -84,6 +86,7 @@
   - SKILL.md 引用的 references 文件内容是否与主文件的逻辑一致
   - references 目录下是否有未被 SKILL.md 引用的孤立文件
 - **级别**: warning
+- **说明**: 需要 AI 读取并理解文件内容，纯结构检查无法覆盖
 
 ### M05: Eval 场景覆盖度
 

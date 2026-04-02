@@ -11,13 +11,13 @@ Vom Debuggen ausgebrannt? Nehmen Sie sich 2 Minuten, informieren Sie sich ueber 
 ### Claude Code (empfohlen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Universelle Einzeilige Installation
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/news-fetch/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/news-fetch/SKILL.md
 ```
 
 > **Keine Abhaengigkeiten** -- News Fetch benoetigt keine externen Dienste oder API-Schluessel. Installieren und loslegen.
@@ -121,6 +121,29 @@ Wenn alle Stufen fehlschlagen, wird ein strukturierter Fehlerbericht erstellt, d
 
 ---
 
+## Relevance Scoring
+
+Each article is scored 0-300 based on how well its title and summary match the requested topic:
+
+| Score Range | Meaning |
+|-------------|---------|
+| 200-300 | Highly relevant — topic is the primary subject |
+| 100-199 | Moderately relevant — topic is mentioned significantly |
+| 0-99 | Tangentially relevant — topic appears in passing |
+
+Articles are sorted by score in descending order. The scoring is heuristic and based on keyword density, title match, and contextual relevance.
+
+## Network Fallback Troubleshooting
+
+| Symptom | Likely Cause | Fix |
+|---------|-------------|-----|
+| L1 returns 0 results | WebSearch tool unavailable or query too specific | Broaden the topic keyword |
+| L2 all sources fail | Domestic news sites blocking automated access | Wait and retry, or check if curl works manually |
+| L3 curl timeouts | Network connectivity issue | Check curl -I https://news.baidu.com |
+| All tiers fail | No internet access or all sources down | Verify network; the failure report lists each source's error |
+
+---
+
 ## FAQ
 
 ### Brauche ich einen API-Schluessel?
@@ -143,4 +166,4 @@ Bis zu 20 (nach Deduplizierung). Die tatsaechliche Anzahl haengt davon ab, was d
 
 ## Lizenz
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

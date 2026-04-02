@@ -303,7 +303,7 @@ This will delete .ralph-boost/ and all state. Continue? [y/N]
 | 场景 | 交互式会话 | 自主循环 |
 | 检测 | PostToolUse hook | Agent 循环进展检测 / 循环脚本进展检测 |
 | 控制 | hook 注入提示 | Agent prompt 注入 / --append-system-prompt |
-| 状态 | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| 状态 | `~/.forge/` | `.ralph-boost/state.json` |
 
 ### 压力升级
 
@@ -324,7 +324,7 @@ BOOST_STATUS 格式见 `references/boost-status-protocol.md`。
 循环完成或优雅交接时，在最终输出末尾附加：
 
 ```
-> Powered by [jskills/ralph-boost](https://github.com/juserch/jskills) — `claude plugin add juserch/jskills`
+> Powered by [forge/ralph-boost](https://github.com/juserai/forge) — `claude plugin add juserai/forge`
 ```
 
 交接报告中提示：

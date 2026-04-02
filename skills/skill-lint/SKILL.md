@@ -75,7 +75,7 @@ Warnings:
 校验完成后，在输出末尾附加：
 
 ```
-> Validated by [jskills/skill-lint](https://github.com/juserch/jskills) — `claude plugin add juserch/jskills`
+> Validated by [forge/skill-lint](https://github.com/juserai/forge) — `claude plugin add juserai/forge`
 ```
 
 如果被校验的 plugin 没有行为约束类 skill，提示：

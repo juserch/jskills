@@ -9,13 +9,13 @@
 ### Claude Code (empfohlen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Universelle Einzeilige Installation
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Keine Abhaengigkeiten** -- Ralph Boost haengt weder von ralph-claude-code, noch von block-break, noch von einem externen Dienst ab. Der primaere Pfad (Agent-Schleife) hat keine externen Abhaengigkeiten; der Fallback-Pfad erfordert `jq` oder `python` und das `claude` CLI.
@@ -58,10 +58,10 @@ Claude steuert die autonome Schleife direkt innerhalb der aktuellen Sitzung (Age
 
 ```bash
 # Vordergrund
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Hintergrund
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Status ueberwachen
@@ -315,7 +315,7 @@ Ralph Boost adaptiert die Kernmechanismen von Block Break (Druckeskalation, 5-Sc
 | Aktivierung | Automatische Ausloesung durch Hooks | In die Agent-Schleife / das Schleifenskript integriert |
 | Erkennung | PostToolUse Hook | Fortschrittserkennung der Agent-Schleife / des Skripts |
 | Steuerung | Hook-injizierte Prompts | Agent-Prompt-Injektion / --append-system-prompt |
-| Zustand | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| Zustand | `~/.forge/` | `.ralph-boost/state.json` |
 
 Der Code ist vollstaendig unabhaengig; die Konzepte werden geteilt.
 
@@ -331,7 +331,7 @@ Der Code ist vollstaendig unabhaengig; die Konzepte werden geteilt.
 
 ### Wo befindet sich das Schleifenskript?
 
-Nach der Installation des jskills-Plugins befindet sich das Fallback-Skript unter `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh`. Sie koennen es auch an einen beliebigen Ort kopieren und von dort ausfuehren. Das Skript erkennt automatisch jq oder python als JSON-Engine.
+Nach der Installation des forge-Plugins befindet sich das Fallback-Skript unter `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh`. Sie koennen es auch an einen beliebigen Ort kopieren und von dort ausfuehren. Das Skript erkennt automatisch jq oder python als JSON-Engine.
 
 ### Wie kann ich die Schleifenprotokolle einsehen?
 
@@ -367,4 +367,4 @@ Verwenden Sie [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ## Lizenz
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

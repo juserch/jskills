@@ -26,17 +26,20 @@ RECOMMENDATION:
 
 ## 字段说明
 
-| 字段 | 类型 | 值域 | 说明 |
-|------|------|------|------|
-| STATUS | enum | IN_PROGRESS, COMPLETE, BLOCKED | 当前任务状态 |
-| TASKS_COMPLETED_THIS_LOOP | int | 0+ | 本轮完成的 fix_plan 任务数 |
-| FILES_MODIFIED | int | 0+ | 本轮修改的**任务相关**文件数（不含 state.json 等元数据） |
-| TESTS_STATUS | enum | PASSING, FAILING, NOT_RUN | 测试状态 |
-| WORK_TYPE | enum | IMPLEMENTATION, TESTING, DOCUMENTATION, REFACTORING, DEBUGGING | 本轮工作类型 |
-| EXIT_SIGNAL | bool | true, false | 是否请求退出循环 |
-| PRESSURE_LEVEL | string | L0, L1, L2, L3, L4 | 当前压力等级（Claude 自报告，脚本以 state.json 为准） |
-| TRIED_COUNT | int | 0+ | tried_approaches 总数 |
-| RECOMMENDATION | block | 结构化 | 当前方案、结果、下一步建议 |
+| 字段 | 必选 | 类型 | 值域 | 说明 |
+|------|------|------|------|------|
+| STATUS | **必选** | enum | IN_PROGRESS, COMPLETE, BLOCKED | 当前任务状态 |
+| TASKS_COMPLETED_THIS_LOOP | **必选** | int | 0+ | 本轮完成的 fix_plan 任务数 |
+| FILES_MODIFIED | **必选** | int | 0+ | 本轮修改的**任务相关**文件数（不含 state.json 等元数据） |
+| TESTS_STATUS | **必选** | enum | PASSING, FAILING, NOT_RUN | 测试状态 |
+| WORK_TYPE | **必选** | enum | IMPLEMENTATION, TESTING, DOCUMENTATION, REFACTORING, DEBUGGING | 本轮工作类型 |
+| EXIT_SIGNAL | **必选** | bool | true, false | 是否请求退出循环 |
+| PRESSURE_LEVEL | **必选** | string | L0, L1, L2, L3, L4 | 当前压力等级（Claude 自报告，脚本以 state.json 为准） |
+| TRIED_COUNT | **必选** | int | 0+ | tried_approaches 总数 |
+| RECOMMENDATION.CURRENT_APPROACH | **必选** | string | — | 本轮尝试的方案（脚本解析此字段） |
+| RECOMMENDATION.RESULT | **必选** | string | — | 本轮结果（脚本解析此字段） |
+| RECOMMENDATION.NEXT_APPROACH | 可选 | string | — | 下一步建议（脚本不解析，仅供参考） |
+| RECOMMENDATION.ALREADY_TRIED | 可选 | list | — | 已尝试方案列表（L2+ 时推荐输出，脚本不解析） |
 
 ## FILES_MODIFIED 计数规则
 

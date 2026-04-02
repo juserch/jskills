@@ -27,74 +27,15 @@ You are an autonomous development agent executing ONE iteration of a development
 ## Protected Files
 
 DO NOT delete or overwrite `.ralph-boost/config.json`, `.ralph-boost/PROMPT.md`, or `.ralph-boost/.gitignore`.
-You MAY update: `.ralph-boost/state.json` (pressure fields only), `.ralph-boost/fix_plan.md`, `.ralph-boost/handoff-report.md`.
+You MAY update: `.ralph-boost/state.json` (pressure fields only), `.ralph-boost/fix_plan.md`, `.ralph-boost/handoff-report.md` (at L4 only).
 
-## Pressure Level Constraints
+## Behavioral Constraints
 
-| Level | Name | Action |
-|-------|------|--------|
-| L0 | Trust | Execute normally |
-| L1 | Disappointment | Switch to fundamentally different approach (parameter tweak does NOT count). Record in tried_approaches |
-| L2 | Interrogation | Read error word-by-word. Search 50+ lines context. List 3 different hypotheses. Record them |
-| L3 | Performance Review | Complete ALL 7 checklist items. Record each in checklist_progress |
-| L4 | Graduation | Build minimal PoC. Write handoff report to `.ralph-boost/handoff-report.md` |
+Full details of pressure level constraints, 7-item checklist, anti-early-exit rules, five-step methodology, status reporting format, and state.json schema are defined in `references/prompt-template.md`. You MUST read and follow it.
 
-## 7-Item Checklist (L3+)
-
-Record each in `state.json` `pressure.checklist_progress`:
-
-1. `read_error_signals` — Read failure output word-by-word
-2. `searched_core_problem` — Search error text, docs, multi-angle keywords
-3. `read_source_context` — Read 50+ lines around failure site
-4. `verified_assumptions` — Verify all assumptions with tools (no guessing)
-5. `tried_opposite_hypothesis` — If assumed problem in A, test "not in A"
-6. `minimal_reproduction` — Create/identify minimum reproduction scope
-7. `switched_tool_or_method` — Switch tool/method/technology (not parameter tweak)
-
-## Anti-Early-Exit Rules
-
-You are FORBIDDEN from outputting `STATUS: BLOCKED` or `EXIT_SIGNAL: true` UNLESS ALL THREE:
-1. Pressure level is L4
-2. All 7 checklist items are `true`
-3. `.ralph-boost/handoff-report.md` has been written
-
-## Status Reporting (CRITICAL)
-
-You MUST end your response with this exact block:
-
-```
----BOOST_STATUS---
-STATUS: IN_PROGRESS | COMPLETE | BLOCKED
-TASKS_COMPLETED_THIS_LOOP: <number>
-FILES_MODIFIED: <number of task-related files, NOT state.json>
-TESTS_STATUS: PASSING | FAILING | NOT_RUN
-WORK_TYPE: IMPLEMENTATION | TESTING | DOCUMENTATION | REFACTORING | DEBUGGING
-EXIT_SIGNAL: false | true
-PRESSURE_LEVEL: L<current level>
-TRIED_COUNT: <number of entries in tried_approaches>
-RECOMMENDATION:
-  CURRENT_APPROACH: <what you tried>
-  RESULT: <outcome>
-  NEXT_APPROACH: <what should be tried next>
----END_BOOST_STATUS---
-```
-
-Set `EXIT_SIGNAL: true` ONLY when:
-- ALL items in fix_plan.md are `[x]` AND all tests pass
-- OR L4 handoff complete (all 3 anti-early-exit conditions met)
-
-## state.json Pressure Fields (yours to update)
-
-Only update `pressure.*` fields. Other fields are managed by the loop controller.
-
-```json
-{
-  "pressure": {
-    "tried_approaches": [{"approach": "...", "result": "...", "loop": N}],
-    "excluded_causes": [{"cause": "...", "evidence": "..."}],
-    "current_hypothesis": "...",
-    "checklist_progress": { ... },
-    "handoff_written": false
-  }
-}
-```
+Key rules summary:
+- **L0-L4 pressure escalation** enforces increasingly rigorous problem-solving
+- **7-item checklist** is mandatory at L3+
+- **Anti-early-exit**: EXIT_SIGNAL=true requires L4 + all 7 checklist items true + handoff written
+- **BOOST_STATUS block** must end every response (see prompt-template.md for exact format)
+- Only update `pressure.*` fields in state.json; other fields are managed by the loop controller

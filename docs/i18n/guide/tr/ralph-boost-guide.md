@@ -9,13 +9,13 @@
 ### Claude Code (onerilen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Evrensel tek satirlik kurulum
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Sifir bagimlilik** -- Ralph Boost, ralph-claude-code, block-break veya herhangi bir harici servise bagimli degildir. Birincil yol (Agent dongusu) sifir harici bagimliliktir; yedek yol `jq` veya `python` ve `claude` CLI gerektirir.
@@ -58,10 +58,10 @@ Claude, otonom donguyu dogrudan mevcut oturum icinde yurutur (Agent dongusu modu
 
 ```bash
 # On planda
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Arka planda
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Durumu izle
@@ -315,7 +315,7 @@ Ralph Boost, Block Break'in temel mekanizmalarini (baski yukseltme, 5 adimlik me
 | Etkinlestirme | Hook'lar otomatik tetikler | Agent dongusune / dongu betigine gomulu |
 | Algilama | PostToolUse hook | Agent dongusu ilerleme algilama / betik ilerleme algilama |
 | Kontrol | Hook ile enjekte edilen prompt'lar | Agent prompt enjeksiyonu / --append-system-prompt |
-| Durum | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| Durum | `~/.forge/` | `.ralph-boost/state.json` |
 
 Kod tamamen bagimsizdir; kavramlar ortaktir.
 
@@ -331,7 +331,7 @@ Kod tamamen bagimsizdir; kavramlar ortaktir.
 
 ### Dongu betigi nerede?
 
-jskills eklentisini kurduktan sonra, yedek betik `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh` konumundadir. Istedigin yere kopyalayip oradan calistirabilirsin. Betik, JSON motoru olarak jq veya python'u otomatik algilar.
+forge eklentisini kurduktan sonra, yedek betik `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh` konumundadir. Istedigin yere kopyalayip oradan calistirabilirsin. Betik, JSON motoru olarak jq veya python'u otomatik algilar.
 
 ### Dongu loglarini nasil goruntulerim?
 
@@ -367,4 +367,4 @@ Su anda Claude Code destekleniyor (Agent dongusu birincil yol). Yedek bash betig
 
 ## Lisans
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

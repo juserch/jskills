@@ -9,13 +9,13 @@
 ### Claude Code (khuyen dung)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Cai dat nhanh mot dong
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/ralph-boost/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/ralph-boost/SKILL.md
 ```
 
 > **Khong phu thuoc gi** -- Ralph Boost khong phu thuoc vao ralph-claude-code, block-break, hay bat ky dich vu ben ngoai nao. Duong chinh (Agent loop) khong co phu thuoc ngoai; duong du phong can `jq` hoac `python` va `claude` CLI.
@@ -58,10 +58,10 @@ Claude dieu khien vong lap tu dong truc tiep trong session hien tai (che do Agen
 
 ```bash
 # Chay tien canh
-bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
+bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project
 
 # Chay nen
-nohup bash ~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
+nohup bash ~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh --project-dir /your/project > /dev/null 2>&1 &
 ```
 
 ### 3. Theo doi trang thai
@@ -315,7 +315,7 @@ Ralph Boost dieu chinh cac co che cot loi cua Block Break (leo thang ap luc, phu
 | Kich hoat | Hook tu dong trigger | Tich hop trong Agent loop / loop script |
 | Phat hien | PostToolUse hook | Agent loop phat hien tien do / script phat hien tien do |
 | Dieu khien | Prompt inject qua hook | Agent prompt injection / --append-system-prompt |
-| Trang thai | `~/.juserch-skills/` | `.ralph-boost/state.json` |
+| Trang thai | `~/.forge/` | `.ralph-boost/state.json` |
 
 Code hoan toan doc lap; khai niem chung.
 
@@ -331,7 +331,7 @@ Code hoan toan doc lap; khai niem chung.
 
 ### Loop script nam o dau?
 
-Sau khi cai jskills plugin, script du phong nam tai `~/.claude/plugins/juserch_jskills/skills/ralph-boost/scripts/boost-loop.sh`. Ban cung co the copy no bat ky dau va chay tu do. Script tu dong phat hien jq hoac python lam JSON engine.
+Sau khi cai forge plugin, script du phong nam tai `~/.claude/plugins/juserai_forge/skills/ralph-boost/scripts/boost-loop.sh`. Ban cung co the copy no bat ky dau va chay tu do. Script tu dong phat hien jq hoac python lam JSON engine.
 
 ### Lam sao xem log vong lap?
 
@@ -367,4 +367,4 @@ Dung [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ## Giay phep
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

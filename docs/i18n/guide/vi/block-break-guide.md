@@ -9,13 +9,13 @@
 ### Claude Code (khuyen dung)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Cai dat nhanh mot dong
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/block-break/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/block-break/SKILL.md
 ```
 
 > **Khong phu thuoc gi** -- Block Break khong can bat ky dich vu hay API nao tu ben ngoai. Cai va chay thoi.
@@ -245,10 +245,26 @@ Block Break su dung he thong hook de tu dong hoa hanh vi -- khong can kich hoat 
 |------|---------|---------|
 | `UserPromptSubmit` | Input nguoi dung khop voi tu khoa that vong | Tu dong kich hoat Block Break |
 | `PostToolUse` | Sau khi chay lenh Bash | Phat hien that bai, tu dong dem + leo thang |
-| `PreCompact` | Truoc khi nen context | Luu trang thai vao `~/.juserch-skills/` |
+| `PreCompact` | Truoc khi nen context | Luu trang thai vao `~/.forge/` |
 | `SessionStart` | Tiep tuc/khoi dong lai session | Phuc hoi muc ap luc (co hieu luc trong 2h) |
 
-> **Trang thai duoc luu tru** -- Muc ap luc duoc luu tai `~/.juserch-skills/block-break-state.json`. Nen context va gian doan session khong reset bo dem that bai. Khong co loi thoat.
+> **Trang thai duoc luu tru** -- Muc ap luc duoc luu tai `~/.forge/block-break-state.json`. Nen context va gian doan session khong reset bo dem that bai. Khong co loi thoat.
+
+### Hooks setup
+
+When installed via `claude plugin add juserai/forge`, hooks are automatically configured. The hook scripts require either `jq` (preferred) or `python` as a JSON engine — at least one must be available on your system.
+
+If hooks aren't firing, verify the configuration:
+
+```bash
+cat ~/.claude/settings.json  # Should contain hooks entries referencing forge plugin
+```
+
+### State expiry
+
+State auto-expires after **2 hours** of inactivity. This prevents stale pressure from a previous debugging session carrying over to unrelated work. After 2 hours, the session restore hook silently skips restoration and you start fresh at L0.
+
+To manually reset at any time: `rm ~/.forge/block-break-state.json`
 
 ---
 
@@ -258,12 +274,24 @@ Khi tao sub-agent, phai inject rang buoc hanh vi de tranh "chay khong day an toa
 
 ```javascript
 Agent({
-  subagent_type: "juserch-skills:block-break-worker",
+  subagent_type: "forge:block-break-worker",
   prompt: "Fix the login timeout bug..."
 })
 ```
 
 `block-break-worker` dam bao sub-agent cung tuan thu 3 vach do, phuong phap 5 buoc, va xac minh vong kin.
+
+---
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Hooks don't auto-trigger | Plugin not installed or hooks not in settings.json | Re-run `claude plugin add juserai/forge` |
+| State not persisting | Neither `jq` nor `python` available | Install one: `apt install jq` or ensure `python` is on PATH |
+| Pressure stuck at L4 | State file accumulated too many failures | Reset: `rm ~/.forge/block-break-state.json` |
+| Session restore shows old state | State < 2h old from previous session | Expected behavior; wait 2h or reset manually |
+| `/block-break` not recognized | Skill not loaded in current session | Re-install plugin or use universal one-liner install |
 
 ---
 
@@ -279,7 +307,7 @@ Mat do ghi ben duoc kiem soat: 2 dong cho task don gian (bat dau + ket thuc), 1 
 
 ### Lam sao de reset muc ap luc?
 
-Xoa file trang thai: `rm ~/.juserch-skills/block-break-state.json`. Hoac doi 2 tieng -- trang thai tu dong het han.
+Xoa file trang thai: `rm ~/.forge/block-break-state.json`. Hoac doi 2 tieng -- trang thai tu dong het han (see [State expiry](#state-expiry) above).
 
 ### Co the dung ngoai Claude Code khong?
 
@@ -297,4 +325,4 @@ Dung [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ## Giay phep
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

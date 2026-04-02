@@ -9,13 +9,13 @@
 ### Claude Code (recommande)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Installation universelle en une ligne
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/block-break/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/block-break/SKILL.md
 ```
 
 > **Zero dependance** -- Block Break ne necessite aucun service externe ni API. Installez et c'est parti.
@@ -245,10 +245,26 @@ Block Break utilise le systeme de hooks pour un comportement automatique -- aucu
 |------|-------------|--------------|
 | `UserPromptSubmit` | L'entree utilisateur correspond a des mots-cles de frustration | Active automatiquement Block Break |
 | `PostToolUse` | Apres l'execution d'une commande Bash | Detecte les echecs, comptabilise et escalade automatiquement |
-| `PreCompact` | Avant la compression de contexte | Sauvegarde l'etat dans `~/.juserch-skills/` |
+| `PreCompact` | Avant la compression de contexte | Sauvegarde l'etat dans `~/.forge/` |
 | `SessionStart` | Reprise/redemarrage de session | Restaure le niveau de pression (valide pendant 2h) |
 
-> **L'etat persiste** -- Le niveau de pression est stocke dans `~/.juserch-skills/block-break-state.json`. La compression de contexte et les interruptions de session ne reinitialiseront pas les compteurs d'echecs. Pas d'echappatoire.
+> **L'etat persiste** -- Le niveau de pression est stocke dans `~/.forge/block-break-state.json`. La compression de contexte et les interruptions de session ne reinitialiseront pas les compteurs d'echecs. Pas d'echappatoire.
+
+### Hooks setup
+
+When installed via `claude plugin add juserai/forge`, hooks are automatically configured. The hook scripts require either `jq` (preferred) or `python` as a JSON engine — at least one must be available on your system.
+
+If hooks aren't firing, verify the configuration:
+
+```bash
+cat ~/.claude/settings.json  # Should contain hooks entries referencing forge plugin
+```
+
+### State expiry
+
+State auto-expires after **2 hours** of inactivity. This prevents stale pressure from a previous debugging session carrying over to unrelated work. After 2 hours, the session restore hook silently skips restoration and you start fresh at L0.
+
+To manually reset at any time: `rm ~/.forge/block-break-state.json`
 
 ---
 
@@ -258,12 +274,24 @@ Lors du lancement de sous-agents, des contraintes comportementales doivent etre 
 
 ```javascript
 Agent({
-  subagent_type: "juserch-skills:block-break-worker",
+  subagent_type: "forge:block-break-worker",
   prompt: "Fix the login timeout bug..."
 })
 ```
 
 `block-break-worker` garantit que les sous-agents respectent egalement les 3 lignes rouges, la methodologie en 5 etapes et la verification en boucle fermee.
+
+---
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Hooks don't auto-trigger | Plugin not installed or hooks not in settings.json | Re-run `claude plugin add juserai/forge` |
+| State not persisting | Neither `jq` nor `python` available | Install one: `apt install jq` or ensure `python` is on PATH |
+| Pressure stuck at L4 | State file accumulated too many failures | Reset: `rm ~/.forge/block-break-state.json` |
+| Session restore shows old state | State < 2h old from previous session | Expected behavior; wait 2h or reset manually |
+| `/block-break` not recognized | Skill not loaded in current session | Re-install plugin or use universal one-liner install |
 
 ---
 
@@ -279,7 +307,7 @@ La densite des messages lateraux est controlee : 2 lignes pour les taches simple
 
 ### Comment reinitialiser le niveau de pression ?
 
-Supprimez le fichier d'etat : `rm ~/.juserch-skills/block-break-state.json`. Ou attendez 2 heures -- l'etat expire automatiquement.
+Supprimez le fichier d'etat : `rm ~/.forge/block-break-state.json`. Ou attendez 2 heures -- l'etat expire automatiquement (see [State expiry](#state-expiry) above).
 
 ### Puis-je l'utiliser en dehors de Claude Code ?
 
@@ -297,4 +325,4 @@ Utilisez [Skill Lint](skill-lint-guide.md) : `/skill-lint .`
 
 ## Licence
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

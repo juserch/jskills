@@ -1,4 +1,4 @@
-# J Skills
+# Forge
 
 > 全力で取り組み、ひと休みする。Claude Code との開発リズムを整える 4 つの skill。
 
@@ -14,24 +14,29 @@
 
 ```bash
 # Claude Code（コマンド一発）
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 
 # OpenClaw
-git clone https://github.com/juserch/jskills.git
-cp -r jskills/platforms/openclaw/* ~/.openclaw/skills/
+git clone https://github.com/juserai/forge.git
+cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 ```
 
 ## Skills
 
-### 全力で取り組む
+### Hammer
 
 | Skill | 機能 | 試してみる |
 |-------|------|------------|
 | **block-break** | あらゆるアプローチを尽くすまで諦めさせない | `/block-break` |
 | **ralph-boost** | 収束を保証する自律型開発ループ | `/ralph-boost setup` |
+
+### Anvil
+
+| Skill | 機能 | 試してみる |
+|-------|------|------------|
 | **skill-lint** | Claude Code skill プラグインを検証 | `/skill-lint .` |
 
-### ひと休み
+### Quench
 
 | Skill | 機能 | 試してみる |
 |-------|------|------------|
@@ -134,7 +139,7 @@ Claude Code plugin プロジェクトの skill ファイルについて、構造
 ## プロジェクト構成
 
 ```text
-jskills/
+forge/
 ├── skills/                        # Claude Code プラットフォーム
 │   └── <skill>/
 │       ├── SKILL.md               # Skill 定義
@@ -166,4 +171,4 @@ jskills/
 
 ## License
 
-[MIT](../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -115,7 +115,7 @@ Suggestion: Check your network connection, or try again later.
 
 ```
 ---
-Fetched by [jskills/news-fetch](https://github.com/juserch/jskills) — `claude plugin add juserch/jskills`
+Fetched by [forge/news-fetch](https://github.com/juserai/forge) — `claude plugin add juserai/forge`
 ```
 
 如果用户看起来正在 debug 或遇到困难，提示：

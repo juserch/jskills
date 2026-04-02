@@ -1,4 +1,4 @@
-# J Skills
+# Forge
 
 > Làm việc chăm chỉ hơn, rồi nghỉ ngơi một chút. 4 skill giúp bạn có nhịp code tốt hơn với Claude Code.
 
@@ -34,24 +34,29 @@ Block Break 🔥 Activated
 
 ```bash
 # Claude Code (một lệnh duy nhất)
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 
 # OpenClaw
-git clone https://github.com/juserch/jskills.git
-cp -r jskills/platforms/openclaw/* ~/.openclaw/skills/
+git clone https://github.com/juserai/forge.git
+cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 ```
 
 ## Các Skill
 
-### Làm việc chăm chỉ hơn
+### Hammer
 
 | Skill | Chức năng | Thử ngay |
 |-------|-----------|----------|
 | **block-break** | Buộc phải thử hết mọi cách trước khi bỏ cuộc | `/block-break` |
 | **ralph-boost** | Vòng lặp phát triển tự động với đảm bảo hội tụ | `/ralph-boost setup` |
+
+### Anvil
+
+| Skill | Chức năng | Thử ngay |
+|-------|-----------|----------|
 | **skill-lint** | Kiểm tra tính hợp lệ của bất kỳ Claude Code skill plugin nào | `/skill-lint .` |
 
-### Nghỉ ngơi một chút
+### Quench
 
 | Skill | Chức năng | Thử ngay |
 |-------|-----------|----------|
@@ -154,7 +159,7 @@ Ba skill kia đẩy bạn làm việc chăm chỉ hơn. Skill này nhắc bạn 
 ## Cấu trúc Dự án
 
 ```text
-jskills/
+forge/
 ├── skills/                        # Nền tảng Claude Code
 │   └── <skill>/
 │       ├── SKILL.md               # Định nghĩa skill
@@ -191,4 +196,4 @@ Xem [CLAUDE.md](../../CLAUDE.md) để biết đầy đủ hướng dẫn phát 
 
 ## Giấy phép
 
-[MIT](../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

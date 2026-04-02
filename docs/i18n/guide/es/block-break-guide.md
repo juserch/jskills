@@ -9,13 +9,13 @@
 ### Claude Code (recomendado)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Instalacion universal en una linea
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/block-break/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/block-break/SKILL.md
 ```
 
 > **Cero dependencias** — Block Break no requiere servicios externos ni APIs. Instala y listo.
@@ -245,10 +245,26 @@ Block Break usa el sistema de hooks para comportamiento automatico — no se nec
 |------|-----------|----------------|
 | `UserPromptSubmit` | La entrada del usuario coincide con palabras clave de frustracion | Auto-activa Block Break |
 | `PostToolUse` | Despues de ejecutar un comando Bash | Detecta fallos, auto-cuenta + escala |
-| `PreCompact` | Antes de la compresion de contexto | Guarda estado en `~/.juserch-skills/` |
+| `PreCompact` | Antes de la compresion de contexto | Guarda estado en `~/.forge/` |
 | `SessionStart` | Reanudar/reiniciar sesion | Restaura nivel de presion (valido por 2h) |
 
-> **El estado persiste** — El nivel de presion se almacena en `~/.juserch-skills/block-break-state.json`. La compresion de contexto y las interrupciones de sesion no reinician los contadores de fallos. Sin escape.
+> **El estado persiste** — El nivel de presion se almacena en `~/.forge/block-break-state.json`. La compresion de contexto y las interrupciones de sesion no reinician los contadores de fallos. Sin escape.
+
+### Hooks setup
+
+When installed via `claude plugin add juserai/forge`, hooks are automatically configured. The hook scripts require either `jq` (preferred) or `python` as a JSON engine — at least one must be available on your system.
+
+If hooks aren't firing, verify the configuration:
+
+```bash
+cat ~/.claude/settings.json  # Should contain hooks entries referencing forge plugin
+```
+
+### State expiry
+
+State auto-expires after **2 hours** of inactivity. This prevents stale pressure from a previous debugging session carrying over to unrelated work. After 2 hours, the session restore hook silently skips restoration and you start fresh at L0.
+
+To manually reset at any time: `rm ~/.forge/block-break-state.json`
 
 ---
 
@@ -258,12 +274,24 @@ Al crear sub-agentes, las restricciones de comportamiento deben inyectarse para 
 
 ```javascript
 Agent({
-  subagent_type: "juserch-skills:block-break-worker",
+  subagent_type: "forge:block-break-worker",
   prompt: "Fix the login timeout bug..."
 })
 ```
 
 `block-break-worker` asegura que los sub-agentes tambien sigan las 3 lineas rojas, la metodologia de 5 pasos y la verificacion de ciclo cerrado.
+
+---
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Hooks don't auto-trigger | Plugin not installed or hooks not in settings.json | Re-run `claude plugin add juserai/forge` |
+| State not persisting | Neither `jq` nor `python` available | Install one: `apt install jq` or ensure `python` is on PATH |
+| Pressure stuck at L4 | State file accumulated too many failures | Reset: `rm ~/.forge/block-break-state.json` |
+| Session restore shows old state | State < 2h old from previous session | Expected behavior; wait 2h or reset manually |
+| `/block-break` not recognized | Skill not loaded in current session | Re-install plugin or use universal one-liner install |
 
 ---
 
@@ -279,7 +307,7 @@ La densidad del comentario lateral esta controlada: 2 lineas para tareas simples
 
 ### Como reiniciar el nivel de presion?
 
-Elimina el archivo de estado: `rm ~/.juserch-skills/block-break-state.json`. O espera 2 horas — el estado expira automaticamente.
+Elimina el archivo de estado: `rm ~/.forge/block-break-state.json`. O espera 2 horas — el estado expira automaticamente (see [State expiry](#state-expiry) above).
 
 ### Puedo usarlo fuera de Claude Code?
 
@@ -297,4 +325,4 @@ Usa [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ## Licencia
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

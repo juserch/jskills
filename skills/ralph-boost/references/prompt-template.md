@@ -16,7 +16,8 @@ Read `.ralph-boost/fix_plan.md` for your task list. Pick the highest priority un
 
 ## Protected Files
 
-DO NOT delete or overwrite anything in `.ralph-boost/`. These are infrastructure files.
+DO NOT delete or overwrite `.ralph-boost/config.json`, `.ralph-boost/PROMPT.md`, or `.ralph-boost/.gitignore`.
+You MAY update: `.ralph-boost/state.json` (pressure fields only), `.ralph-boost/fix_plan.md` (mark tasks), `.ralph-boost/handoff-report.md` (at L4 only).
 
 ---
 

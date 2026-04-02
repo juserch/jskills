@@ -9,13 +9,13 @@
 ### Claude Code (onerilen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Evrensel tek satirlik kurulum
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/block-break/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/block-break/SKILL.md
 ```
 
 > **Sifir bagimlilik** -- Block Break hicbir harici servise veya API'ye ihtiyac duymaz. Kur ve basla.
@@ -245,10 +245,26 @@ Block Break, otomatik davranis icin hook sistemini kullanir -- manuel etkinlesti
 |------|-------------|----------|
 | `UserPromptSubmit` | Kullanici girdisi hayal kirikligi anahtar kelimelerine uyuyor | Block Break'i otomatik etkinlestirir |
 | `PostToolUse` | Bash komutu calistirildiktan sonra | Basarisizliklari algilar, otomatik sayar + yukseltir |
-| `PreCompact` | Baglam sikistirmasindan once | Durumu `~/.juserch-skills/` dizinine kaydeder |
+| `PreCompact` | Baglam sikistirmasindan once | Durumu `~/.forge/` dizinine kaydeder |
 | `SessionStart` | Oturum devam ettirme/yeniden baslatma | Baski seviyesini geri yukler (2 saat gecerli) |
 
-> **Durum kalici** -- Baski seviyesi `~/.juserch-skills/block-break-state.json` dosyasinda saklanir. Baglam sikistirma ve oturum kesintileri basarisizlik sayacini sifirlamaz. Kacis yok.
+> **Durum kalici** -- Baski seviyesi `~/.forge/block-break-state.json` dosyasinda saklanir. Baglam sikistirma ve oturum kesintileri basarisizlik sayacini sifirlamaz. Kacis yok.
+
+### Hooks setup
+
+When installed via `claude plugin add juserai/forge`, hooks are automatically configured. The hook scripts require either `jq` (preferred) or `python` as a JSON engine — at least one must be available on your system.
+
+If hooks aren't firing, verify the configuration:
+
+```bash
+cat ~/.claude/settings.json  # Should contain hooks entries referencing forge plugin
+```
+
+### State expiry
+
+State auto-expires after **2 hours** of inactivity. This prevents stale pressure from a previous debugging session carrying over to unrelated work. After 2 hours, the session restore hook silently skips restoration and you start fresh at L0.
+
+To manually reset at any time: `rm ~/.forge/block-break-state.json`
 
 ---
 
@@ -258,12 +274,24 @@ Sub-agent olusturulurken, "ciplak kosmayi" onlemek icin davranissal kisitlamalar
 
 ```javascript
 Agent({
-  subagent_type: "juserch-skills:block-break-worker",
+  subagent_type: "forge:block-break-worker",
   prompt: "Fix the login timeout bug..."
 })
 ```
 
 `block-break-worker`, sub-agent'lerin de 3 kirmizi cizgiyi, 5 adimlik metodolojiyi ve kapali dongu dogrulamasini takip etmesini saglar.
+
+---
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Hooks don't auto-trigger | Plugin not installed or hooks not in settings.json | Re-run `claude plugin add juserai/forge` |
+| State not persisting | Neither `jq` nor `python` available | Install one: `apt install jq` or ensure `python` is on PATH |
+| Pressure stuck at L4 | State file accumulated too many failures | Reset: `rm ~/.forge/block-break-state.json` |
+| Session restore shows old state | State < 2h old from previous session | Expected behavior; wait 2h or reset manually |
+| `/block-break` not recognized | Skill not loaded in current session | Re-install plugin or use universal one-liner install |
 
 ---
 
@@ -279,7 +307,7 @@ Kenar notu yogunlugu kontrol altinda: basit gorevlerde 2 satir (baslangic + biti
 
 ### Baski seviyesini nasil sifirlarim?
 
-Durum dosyasini sil: `rm ~/.juserch-skills/block-break-state.json`. Ya da 2 saat bekle -- durum otomatik olarak sona erer.
+Durum dosyasini sil: `rm ~/.forge/block-break-state.json`. Ya da 2 saat bekle -- durum otomatik olarak sona erer (see [State expiry](#state-expiry) above).
 
 ### Claude Code disinda kullanabilir miyim?
 
@@ -297,4 +325,4 @@ Temel SKILL.md, sistem prompt'larini destekleyen herhangi bir AI aracina kopyala
 
 ## Lisans
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

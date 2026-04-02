@@ -1,4 +1,4 @@
-# J Skills 开发指南
+# Forge 开发指南
 
 ## 项目概述
 
@@ -35,7 +35,7 @@ docs/plans/<topic>-design.md       # 设计文档
 - `platforms/<platform>/<name>/SKILL.md` — 非 Claude Code 平台的 skill 定义
 - `platforms/<platform>/<name>/references/` — 该平台的详细内容
 - `hooks/` — Claude Code 平台专有的 hook 配置和脚本
-- `~/.juserch-skills/` — 运行时状态目录（失败计数、压力等级、会话恢复）
+- `~/.forge/` — 运行时状态目录（失败计数、压力等级、会话恢复）
 
 ## 新增 Skill 流程
 
@@ -70,7 +70,7 @@ docs/plans/<topic>-design.md       # 设计文档
 
 ## 状态持久化
 
-运行时状态存储在 `~/.juserch-skills/`：
+运行时状态存储在 `~/.forge/`：
 - `block-break-state.json` — 失败计数、压力等级、最后更新时间
 - 由 `hooks/failure-detector.sh` 写入
 - 由 `hooks/session-restore.sh` 读取

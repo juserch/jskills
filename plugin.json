@@ -1,16 +1,16 @@
 {
-    "name": "jskills",
+    "name": "forge",
     "version": "1.0.0",
-    "description": "J Skills — Work harder, then take a break. Behavioral constraints, autonomous loops, and more.",
+    "description": "Forge — Forge stronger AI agents. Behavioral constraints, autonomous loops, and more.",
     "author": {
-        "name": "juserch",
-        "url": "https://github.com/juserch"
+        "name": "Juneq Cheung",
+        "url": "https://github.com/juserai"
     },
-    "homepage": "https://github.com/juserch/jskills",
-    "repository": "https://github.com/juserch/jskills",
+    "homepage": "https://github.com/juserai/forge",
+    "repository": "https://github.com/juserai/forge",
     "license": "MIT",
     "keywords": [
-        "jskills",
+        "forge",
         "claude-code",
         "skills",
         "plugin",

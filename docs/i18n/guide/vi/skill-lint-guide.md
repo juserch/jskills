@@ -9,13 +9,13 @@
 ### Claude Code (khuyen dung)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Cai dat nhanh mot dong
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/skill-lint/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/skill-lint/SKILL.md
 ```
 
 > **Khong phu thuoc gi** -- Skill Lint khong can bat ky dich vu hay API nao tu ben ngoai. Cai va chay thoi.
@@ -145,7 +145,7 @@ bash skills/skill-lint/scripts/skill-lint.sh .
 
 Lenh nay xuat JSON thuan tuy, khong co phan tich ngu nghia cua AI.
 
-### Co hoat dong tren cac du an khong phai jskills khong?
+### Co hoat dong tren cac du an khong phai forge khong?
 
 Co. Bat ky thu muc nao theo cau truc plugin Claude Code chuan (`skills/`, `commands/`, `.claude-plugin/`) deu co the duoc kiem tra.
 
@@ -154,9 +154,9 @@ Co. Bat ky thu muc nao theo cau truc plugin Claude Code chuan (`skills/`, `comma
 - **error**: Van de cau truc se ngan skill tai hoac phat hanh dung cach
 - **warning**: Van de chat luong khong lam hong chuc nang nhung anh huong den kha nang bao tri va kham pha
 
-### Cac cong cu jskills khac
+### Cac cong cu forge khac
 
-Skill Lint la mot phan cua bo suu tap jskills va hoat dong tot cung voi cac skill nay:
+Skill Lint la mot phan cua bo suu tap forge va hoat dong tot cung voi cac skill nay:
 
 - [Block Break](block-break-guide.md) -- Engine rang buoc hanh vi cao nang luc bat AI phai thu het moi cach tiep can
 - [Ralph Boost](ralph-boost-guide.md) -- Engine vong lap dev tu dong voi bao dam hoi tu Block Break tich hop
@@ -167,4 +167,4 @@ Sau khi phat trien skill moi, chay `/skill-lint .` de xac minh tinh day du cau t
 
 ## Giay phep
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -9,13 +9,13 @@
 ### Claude Code (recommended)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Universal one-line install
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/block-break/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/block-break/SKILL.md
 ```
 
 > **Zero dependencies** -- Block Break को किसी external service या API की ज़रूरत नहीं। Install करो और शुरू हो जाओ।
@@ -245,10 +245,26 @@ Block Break automatic behavior के लिए hooks system use करता �
 |------|---------|----------|
 | `UserPromptSubmit` | User input में frustration keywords match होते हैं | Block Break auto-activate |
 | `PostToolUse` | Bash command execution के बाद | Failures detect, auto-count + escalate |
-| `PreCompact` | Context compression से पहले | `~/.juserch-skills/` में state save |
+| `PreCompact` | Context compression से पहले | `~/.forge/` में state save |
 | `SessionStart` | Session resume/restart | Pressure level restore (2 घंटे तक valid) |
 
-> **State persist होता है** -- Pressure level `~/.juserch-skills/block-break-state.json` में store होता है। Context compression और session interrupts failure counts reset नहीं करेंगे। कोई escape नहीं।
+> **State persist होता है** -- Pressure level `~/.forge/block-break-state.json` में store होता है। Context compression और session interrupts failure counts reset नहीं करेंगे। कोई escape नहीं।
+
+### Hooks setup
+
+When installed via `claude plugin add juserai/forge`, hooks are automatically configured. The hook scripts require either `jq` (preferred) or `python` as a JSON engine — at least one must be available on your system.
+
+If hooks aren't firing, verify the configuration:
+
+```bash
+cat ~/.claude/settings.json  # Should contain hooks entries referencing forge plugin
+```
+
+### State expiry
+
+State auto-expires after **2 hours** of inactivity. This prevents stale pressure from a previous debugging session carrying over to unrelated work. After 2 hours, the session restore hook silently skips restoration and you start fresh at L0.
+
+To manually reset at any time: `rm ~/.forge/block-break-state.json`
 
 ---
 
@@ -258,12 +274,24 @@ Sub-agents spawn करते समय behavioral constraints inject करन�
 
 ```javascript
 Agent({
-  subagent_type: "juserch-skills:block-break-worker",
+  subagent_type: "forge:block-break-worker",
   prompt: "Fix the login timeout bug..."
 })
 ```
 
 `block-break-worker` ensure करता है कि sub-agents भी 3 red lines, 5-step methodology, और closed-loop verification follow करें।
+
+---
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Hooks don't auto-trigger | Plugin not installed or hooks not in settings.json | Re-run `claude plugin add juserai/forge` |
+| State not persisting | Neither `jq` nor `python` available | Install one: `apt install jq` or ensure `python` is on PATH |
+| Pressure stuck at L4 | State file accumulated too many failures | Reset: `rm ~/.forge/block-break-state.json` |
+| Session restore shows old state | State < 2h old from previous session | Expected behavior; wait 2h or reset manually |
+| `/block-break` not recognized | Skill not loaded in current session | Re-install plugin or use universal one-liner install |
 
 ---
 
@@ -279,7 +307,7 @@ Sidebar density controlled है: simple tasks के लिए 2 lines (start 
 
 ### Pressure level कैसे reset करें?
 
-State file delete करो: `rm ~/.juserch-skills/block-break-state.json`। या 2 घंटे wait करो -- state auto-expire हो जाता है।
+State file delete करो: `rm ~/.forge/block-break-state.json`। या 2 घंटे wait करो -- state auto-expire हो जाता है (see [State expiry](#state-expiry) above)।
 
 ### क्या Claude Code के बाहर use कर सकते हैं?
 
@@ -297,4 +325,4 @@ Core SKILL.md को किसी भी AI tool में copy-paste कर स
 
 ## License
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

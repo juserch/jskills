@@ -9,13 +9,13 @@
 ### Claude Code（推荐）
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### 通用单行安装
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/skill-lint/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/skill-lint/SKILL.md
 ```
 
 > **零依赖** — Skill Lint 不依赖任何外部服务或 API。安装即用。
@@ -145,7 +145,7 @@ bash skills/skill-lint/scripts/skill-lint.sh .
 
 输出纯 JSON，无 AI 语义检查。
 
-### 支持校验非 jskills 项目吗？
+### 支持校验非 forge 项目吗？
 
 支持。只要目标目录遵循 Claude Code plugin 的标准结构（`skills/`、`commands/`、`.claude-plugin/`），都可以校验。
 
@@ -154,9 +154,9 @@ bash skills/skill-lint/scripts/skill-lint.sh .
 - **error**: 结构性问题，会导致 skill 无法正常加载或发布
 - **warning**: 质量问题，不影响功能但影响可维护性和发现性
 
-### 其他 jskills 工具
+### 其他 forge 工具
 
-Skill Lint 是 jskills 集合的一部分，与以下 skill 协同使用：
+Skill Lint 是 forge 集合的一部分，与以下 skill 协同使用：
 
 - [Block Break](block-break-guide.md) — 高能动性行为约束引擎，强制 AI 穷尽一切方案
 - [Ralph Boost](ralph-boost-guide.md) — 自主开发循环引擎，内建 Block Break 收敛保证
@@ -167,4 +167,4 @@ Skill Lint 是 jskills 集合的一部分，与以下 skill 协同使用：
 
 ## License
 
-[MIT](LICENSE) - [juserch](https://github.com/juserch)
+[MIT](LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -9,13 +9,13 @@
 ### Claude Code (onerilen)
 
 ```bash
-claude plugin add juserch/jskills
+claude plugin add juserai/forge
 ```
 
 ### Evrensel tek satirlik kurulum
 
 ```
-Fetch and follow https://raw.githubusercontent.com/juserch/jskills/main/skills/skill-lint/SKILL.md
+Fetch and follow https://raw.githubusercontent.com/juserai/forge/main/skills/skill-lint/SKILL.md
 ```
 
 > **Sifir bagimlilik** -- Skill Lint hicbir harici servise veya API'ye ihtiyac duymaz. Kur ve basla.
@@ -145,7 +145,7 @@ bash skills/skill-lint/scripts/skill-lint.sh .
 
 Bu, AI anlamsal analizi olmadan saf JSON cikti verir.
 
-### jskills olmayan projelerde calisiyor mu?
+### forge olmayan projelerde calisiyor mu?
 
 Evet. Standart Claude Code plugin yapisini (`skills/`, `commands/`, `.claude-plugin/`) takip eden herhangi bir dizin dogrulanabilir.
 
@@ -154,9 +154,9 @@ Evet. Standart Claude Code plugin yapisini (`skills/`, `commands/`, `.claude-plu
 - **error**: Skill'in yuklenmesini veya yayinlanmasini engelleyecek yapisal sorunlar
 - **warning**: Islevsellik bozmayacak ama bakimi ve kesfedilebilirligi etkileyen kalite sorunlari
 
-### Diger jskills araclari
+### Diger forge araclari
 
-Skill Lint, jskills koleksiyonunun bir parcasidir ve su skill'lerle birlikte iyi calisir:
+Skill Lint, forge koleksiyonunun bir parcasidir ve su skill'lerle birlikte iyi calisir:
 
 - [Block Break](block-break-guide.md) -- AI'yi her yaklasimi tuketmeye zorlayan yuksek etkinlikli davranissal kisitlama motoru
 - [Ralph Boost](ralph-boost-guide.md) -- Yerlesik Block Break yakinlasma garantileri ile otonom gelistirme dongu motoru
@@ -167,4 +167,4 @@ Yeni bir skill gelistirdikten sonra, yapisal tamligi dogrulamak ve frontmatter, 
 
 ## Lisans
 
-[MIT](../../../../LICENSE) - [juserch](https://github.com/juserch)
+[MIT](../../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)
