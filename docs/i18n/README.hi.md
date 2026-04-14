@@ -1,9 +1,9 @@
 # Forge
 
-> और मेहनत करो, फिर ब्रेक लो। Claude Code के साथ बेहतर कोडिंग रिदम के लिए 4 skills।
+> और मेहनत करो, फिर ब्रेक लो। Claude Code के साथ बेहतर कोडिंग रिदम के लिए 5 skills।
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-4-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-5-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -55,6 +55,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 | Skill | क्या करता है | आज़माएँ |
 |-------|-------------|---------|
 | **skill-lint** | किसी भी Claude Code skill plugin को validate करें | `/skill-lint .` |
+| **council-fuse** | बेहतर जवाबों के लिए बहु-दृष्टिकोण विचार-विमर्श | `/council-fuse <question>` |
 
 ### Quench
 

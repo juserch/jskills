@@ -1,9 +1,9 @@
 # Forge
 
-> Trabaja más duro, luego tómate un descanso. 4 skills para un mejor ritmo de programación con Claude Code.
+> Trabaja más duro, luego tómate un descanso. 5 skills para un mejor ritmo de programación con Claude Code.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-4-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-5-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -55,6 +55,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 | Skill | Qué hace | Pruébalo |
 |-------|----------|----------|
 | **skill-lint** | Valida cualquier skill plugin de Claude Code | `/skill-lint .` |
+| **council-fuse** | Deliberación multiperspectiva para mejores respuestas | `/council-fuse <question>` |
 
 ### Quench
 

@@ -1,9 +1,9 @@
 # Forge
 
-> Работай усерднее, потом сделай перерыв. 4 skill'а для правильного ритма разработки с Claude Code.
+> Работай усерднее, потом сделай перерыв. 5 skill'ов для правильного ритма разработки с Claude Code.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-4-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-5-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -55,6 +55,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 | Skill | Что делает | Попробуй |
 |-------|-----------|----------|
 | **skill-lint** | Валидация любого Claude Code skill-плагина | `/skill-lint .` |
+| **council-fuse** | Мультиперспективное обсуждение для лучших ответов | `/council-fuse <question>` |
 
 ### Quench
 

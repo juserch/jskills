@@ -1,9 +1,9 @@
 # Forge
 
-> 张弛有度。4 个 skill，让你和 AI 的编码节奏更好。
+> 张弛有度。5 个 skill，让你和 AI 的编码节奏更好。
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-4-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-5-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -35,6 +35,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 | Skill | 功能 | 试试看 |
 |-------|------|--------|
 | **skill-lint** | 校验任意 Claude Code skill 插件 | `/skill-lint .` |
+| **council-fuse** | 多视角议会蒸馏，获得更好的答案 | `/council-fuse <question>` |
 
 ### Quench
 

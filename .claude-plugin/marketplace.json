@@ -46,6 +46,19 @@
             ]
         },
         {
+            "name": "council-fuse",
+            "description": "Council Fuse — Multi-perspective deliberation engine. 3 agents debate independently, Chairman synthesizes the best answer. Zero-dep.",
+            "version": "1.0.0",
+            "source": "./",
+            "author": {
+                "name": "Juneq Cheung",
+                "url": "https://github.com/juserai"
+            },
+            "skills": [
+                "./skills/council-fuse"
+            ]
+        },
+        {
             "name": "news-fetch",
             "description": "News Fetch — Quick news at your fingertips. Take a mental break between coding sessions. 3-tier network fallback, Markdown output. Zero-dep.",
             "version": "1.0.0",

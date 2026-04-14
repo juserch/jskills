@@ -1,9 +1,9 @@
 # Forge
 
-> Forge stronger AI agents. 4 skills for a better coding rhythm with Claude Code.
+> Forge stronger AI agents. 5 skills for a better coding rhythm with Claude Code.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-4-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-5-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -55,6 +55,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 | Skill | What it does | Try it |
 |-------|-------------|--------|
 | **skill-lint** | Validate any Claude Code skill plugin | `/skill-lint .` |
+| **council-fuse** | Multi-perspective deliberation for better answers | `/council-fuse <question>` |
 
 ### Quench
 
@@ -111,6 +112,25 @@ Replicates ralph-claude-code's autonomous loop capability as a skill, with built
 ```
 
 > Inspired by [ralph-claude-code](https://github.com/frankbria/ralph-claude-code), reimagined as a zero-dependency skill with convergence guarantee.
+
+## Council Fuse — Multi-Perspective Deliberation Engine
+
+Better answers through structured debate. `/council-fuse` spawns 3 independent perspectives, scores them anonymously, and synthesizes the best answer.
+
+Inspired by [Karpathy's LLM Council](https://github.com/karpathy/llm-council) — distilled into a single command.
+
+| Mechanism | Description |
+|-----------|-------------|
+| **3 Perspectives** | Generalist (balanced) / Critic (adversarial) / Specialist (deep technical) |
+| **Anonymous Scoring** | 4-dimension evaluation: Correctness, Completeness, Practicality, Clarity |
+| **Synthesis** | Highest-scored response as skeleton, enriched with unique insights |
+| **Minority Opinion** | Valid dissenting views preserved, not silenced |
+
+```text
+/council-fuse Should we use microservices?
+/council-fuse Review this error handling pattern
+/council-fuse Redis vs PostgreSQL for job queues
+```
 
 ## Skill Lint — Skill Plugin Validator
 

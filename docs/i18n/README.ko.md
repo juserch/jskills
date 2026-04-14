@@ -1,9 +1,9 @@
 # Forge
 
-> 더 열심히, 그리고 잠깐 쉬어가기. Claude Code와 함께하는 더 나은 코딩 리듬을 위한 4가지 skill.
+> 더 열심히, 그리고 잠깐 쉬어가기. Claude Code와 함께하는 더 나은 코딩 리듬을 위한 5가지 skill.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-4-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-5-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -35,6 +35,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 | Skill | 기능 | 사용해 보기 |
 |-------|------|-------------|
 | **skill-lint** | Claude Code skill 플러그인 검증 | `/skill-lint .` |
+| **council-fuse** | 다관점 심의로 더 나은 답변 도출 | `/council-fuse <question>` |
 
 ### Quench
 
