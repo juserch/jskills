@@ -365,6 +365,26 @@ tail -f .ralph-boost/logs/boost.log
 
 ---
 
+## 사용 시나리오 / 사용 금지 시나리오
+
+### ✅ 사용해야 할 때
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ 사용하지 말아야 할 때
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> 수렴 보장이 있는 자율 루프 엔진 — 명확한 목표와 안정된 환경이 있어야 실제로 수렴한다.
+
+전체 경계 분석: [references/scope-boundaries.md](../../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## 라이선스
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -323,6 +323,26 @@ Block Break는 [PUA](https://github.com/tanweai/pua)의 핵심 메커니즘(3대
 
 ---
 
+## 사용 시나리오 / 사용 금지 시나리오
+
+### ✅ 사용해야 할 때
+
+- Claude gave up too easily ("I can't", rationalized impossibility)
+- The same fix attempt has failed 2-3 times
+- You need exhaustive diagnosis before accepting defeat
+
+### ❌ 사용하지 말아야 할 때
+
+- Doing creative / divergent work (pressure kills exploration)
+- The task is genuinely impossible (missing hardware, no permissions)
+- You want to pause and step back on purpose
+
+> 철저한 디버깅의 엔진 — agent가 일찍 포기하지 않도록 보장하지만, 나온 해결책이 옳다는 보장은 아니다.
+
+전체 경계 분석: [references/scope-boundaries.md](../../../skills/block-break/references/scope-boundaries.md)
+
+---
+
 ## 라이선스
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

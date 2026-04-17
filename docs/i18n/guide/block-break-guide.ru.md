@@ -323,6 +323,26 @@ Block Break вдохновлён основными механизмами [PUA]
 
 ---
 
+## Когда использовать / Когда НЕ использовать
+
+### ✅ Используйте когда
+
+- Claude gave up too easily ("I can't", rationalized impossibility)
+- The same fix attempt has failed 2-3 times
+- You need exhaustive diagnosis before accepting defeat
+
+### ❌ Не используйте когда
+
+- Doing creative / divergent work (pressure kills exploration)
+- The task is genuinely impossible (missing hardware, no permissions)
+- You want to pause and step back on purpose
+
+> Движок исчерпывающей отладки — гарантирует, что Claude не сдастся рано, но не гарантирует правильность решения.
+
+Полный анализ границ: [references/scope-boundaries.md](../../../skills/block-break/references/scope-boundaries.md)
+
+---
+
 ## Лицензия
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

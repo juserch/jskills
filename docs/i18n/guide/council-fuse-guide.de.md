@@ -128,6 +128,26 @@ Bearbeiten Sie das Feld `model:` in jeder Agenten-Datei:
 
 ---
 
+## Wann verwenden / Wann NICHT verwenden
+
+### ✅ Verwenden wenn
+
+- Architectural decisions needing multiple perspectives
+- You suspect confirmation bias in your current answer
+- You want dissenting views preserved, not erased
+
+### ❌ Nicht verwenden wenn
+
+- Pure factual queries (use `claim-ground` instead)
+- Creative writing (synthesis flattens style)
+- Speed-critical decisions (3 agents run sequentially — not fast)
+
+> Debatten-Engine basierend auf Trainingswissen — deckt blinde Flecken einer einzigen Perspektive auf, aber Schlussfolgerungen bleiben begrenzt.
+
+Vollständige Grenzanalyse: [references/scope-boundaries.md](../../../skills/council-fuse/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 **F: Kostet es 3x so viele Tokens?**

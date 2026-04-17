@@ -165,6 +165,26 @@ Após desenvolver um novo skill, execute `/skill-lint .` para verificar a comple
 
 ---
 
+## Quando usar / Quando NÃO usar
+
+### ✅ Use quando
+
+- Validating a Claude Code plugin's structure before release
+- Checking integrity hash / convention compliance / i18n coverage
+- As a CI/CD gate for plugin repositories
+
+### ❌ Não use quando
+
+- Non-plugin projects (rules don't apply; you'll get irrelevant errors)
+- Production code quality review (not a linter / type checker / security scanner)
+- License legal review (only checks the `license` field exists)
+
+> CI estrutural para plugins Claude Code — garante conformidade de convenções e consistência de hash, não correção em runtime.
+
+Análise completa de limites: [references/scope-boundaries.md](../../../skills/skill-lint/references/scope-boundaries.md)
+
+---
+
 ## Licença
 
 [MIT](../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

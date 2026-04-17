@@ -226,6 +226,26 @@ Gerekli bolumler:
 
 ---
 
+## Ne zaman kullanılmalı / Ne zaman kullanılMAMAlı
+
+### ✅ Şu durumlarda kullanın
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ Şu durumlarda kullanmayın
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> LLM derlemeli kişisel kütüphane — insan içgörülerini korur, bireyler için, real-time sync yok.
+
+Tam sınır analizi: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## SSS
 
 **S: Viki ne kadar buyuyebilir?**

@@ -1,5 +1,5 @@
 {
-  "description": "Forge hooks: frustration detection, failure counting, state persistence",
+  "description": "Forge hooks: frustration detection, epistemic pushback detection, failure counting, state persistence",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -8,6 +8,16 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/frustration-trigger.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "真的吗|不对吧|你确定|已经更新|官方不是|我记得.*已经|不是.*已经|really\\?|are you sure|I thought.*(was|were)|isn'?t it already",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/epistemic-pushback-trigger.sh",
             "timeout": 5
           }
         ]

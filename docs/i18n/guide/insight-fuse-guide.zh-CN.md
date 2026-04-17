@@ -91,6 +91,26 @@
 - 单来源占比不超 40%
 - 所有对比断言有数据支撑
 
+## 使用场景 / 不应使用场景
+
+### ✅ 适用
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ 不适用
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> desk research 的流水线——把多源综合变成可配置流程，但不做 primary research，也不保证源的时效。
+
+完整边界分析: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## 与 council-fuse 的区别
 
 | | insight-fuse | council-fuse |

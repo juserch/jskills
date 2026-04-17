@@ -7,6 +7,12 @@
 
 基于 Karpathy 的 LLM Wiki 模式：原始材料 + LLM 编译 = 结构化 Markdown wiki。无 RAG、无向量数据库、无基础设施依赖。个人知识库引擎。
 
+## 覆盖与边界
+
+> tome-forge 是**LLM 为你编纂的私人图书馆**——它让你把散材变结构化 wiki 而保留人类洞察，但只为个人设计、不做实时同步、不做权限控制。
+
+完整分析（能解决 / 不能解决 / 不应使用）：[references/scope-boundaries.md](../../skills/tome-forge/references/scope-boundaries.md)
+
 ## 命名
 
 遵循 `名词-动词` 模式：lore(知识/传说) + forge(锻造)。分类为 crucible（坩埚 — 多源融合、知识沉淀）。

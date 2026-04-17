@@ -1,9 +1,9 @@
 # Forge
 
-> Härter arbeiten, dann Pause machen. 7 Skills für einen besseren Entwicklungsrhythmus mit Claude Code.
+> Härter arbeiten, dann Pause machen. 8 Skills für einen besseren Entwicklungsrhythmus mit Claude Code.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-7-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-8-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -49,6 +49,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|-------------|--------------|
 | **block-break** | Erzwingt erschöpfende Problemlösung, bevor aufgegeben wird | `/block-break` |
 | **ralph-boost** | Autonome Entwicklungsschleifen mit Konvergenzgarantie | `/ralph-boost setup` |
+| **claim-ground** | Verankert jede "aktueller Moment"-Aussage an Laufzeitbelegen | Auto-Auslösung |
 
 ### Crucible
 
@@ -120,42 +121,26 @@ Repliziert die autonome Schleifenfähigkeit von ralph-claude-code als Skill, mit
 
 > Inspiriert von [ralph-claude-code](https://github.com/frankbria/ralph-claude-code), neu konzipiert als Skill ohne Abhängigkeiten mit Konvergenzgarantie.
 
-## Skill Lint — Skill-Plugin-Validator
+## Claim Ground — Epistemische Beschränkungs-Engine
 
-Validieren Sie Ihre Claude Code Plugins mit einem einzigen Befehl.
+Stoppen Sie die Halluzinationen veralteter Fakten. `claim-ground` verankert jede "aktueller Moment"-Aussage an Laufzeitbelegen.
 
-Prüft die strukturelle Integrität und semantische Qualität von Skill-Dateien in jedem Claude Code Plugin-Projekt. Bash-Skripte übernehmen strukturelle Prüfungen, die KI übernimmt semantische Prüfungen — komplementäre Abdeckung.
+Auto-ausgelöst (kein Slash-Befehl). Wenn Claude gerade faktische Fragen zum aktuellen Zustand beantwortet — laufendes Modell, installierte Tools, Env-Vars, Konfigurationswerte — oder wenn der Nutzer eine vorherige Aussage anfechtet, erzwingt Claim Ground das Zitieren des System-Prompts / Tool-Ausgabe / Dateiinhalts *vor* dem Schlussfolgern. Bei Widerspruch verifiziert Claude erneut, anstatt umzuformulieren.
 
-| Prüfungstyp | Beschreibung |
-|-------------|-------------|
-| **Strukturell** | Erforderliche Frontmatter-Felder / Dateiexistenz / Referenzlinks / Marketplace-Einträge |
-| **Semantisch** | Beschreibungsqualität / Namenskonsistenz / Befehlsrouting / Evaluierungsabdeckung |
+| Mechanismus | Beschreibung |
+|-------------|--------------|
+| **3 Rote Linien** | Keine unbelegten Aussagen / Beispiele nicht als vollständig / Kein Umformulieren bei Widerspruch |
+| **Runtime > Training** | System-Prompt, Env und Tool-Ausgabe schlagen immer Trainingsgedächtnis |
+| **Zitieren-dann-schließen** | Rohes Beweisfragment inline zitiert vor jeder Schlussfolgerung |
+| **Verifikations-Playbook** | Fragetyp → Beweisquelle (Modell / CLI / Pakete / Env / Dateien / Git / Datum) |
 
-```text
-/skill-lint              # Verwendung anzeigen
-/skill-lint .            # Aktuelles Projekt validieren
-/skill-lint /path/to/plugin  # Einen bestimmten Pfad validieren
-```
+Auslösebeispiele (auto-erkannt durch Beschreibung):
 
-## News Fetch — Ihre mentale Pause zwischen den Sprints
+- "Welches Modell läuft?" / "What model is running?"
+- "Welche Version von X ist installiert?"
+- "Wirklich? / Sicher? / Ich dachte es sei aktualisiert"
 
-Ausgebrannt vom Debuggen? `/news-fetch` — Ihre 2-minütige mentale Pause.
-
-Die anderen Skills treiben Sie zu härterem Arbeiten an. Dieser erinnert Sie daran, durchzuatmen. Holen Sie sich die neuesten Nachrichten zu jedem Thema, direkt aus Ihrem Terminal — kein Kontextwechsel, kein Abschweifen im Browser. Nur ein kurzer Überblick und zurück an die Arbeit, erfrischt.
-
-| Funktion | Beschreibung |
-|----------|-------------|
-| **3-stufiger Fallback** | L1 WebSearch → L2 WebFetch (regionale Quellen) → L3 curl |
-| **Deduplizierung und Zusammenführung** | Dasselbe Ereignis aus mehreren Quellen wird automatisch zusammengeführt, der höchste Score wird beibehalten |
-| **Relevanzbewertung** | KI bewertet und sortiert nach Themenübereinstimmung |
-| **Automatische Zusammenfassung** | Fehlende Abstracts werden automatisch aus dem Artikeltext generiert |
-
-```text
-/news-fetch AI                    # KI-Nachrichten der Woche
-/news-fetch AI today              # KI-Nachrichten von heute
-/news-fetch robotics month        # Robotik-Nachrichten des Monats
-/news-fetch climate 2026-03-01~2026-03-31  # Benutzerdefinierter Zeitraum
-```
+Funktioniert orthogonal zu block-break: Bei beidseitiger Aktivierung verhindert block-break "Ich gebe auf", claim-ground verhindert "Ich habe nur meine falsche Antwort umformuliert".
 
 ## Council Fuse — Multi-Perspektiven-Beratungs-Engine
 
@@ -217,6 +202,43 @@ Aufbau einer persönlichen Wissensbasis, die ein LLM kompiliert und pflegt. Basi
 ```
 
 > Inspiriert von [Karpathys LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), gebaut als Zero-Dependency-Skill.
+
+## Skill Lint — Skill-Plugin-Validator
+
+Validieren Sie Ihre Claude Code Plugins mit einem einzigen Befehl.
+
+Prüft die strukturelle Integrität und semantische Qualität von Skill-Dateien in jedem Claude Code Plugin-Projekt. Bash-Skripte übernehmen strukturelle Prüfungen, die KI übernimmt semantische Prüfungen — komplementäre Abdeckung.
+
+| Prüfungstyp | Beschreibung |
+|-------------|-------------|
+| **Strukturell** | Erforderliche Frontmatter-Felder / Dateiexistenz / Referenzlinks / Marketplace-Einträge |
+| **Semantisch** | Beschreibungsqualität / Namenskonsistenz / Befehlsrouting / Evaluierungsabdeckung |
+
+```text
+/skill-lint              # Verwendung anzeigen
+/skill-lint .            # Aktuelles Projekt validieren
+/skill-lint /path/to/plugin  # Einen bestimmten Pfad validieren
+```
+
+## News Fetch — Ihre mentale Pause zwischen den Sprints
+
+Ausgebrannt vom Debuggen? `/news-fetch` — Ihre 2-minütige mentale Pause.
+
+Die anderen Skills treiben Sie zu härterem Arbeiten an. Dieser erinnert Sie daran, durchzuatmen. Holen Sie sich die neuesten Nachrichten zu jedem Thema, direkt aus Ihrem Terminal — kein Kontextwechsel, kein Abschweifen im Browser. Nur ein kurzer Überblick und zurück an die Arbeit, erfrischt.
+
+| Funktion | Beschreibung |
+|----------|-------------|
+| **3-stufiger Fallback** | L1 WebSearch → L2 WebFetch (regionale Quellen) → L3 curl |
+| **Deduplizierung und Zusammenführung** | Dasselbe Ereignis aus mehreren Quellen wird automatisch zusammengeführt, der höchste Score wird beibehalten |
+| **Relevanzbewertung** | KI bewertet und sortiert nach Themenübereinstimmung |
+| **Automatische Zusammenfassung** | Fehlende Abstracts werden automatisch aus dem Artikeltext generiert |
+
+```text
+/news-fetch AI                    # KI-Nachrichten der Woche
+/news-fetch AI today              # KI-Nachrichten von heute
+/news-fetch robotics month        # Robotik-Nachrichten des Monats
+/news-fetch climate 2026-03-01~2026-03-31  # Benutzerdefinierter Zeitraum
+```
 
 ## Qualität
 

@@ -164,6 +164,26 @@ Até 20 (após deduplicação). A contagem real depende do que as fontes de dado
 
 ---
 
+## Quando usar / Quando NÃO usar
+
+### ✅ Use quando
+
+- You want a quick news brief between coding sessions
+- Bilingual aggregation (English + domestic sources)
+- Network-restricted environments (3-tier fallback handles blocked sources)
+
+### ❌ Não use quando
+
+- You need synthesized research (use `insight-fuse` instead)
+- Targeted source monitoring (use an RSS reader)
+- Translation tasks (news-fetch returns source language as-is)
+
+> Resumo de notícias para pausas de código — scan de 2 minutos, sem análise profunda ou tradução.
+
+Análise completa de limites: [references/scope-boundaries.md](../../../skills/news-fetch/references/scope-boundaries.md)
+
+---
+
 ## Licença
 
 [MIT](../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

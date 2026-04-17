@@ -8,6 +8,12 @@
 通用 Claude Code skill 校验工具。纯 skill（行为约束），手动触发（`/skill-lint [path]`）。
 由 bash 脚本做结构检查 + AI 做语义检查，互补覆盖。
 
+## 覆盖与边界
+
+> skill-lint 是**Claude Code plugin 的结构 CI**——它保证"符合约定、hash 一致、文件齐全"，但不保证"skill 运行时真的能跑"，也不取代代码质量 / 安全 / 许可证评审。
+
+完整分析（能解决 / 不能解决 / 不应使用）：[references/scope-boundaries.md](../../skills/skill-lint/references/scope-boundaries.md)
+
 ## 设计决策
 
 | 决策点 | 选择 | 理由 |

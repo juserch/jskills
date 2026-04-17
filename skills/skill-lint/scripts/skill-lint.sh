@@ -280,18 +280,19 @@ sys.exit(1)
     fi
 
     # --- S16: i18n guide coverage ---
+    # Per CLAUDE.md convention: i18n guides live at docs/i18n/guide/<name>-guide.<lang>.md
     if [ -n "$CFG_REQUIRE_I18N_GUIDE" ] && [ -n "$CFG_I18N_DIR" ]; then
         i18n_path="$PLUGIN_ROOT/$CFG_I18N_DIR"
-        guide_i18n_dir="$PLUGIN_ROOT/docs/guide/i18n"
+        guide_i18n_dir="$PLUGIN_ROOT/docs/i18n/guide"
         if [ -d "$i18n_path" ]; then
             for i18n_readme in "$i18n_path/"README.*.md; do
                 [ -f "$i18n_readme" ] || continue
                 lang="$(basename "$i18n_readme" | sed 's/README\.//;s/\.md//')"
                 guide_i18n_file="$guide_i18n_dir/$skill_name-guide.$lang.md"
                 if [ -f "$guide_i18n_file" ]; then
-                    add_passed "S16: docs/guide/i18n/$skill_name-guide.$lang.md exists"
+                    add_passed "S16: docs/i18n/guide/$skill_name-guide.$lang.md exists"
                 else
-                    add_warning "S16: docs/guide/i18n/$skill_name-guide.$lang.md missing"
+                    add_warning "S16: docs/i18n/guide/$skill_name-guide.$lang.md missing"
                 fi
             done
         fi
@@ -299,11 +300,12 @@ sys.exit(1)
 done
 
 # --- S17: i18n guide wrong-path guard ---
-# Detect common misplacement: docs/i18n/guide/ instead of docs/guide/i18n/
-if [ -n "$CFG_REQUIRE_I18N_GUIDE" ] && [ -d "$PLUGIN_ROOT/docs/i18n/guide" ]; then
-    wrong_count=$(find "$PLUGIN_ROOT/docs/i18n/guide" -type f -name "*.md" 2>/dev/null | wc -l)
+# Per CLAUDE.md convention, i18n guides belong at docs/i18n/guide/.
+# Guard against the reversed misplacement: docs/guide/i18n/ (where files would be invisible to S16).
+if [ -n "$CFG_REQUIRE_I18N_GUIDE" ] && [ -d "$PLUGIN_ROOT/docs/guide/i18n" ]; then
+    wrong_count=$(find "$PLUGIN_ROOT/docs/guide/i18n" -type f -name "*.md" 2>/dev/null | wc -l)
     if [ "$wrong_count" -gt 0 ]; then
-        add_error "S17: docs/i18n/guide/ contains $wrong_count files — wrong path. i18n guides belong in docs/guide/i18n/"
+        add_error "S17: docs/guide/i18n/ contains $wrong_count files — wrong path. i18n guides belong in docs/i18n/guide/"
     fi
 fi
 

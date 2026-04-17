@@ -365,6 +365,26 @@ tail -f .ralph-boost/logs/boost.log
 
 ---
 
+## 使用場面 / 不向きな場面
+
+### ✅ 使うべきとき
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ 使うべきでないとき
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> 収束保証付き自律ループエンジン — 明確な目標と安定した環境があれば真に収束する。
+
+完全な境界分析: [references/scope-boundaries.md](../../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## ライセンス
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

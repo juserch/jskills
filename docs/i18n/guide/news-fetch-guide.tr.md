@@ -164,6 +164,26 @@ Kesinlikle. Çince konular otomatik olarak tamamlayıcı İngilizce aramalar iç
 
 ---
 
+## Ne zaman kullanılmalı / Ne zaman kullanılMAMAlı
+
+### ✅ Şu durumlarda kullanın
+
+- You want a quick news brief between coding sessions
+- Bilingual aggregation (English + domestic sources)
+- Network-restricted environments (3-tier fallback handles blocked sources)
+
+### ❌ Şu durumlarda kullanmayın
+
+- You need synthesized research (use `insight-fuse` instead)
+- Targeted source monitoring (use an RSS reader)
+- Translation tasks (news-fetch returns source language as-is)
+
+> Kodlama molaları için haber özeti — 2 dakikalık tarama, derin analiz veya çeviri yok.
+
+Tam sınır analizi: [references/scope-boundaries.md](../../../skills/news-fetch/references/scope-boundaries.md)
+
+---
+
 ## Lisans
 
 [MIT](../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

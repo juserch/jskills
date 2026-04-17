@@ -226,6 +226,26 @@ compiled_by: claude-opus-4-6
 
 ---
 
+## 사용 시나리오 / 사용 금지 시나리오
+
+### ✅ 사용해야 할 때
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ 사용하지 말아야 할 때
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> LLM이 편찬한 개인 도서관 — 인간의 통찰을 보존하지만, 개인용이며 실시간 동기화나 권한 제어는 하지 않는다.
+
+전체 경계 분석: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 **Q: 위키가 얼마나 커질 수 있나요?**

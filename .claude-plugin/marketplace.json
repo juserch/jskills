@@ -48,7 +48,7 @@
                 "url": "https://github.com/juserai"
             },
             "integrity": {
-                "skill-md-sha256": "7e8a21bbea565c4f95c9788c2bbaabeb24c40f8ed86a4ef6f50e56c1dff4f818"
+                "skill-md-sha256": "7f792418fc689b92c2a317cf39ac8e11712aa6c041aa1408cc3ab0e7cffa1f65"
             },
             "skills": [
                 "./skills/skill-lint"
@@ -116,6 +116,22 @@
             },
             "skills": [
                 "./skills/insight-fuse"
+            ]
+        },
+        {
+            "name": "claim-ground",
+            "description": "Claim Ground — Epistemic constraint engine. Forces runtime-context-first reasoning with inline evidence citation when answering factual questions about current state or when user challenges a prior assertion. Zero-dep.",
+            "version": "1.0.0",
+            "source": "./",
+            "author": {
+                "name": "Juneq Cheung",
+                "url": "https://github.com/juserai"
+            },
+            "integrity": {
+                "skill-md-sha256": "bb74f87371999cc2056e9e93ed4df1dce646b489f6b8092bd4cb925c032bfcc0"
+            },
+            "skills": [
+                "./skills/claim-ground"
             ]
         }
     ]

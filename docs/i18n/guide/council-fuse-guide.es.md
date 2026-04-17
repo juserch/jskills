@@ -128,6 +128,26 @@ Edita el campo `model:` en cada archivo de agente:
 
 ---
 
+## Cuándo usar / Cuándo NO usar
+
+### ✅ Usar cuando
+
+- Architectural decisions needing multiple perspectives
+- You suspect confirmation bias in your current answer
+- You want dissenting views preserved, not erased
+
+### ❌ No usar cuando
+
+- Pure factual queries (use `claim-ground` instead)
+- Creative writing (synthesis flattens style)
+- Speed-critical decisions (3 agents run sequentially — not fast)
+
+> Motor de debate basado en conocimiento de entrenamiento — revela puntos ciegos de una sola perspectiva, pero las conclusiones siguen limitadas.
+
+Análisis completo de límites: [references/scope-boundaries.md](../../../skills/council-fuse/references/scope-boundaries.md)
+
+---
+
 ## Preguntas frecuentes
 
 **P: Cuesta 3 veces mas tokens?**

@@ -1,9 +1,9 @@
 # Forge
 
-> Forge stronger AI agents. 7 skills for a better coding rhythm with Claude Code.
+> Forge stronger AI agents. 8 skills for a better coding rhythm with Claude Code.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-7-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-8-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -49,6 +49,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|-------------|--------|
 | **block-break** | Forces exhaustive problem-solving before giving up | `/block-break` |
 | **ralph-boost** | Autonomous dev loops with convergence guarantee | `/ralph-boost setup` |
+| **claim-ground** | Ground every "current state" claim to runtime evidence | auto-triggered |
 
 ### Crucible
 
@@ -120,6 +121,27 @@ Replicates ralph-claude-code's autonomous loop capability as a skill, with built
 
 > Inspired by [ralph-claude-code](https://github.com/frankbria/ralph-claude-code), reimagined as a zero-dependency skill with convergence guarantee.
 
+## Claim Ground — Epistemic Constraint Engine
+
+Stop hallucinating stale facts. `claim-ground` anchors every "right-now" claim to runtime evidence.
+
+Auto-triggered (no slash command). When Claude is about to answer factual questions about current state — the running model, installed tools, env vars, config values — or when the user challenges a prior assertion, Claim Ground forces quoting the system prompt / tool output / file content *before* drawing a conclusion. When pushed back, Claude re-verifies instead of rephrasing.
+
+| Mechanism | Description |
+|-----------|-------------|
+| **3 Red Lines** | No unsourced assertion / no example-as-exhaustive / no pushback-by-rephrase |
+| **Runtime > Training** | System prompt, env, and tool output always outrank training memory |
+| **Quote-then-conclude** | Raw evidence snippet cited inline before any conclusion |
+| **Verification Playbook** | Question-type → evidence-source mapping (model / CLI / packages / env / files / git / date) |
+
+Trigger examples (auto-detected by description):
+
+- "What model is running?" / "当前模型是什么"
+- "Which version of X is installed?"
+- "Really? / Are you sure? / I thought it was updated"
+
+Works orthogonally with block-break: when both activate, block-break prevents "I give up", claim-ground prevents "I just rephrased my wrong answer".
+
 ## Council Fuse — Multi-Perspective Deliberation Engine
 
 Better answers through structured debate. `/council-fuse` spawns 3 independent perspectives, scores them anonymously, and synthesizes the best answer.
@@ -159,6 +181,28 @@ Built-in multi-perspective analysis (Generalist/Critic/Specialist), extensible r
 /insight-fuse --depth deep --perspectives optimist,pessimist,pragmatist 量子计算商业化
 ```
 
+## Tome Forge — Personal Knowledge Base Engine
+
+Build a personal knowledge base that an LLM compiles and maintains. Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — raw Markdown sources compiled into a structured wiki, no RAG or vector DB needed.
+
+| Feature | Description |
+|---------|-------------|
+| **Three-Layer Architecture** | Raw Sources (immutable) / Wiki (LLM-compiled) / Schema (CLAUDE.md) |
+| **6 Operations** | init, capture, ingest, query, lint, compile |
+| **My Understanding Delta** | Sacred section for human insights — LLM never overwrites |
+| **Zero Infra** | Pure Markdown + Git. No databases, no embeddings, no servers |
+
+```text
+/tome-forge init              # Initialize KB in current directory
+/tome-forge capture "idea"    # Quick-capture a note
+/tome-forge ingest raw/paper  # Compile raw material into wiki
+/tome-forge query "question"  # Search and synthesize
+/tome-forge lint              # Health-check wiki structure
+/tome-forge compile           # Batch compile all new materials
+```
+
+> Inspired by [Karpathy's LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), built as a zero-dependency skill.
+
 ## Skill Lint — Skill Plugin Validator
 
 Validate your Claude Code plugins in one command.
@@ -195,28 +239,6 @@ The other skills push you to work harder. This one reminds you to take a breath.
 /news-fetch robotics month        # This month's robotics news
 /news-fetch climate 2026-03-01~2026-03-31  # Custom date range
 ```
-
-## Tome Forge — Personal Knowledge Base Engine
-
-Build a personal knowledge base that an LLM compiles and maintains. Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — raw Markdown sources compiled into a structured wiki, no RAG or vector DB needed.
-
-| Feature | Description |
-|---------|-------------|
-| **Three-Layer Architecture** | Raw Sources (immutable) / Wiki (LLM-compiled) / Schema (CLAUDE.md) |
-| **6 Operations** | init, capture, ingest, query, lint, compile |
-| **My Understanding Delta** | Sacred section for human insights — LLM never overwrites |
-| **Zero Infra** | Pure Markdown + Git. No databases, no embeddings, no servers |
-
-```text
-/tome-forge init              # Initialize KB in current directory
-/tome-forge capture "idea"    # Quick-capture a note
-/tome-forge ingest raw/paper  # Compile raw material into wiki
-/tome-forge query "question"  # Search and synthesize
-/tome-forge lint              # Health-check wiki structure
-/tome-forge compile           # Batch compile all new materials
-```
-
-> Inspired by [Karpathy's LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), built as a zero-dependency skill.
 
 ## Quality
 

@@ -323,6 +323,26 @@ Block Break 受 [PUA](https://github.com/tanweai/pua) 核心机制（3 条红线
 
 ---
 
+## 使用场景 / 不应使用场景
+
+### ✅ 适用
+
+- Claude gave up too easily ("I can't", rationalized impossibility)
+- The same fix attempt has failed 2-3 times
+- You need exhaustive diagnosis before accepting defeat
+
+### ❌ 不适用
+
+- Doing creative / divergent work (pressure kills exploration)
+- The task is genuinely impossible (missing hardware, no permissions)
+- You want to pause and step back on purpose
+
+> 穷尽式调试的发动机——保证 agent 不过早退出，但不保证退出时的方案正确或最优。
+
+完整边界分析: [references/scope-boundaries.md](../../../skills/block-break/references/scope-boundaries.md)
+
+---
+
 ## 许可证
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -226,6 +226,26 @@ compiled_by: claude-opus-4-6
 
 ---
 
+## 使用場面 / 不向きな場面
+
+### ✅ 使うべきとき
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ 使うべきでないとき
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> LLM 編纂の個人図書館 — 人間の洞察を保護するが、個人設計で実時間同期や権限制御はしない。
+
+完全な境界分析: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 **Q: ウィキはどのくらい大きくなれますか？**

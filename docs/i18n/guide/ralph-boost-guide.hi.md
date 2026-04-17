@@ -365,6 +365,26 @@ tail -f .ralph-boost/logs/boost.log
 
 ---
 
+## कब उपयोग करें / कब उपयोग न करें
+
+### ✅ इन मामलों में उपयोग करें
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ इन मामलों में उपयोग न करें
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> Convergence guarantee के साथ autonomous loop engine — स्पष्ट लक्ष्य और स्थिर environment चाहिए।
+
+पूर्ण सीमा विश्लेषण: [references/scope-boundaries.md](../../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## लाइसेंस
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -133,6 +133,26 @@ Warnings:
 
 ---
 
+## When to use / When NOT to use
+
+### ✅ Use when
+
+- Validating a Claude Code plugin's structure before release
+- Checking integrity hash / convention compliance / i18n coverage
+- As a CI/CD gate for plugin repositories
+
+### ❌ Don't use when
+
+- Non-plugin projects (rules don't apply; you'll get irrelevant errors)
+- Production code quality review (not a linter / type checker / security scanner)
+- License legal review (only checks the `license` field exists)
+
+> Plugin structural CI — ensures convention compliance, not runtime correctness or security.
+
+Full boundary analysis: [references/scope-boundaries.md](../../skills/skill-lint/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 ### Can I run structural checks only, without semantic checks?

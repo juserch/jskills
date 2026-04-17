@@ -91,6 +91,26 @@ Her rapor otomatik olarak kontrol edilir:
 - Tek kaynak orani %40'i asmaz
 - Tum karsilastirmali iddialar verilerle desteklenir
 
+## Ne zaman kullanılmalı / Ne zaman kullanılMAMAlı
+
+### ✅ Şu durumlarda kullanın
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ Şu durumlarda kullanmayın
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> Masaüstü araştırma hattı — çok kaynaklı sentezi yapılandırılabilir sürece dönüştürür, birincil araştırma yapmaz.
+
+Tam sınır analizi: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## council-fuse ile Farki
 
 | | insight-fuse | council-fuse |

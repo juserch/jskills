@@ -7,6 +7,12 @@
 
 通过 WebSearch + WebFetch 获取指定时间段、指定主题的新闻，以 Markdown 清单格式输出。支持三级网络降级策略，确保在不同网络环境下都能获取新闻。
 
+## 覆盖与边界
+
+> news-fetch 是**编码间隙的新闻简报器**——它让你 2 分钟扫一眼世界不用离开终端，但不做深度分析、不做翻译、也不取代 RSS 或专业调研工具。
+
+完整分析（能解决 / 不能解决 / 不应使用）：[references/scope-boundaries.md](../../skills/news-fetch/references/scope-boundaries.md)
+
 ## 命名
 
 遵循 `名称-动词` 模式：news(新闻) + fetch(获取)。

@@ -164,6 +164,26 @@ News Fetch には、さまざまなネットワーク状況でニュース取得
 
 ---
 
+## 使用場面 / 不向きな場面
+
+### ✅ 使うべきとき
+
+- You want a quick news brief between coding sessions
+- Bilingual aggregation (English + domestic sources)
+- Network-restricted environments (3-tier fallback handles blocked sources)
+
+### ❌ 使うべきでないとき
+
+- You need synthesized research (use `insight-fuse` instead)
+- Targeted source monitoring (use an RSS reader)
+- Translation tasks (news-fetch returns source language as-is)
+
+> コーディング合間のニュースブリーフ — 2 分で世界を確認、深い分析や翻訳はしない。
+
+完全な境界分析: [references/scope-boundaries.md](../../../skills/news-fetch/references/scope-boundaries.md)
+
+---
+
 ## ライセンス
 
 [MIT](../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

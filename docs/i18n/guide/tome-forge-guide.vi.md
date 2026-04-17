@@ -226,6 +226,26 @@ Cac phan bat buoc:
 
 ---
 
+## Khi nào dùng / Khi nào KHÔNG dùng
+
+### ✅ Dùng khi
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ Không dùng khi
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> Thư viện cá nhân do LLM biên soạn — giữ gìn insight con người, chỉ cho cá nhân, không sync thời gian thực.
+
+Phân tích phạm vi đầy đủ: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## Cau Hoi Thuong Gap
 
 **H: Wiki co the lon den muc nao?**

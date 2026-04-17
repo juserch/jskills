@@ -7,6 +7,12 @@
 
 蒸馏 Karpathy 的 LLM Council 模式：同一问题发给 3 个独立视角的 agent，匿名评分后由 Chairman 综合最优答案。适用于架构决策、技术选型、代码审查等需要多角度验证的场景。
 
+## 覆盖与边界
+
+> council-fuse 是**基于训练知识的辩证引擎**——它让三个视角撞一撞，把单视角盲点暴露出来，但撞出来的结论仍受限于训练知识本身。
+
+完整分析（能解决 / 不能解决 / 不应使用）：[references/scope-boundaries.md](../../skills/council-fuse/references/scope-boundaries.md)
+
 ## 命名
 
 遵循 `名词-动词` 模式：council(议会) + fuse(熔合)。分类为 crucible（坩埚 — 多源融合、知识沉淀）。

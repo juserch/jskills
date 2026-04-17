@@ -164,6 +164,26 @@ News Fetch में एक अंतर्निहित फ़ॉलबैक
 
 ---
 
+## कब उपयोग करें / कब उपयोग न करें
+
+### ✅ इन मामलों में उपयोग करें
+
+- You want a quick news brief between coding sessions
+- Bilingual aggregation (English + domestic sources)
+- Network-restricted environments (3-tier fallback handles blocked sources)
+
+### ❌ इन मामलों में उपयोग न करें
+
+- You need synthesized research (use `insight-fuse` instead)
+- Targeted source monitoring (use an RSS reader)
+- Translation tasks (news-fetch returns source language as-is)
+
+> Coding ब्रेक के लिए news briefing — 2 मिनट में दुनिया देखें, गहरी analysis या translation नहीं।
+
+पूर्ण सीमा विश्लेषण: [references/scope-boundaries.md](../../../skills/news-fetch/references/scope-boundaries.md)
+
+---
+
 ## लाइसेंस
 
 [MIT](../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

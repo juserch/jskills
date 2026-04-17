@@ -128,6 +128,26 @@ Edit the `model:` field in each agent file:
 
 ---
 
+## When to use / When NOT to use
+
+### ✅ Use when
+
+- Architectural decisions needing multiple perspectives
+- You suspect confirmation bias in your current answer
+- You want dissenting views preserved, not erased
+
+### ❌ Don't use when
+
+- Pure factual queries (use `claim-ground` instead)
+- Creative writing (synthesis flattens style)
+- Speed-critical decisions (3 agents run sequentially — not fast)
+
+> Training-knowledge debate engine — surfaces single-perspective blind spots, but the conclusion is still bounded by training knowledge.
+
+Full boundary analysis: [references/scope-boundaries.md](../../skills/council-fuse/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 **Q: Does it cost 3x the tokens?**

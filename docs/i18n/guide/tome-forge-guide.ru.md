@@ -226,6 +226,26 @@ compiled_by: claude-opus-4-6
 
 ---
 
+## Когда использовать / Когда НЕ использовать
+
+### ✅ Используйте когда
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ Не используйте когда
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> Личная библиотека, скомпилированная LLM — сохраняет человеческие инсайты, рассчитана на одного, без real-time sync.
+
+Полный анализ границ: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 **В: Насколько большой может стать вики?**

@@ -323,6 +323,26 @@ Dùng [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ---
 
+## Khi nào dùng / Khi nào KHÔNG dùng
+
+### ✅ Dùng khi
+
+- Claude gave up too easily ("I can't", rationalized impossibility)
+- The same fix attempt has failed 2-3 times
+- You need exhaustive diagnosis before accepting defeat
+
+### ❌ Không dùng khi
+
+- Doing creative / divergent work (pressure kills exploration)
+- The task is genuinely impossible (missing hardware, no permissions)
+- You want to pause and step back on purpose
+
+> Động cơ debug cạn kiệt — đảm bảo Claude không bỏ cuộc sớm, nhưng không đảm bảo giải pháp đúng.
+
+Phân tích phạm vi đầy đủ: [references/scope-boundaries.md](../../../skills/block-break/references/scope-boundaries.md)
+
+---
+
 ## Giấy phép
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

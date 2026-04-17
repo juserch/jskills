@@ -91,6 +91,26 @@ Jeder Bericht wird automatisch geprueft:
 - Einzelquellenanteil nicht ueber 40%
 - Alle Vergleichsaussagen mit Daten belegt
 
+## Wann verwenden / Wann NICHT verwenden
+
+### ✅ Verwenden wenn
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ Nicht verwenden wenn
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> Desk-Research-Pipeline — verwandelt Multi-Source-Synthese in konfigurierbaren Prozess, keine Primärforschung.
+
+Vollständige Grenzanalyse: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## Unterschied zu council-fuse
 
 | | insight-fuse | council-fuse |

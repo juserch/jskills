@@ -1,9 +1,9 @@
 # Forge
 
-> 张弛有度。7 个 skill，让你和 AI 的编码节奏更好。
+> 张弛有度。8 个 skill，让你和 AI 的编码节奏更好。
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-7-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-8-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -29,6 +29,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|------|--------|
 | **block-break** | 强制穷尽一切方案，不轻言放弃 | `/block-break` |
 | **ralph-boost** | 自主开发循环，保证收敛 | `/ralph-boost setup` |
+| **claim-ground** | 把每一个"此刻"的断言锚定到 runtime 证据 | 自动触发 |
 
 ### Crucible
 
@@ -100,42 +101,26 @@ AI 又放弃了？`/block-break` 强制它穷尽一切方案。
 
 > 参考 [ralph-claude-code](https://github.com/frankbria/ralph-claude-code) 核心循环能力，重构为零依赖 skill 并增加收敛保证。
 
-## Skill Lint — Skill 插件校验工具
+## Claim Ground — 事实锚定认知约束引擎
 
-一条命令校验你的 Claude Code 插件。
+停止复读过时的训练知识。`claim-ground` 把每一个"此刻"的断言锚定到 runtime 证据。
 
-校验 Claude Code plugin 项目中 skill 文件的结构完整性和语义质量。Bash 脚本做结构检查，AI 做语义检查，互补覆盖。
+自动触发（无 slash 命令）。当 Claude 即将回答关于当前状态的事实问题 —— 正在运行的模型、已安装工具、环境变量、配置值 —— 或当用户反驳既往断言时，Claim Ground 强制引用系统 prompt / 工具输出 / 文件原文，**再**下结论。被质疑时，Claude 重新验证，不允许换措辞重申。
 
-| 检查类型 | 说明 |
-|----------|------|
-| **结构检查** | frontmatter 必填字段 / 文件存在性 / references 引用 / marketplace 条目 |
-| **语义检查** | description 质量 / name 一致性 / command 路由 / eval 覆盖度 |
-
-```text
-/skill-lint              # 显示用法
-/skill-lint .            # 校验当前项目
-/skill-lint /path/to/plugin  # 校验指定路径
-```
-
-## News Fetch — 冲刺间隙的放松时刻
-
-debug 累了？`/news-fetch` — 2 分钟的合法摸鱼。
-
-其他 skill 让你更拼命。这个提醒你该喘口气了。在终端里直接抓取任意主题的最新新闻——不用切换上下文，不会掉进浏览器兔子洞。快速扫一眼，刷新大脑，然后回去干活。
-
-| 特性 | 说明 |
+| 机制 | 说明 |
 |------|------|
-| **三级降级** | L1 WebSearch → L2 WebFetch 国内源 → L3 curl |
-| **去重合并** | 同一事件多来源自动合并，保留最高分条目 |
-| **相关性打分** | AI 根据主题匹配度打分排序 |
-| **概要补全** | 无摘要时自动抓取正文生成 |
+| **三条红线** | 无源断言 / 示例当穷举 / 被质疑换措辞 |
+| **Runtime > Training** | 系统 prompt、env、工具输出永远优先于训练记忆 |
+| **先引用后结论** | 结论前贴原文证据片段 |
+| **查证 Playbook** | 问题类型 → 证据源（模型 / CLI / 包 / env / 文件 / git / 日期） |
 
-```text
-/news-fetch AI                    # 本周 AI 新闻
-/news-fetch AI today              # 今日 AI 新闻
-/news-fetch 机器人 month          # 本月机器人新闻
-/news-fetch climate 2026-03-01~2026-03-31  # 指定时间段
-```
+触发示例（由 description 自动检测）：
+
+- "当前模型是什么？" / "What model is running?"
+- "装的是哪个版本的 X？"
+- "真的吗？ / 你确定？ / 已经更新了吧"
+
+与 block-break 正交协同：两者同时激活时，block-break 阻止"我放弃"，claim-ground 阻止"我只是换了个说法重申错误"。
 
 ## Council Fuse — 多视角议会蒸馏引擎
 
@@ -197,6 +182,43 @@ debug 累了？`/news-fetch` — 2 分钟的合法摸鱼。
 ```
 
 > 灵感来源：[Karpathy 的 LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)，构建为零依赖 skill。
+
+## Skill Lint — Skill 插件校验工具
+
+一条命令校验你的 Claude Code 插件。
+
+校验 Claude Code plugin 项目中 skill 文件的结构完整性和语义质量。Bash 脚本做结构检查，AI 做语义检查，互补覆盖。
+
+| 检查类型 | 说明 |
+|----------|------|
+| **结构检查** | frontmatter 必填字段 / 文件存在性 / references 引用 / marketplace 条目 |
+| **语义检查** | description 质量 / name 一致性 / command 路由 / eval 覆盖度 |
+
+```text
+/skill-lint              # 显示用法
+/skill-lint .            # 校验当前项目
+/skill-lint /path/to/plugin  # 校验指定路径
+```
+
+## News Fetch — 冲刺间隙的放松时刻
+
+debug 累了？`/news-fetch` — 2 分钟的合法摸鱼。
+
+其他 skill 让你更拼命。这个提醒你该喘口气了。在终端里直接抓取任意主题的最新新闻——不用切换上下文，不会掉进浏览器兔子洞。快速扫一眼，刷新大脑，然后回去干活。
+
+| 特性 | 说明 |
+|------|------|
+| **三级降级** | L1 WebSearch → L2 WebFetch 国内源 → L3 curl |
+| **去重合并** | 同一事件多来源自动合并，保留最高分条目 |
+| **相关性打分** | AI 根据主题匹配度打分排序 |
+| **概要补全** | 无摘要时自动抓取正文生成 |
+
+```text
+/news-fetch AI                    # 本周 AI 新闻
+/news-fetch AI today              # 今日 AI 新闻
+/news-fetch 机器人 month          # 本月机器人新闻
+/news-fetch climate 2026-03-01~2026-03-31  # 指定时间段
+```
 
 ## 质量保证
 

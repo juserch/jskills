@@ -91,6 +91,26 @@ Stage 1 + 3 + 5를 실행합니다. 표준 조사를 기반으로 모든 하위 
 - 단일 출처 비율이 40%를 초과하지 않음
 - 모든 비교 주장이 데이터로 뒷받침됨
 
+## 사용 시나리오 / 사용 금지 시나리오
+
+### ✅ 사용해야 할 때
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ 사용하지 말아야 할 때
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> 데스크 리서치 파이프라인 — 다중 소스 종합을 구성 가능한 프로세스로 전환하지만, 1차 조사는 하지 않는다.
+
+전체 경계 분석: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## council-fuse와의 차이점
 
 | | insight-fuse | council-fuse |

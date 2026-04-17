@@ -1,9 +1,9 @@
 # Forge
 
-> 全力で取り組み、ひと休みする。Claude Code との開発リズムを整える 7 つの skill。
+> 全力で取り組み、ひと休みする。Claude Code との開発リズムを整える 8 つの skill。
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-7-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-8-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -29,6 +29,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|------|------------|
 | **block-break** | あらゆるアプローチを尽くすまで諦めさせない | `/block-break` |
 | **ralph-boost** | 収束を保証する自律型開発ループ | `/ralph-boost setup` |
+| **claim-ground** | すべての「今この瞬間」の主張を runtime 証拠に固定 | 自動トリガー |
 
 ### Crucible
 
@@ -100,42 +101,26 @@ ralph-claude-code の自律ループ機能を skill として再現し、Block B
 
 > [ralph-claude-code](https://github.com/frankbria/ralph-claude-code) の自律ループ機能を参考に、ゼロ依存の skill として収束保証付きで再構築。
 
-## Skill Lint — Skill プラグインバリデーター
+## Claim Ground — 認識制約エンジン
 
-コマンド一発で Claude Code プラグインを検証。
+古い訓練知識の幻覚を止める。`claim-ground` はすべての「今この瞬間」の主張を runtime 証拠に固定します。
 
-Claude Code plugin プロジェクトの skill ファイルについて、構造の整合性と意味的な品質をチェックします。Bash スクリプトが構造チェックを、AI が意味チェックを担当し、相互に補完します。
+自動トリガー（slash コマンドなし）。Claude が現在の状態に関する事実質問（実行中のモデル、インストール済みツール、環境変数、設定値）に答えようとする時、あるいはユーザーが過去の主張に異議を唱える時、Claim Ground は結論を出す**前**にシステムプロンプト / ツール出力 / ファイル内容の引用を強制します。反論されると、Claude は言い換えではなく再検証します。
 
-| チェック種別 | 説明 |
-|-------------|------|
-| **構造チェック** | frontmatter 必須フィールド / ファイル存在確認 / references 参照 / marketplace エントリ |
-| **意味チェック** | description の品質 / name の一貫性 / command ルーティング / eval カバレッジ |
+| 仕組み | 説明 |
+|--------|------|
+| **3 つのレッドライン** | 無根拠な断言 / 例示を網羅と見なす / 反論を言い換えで応答 |
+| **Runtime > Training** | システムプロンプト、env、ツール出力は常に訓練記憶より優先 |
+| **引用してから結論** | 結論前に生の証拠片を引用 |
+| **検証プレイブック** | 質問タイプ → 証拠源（モデル / CLI / パッケージ / env / ファイル / git / 日付） |
 
-```text
-/skill-lint              # 使い方を表示
-/skill-lint .            # 現在のプロジェクトを検証
-/skill-lint /path/to/plugin  # 指定パスを検証
-```
+トリガー例（description により自動検知）：
 
-## News Fetch — スプリントの合間のリフレッシュ
+- 「何のモデルが実行中？」/ "What model is running?"
+- 「X のバージョンは？」
+- 「本当に？ / 確実？ / 更新されたはず」
 
-デバッグ疲れしていませんか？ `/news-fetch` で 2 分間の気分転換を。
-
-他の skill はあなたを追い込みます。この skill は深呼吸を思い出させてくれます。ターミナルから直接、好きなトピックの最新ニュースを取得できます。コンテキストスイッチ不要、ブラウザの沼にハマる心配もなし。サッと目を通して、リフレッシュしたら仕事に戻りましょう。
-
-| 特徴 | 説明 |
-|------|------|
-| **3 段フォールバック** | L1 WebSearch → L2 WebFetch（地域ソース）→ L3 curl |
-| **重複排除・統合** | 同一イベントの複数ソースを自動統合、最高スコアを保持 |
-| **関連性スコアリング** | AI がトピックとの一致度でスコア付け・ソート |
-| **自動要約** | 要約がない場合、記事本文から自動生成 |
-
-```text
-/news-fetch AI                    # 今週の AI ニュース
-/news-fetch AI today              # 今日の AI ニュース
-/news-fetch robotics month        # 今月のロボティクスニュース
-/news-fetch climate 2026-03-01~2026-03-31  # 期間を指定
-```
+block-break と直交的に連携：両方が起動すると、block-break が「諦め」を防ぎ、claim-ground が「同じ誤答の言い換え」を防ぎます。
 
 ## Council Fuse — 多角的議論エンジン
 
@@ -197,6 +182,43 @@ LLMが編纂・維持するパーソナルナレッジベースを構築。[Karp
 ```
 
 > [Karpathy の LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) にインスパイア、ゼロ依存スキルとして構築。
+
+## Skill Lint — Skill プラグインバリデーター
+
+コマンド一発で Claude Code プラグインを検証。
+
+Claude Code plugin プロジェクトの skill ファイルについて、構造の整合性と意味的な品質をチェックします。Bash スクリプトが構造チェックを、AI が意味チェックを担当し、相互に補完します。
+
+| チェック種別 | 説明 |
+|-------------|------|
+| **構造チェック** | frontmatter 必須フィールド / ファイル存在確認 / references 参照 / marketplace エントリ |
+| **意味チェック** | description の品質 / name の一貫性 / command ルーティング / eval カバレッジ |
+
+```text
+/skill-lint              # 使い方を表示
+/skill-lint .            # 現在のプロジェクトを検証
+/skill-lint /path/to/plugin  # 指定パスを検証
+```
+
+## News Fetch — スプリントの合間のリフレッシュ
+
+デバッグ疲れしていませんか？ `/news-fetch` で 2 分間の気分転換を。
+
+他の skill はあなたを追い込みます。この skill は深呼吸を思い出させてくれます。ターミナルから直接、好きなトピックの最新ニュースを取得できます。コンテキストスイッチ不要、ブラウザの沼にハマる心配もなし。サッと目を通して、リフレッシュしたら仕事に戻りましょう。
+
+| 特徴 | 説明 |
+|------|------|
+| **3 段フォールバック** | L1 WebSearch → L2 WebFetch（地域ソース）→ L3 curl |
+| **重複排除・統合** | 同一イベントの複数ソースを自動統合、最高スコアを保持 |
+| **関連性スコアリング** | AI がトピックとの一致度でスコア付け・ソート |
+| **自動要約** | 要約がない場合、記事本文から自動生成 |
+
+```text
+/news-fetch AI                    # 今週の AI ニュース
+/news-fetch AI today              # 今日の AI ニュース
+/news-fetch robotics month        # 今月のロボティクスニュース
+/news-fetch climate 2026-03-01~2026-03-31  # 期間を指定
+```
 
 ## 品質保証
 

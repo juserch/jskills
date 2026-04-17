@@ -1,9 +1,9 @@
 # Forge
 
-> 더 열심히, 그리고 잠깐 쉬어가기. Claude Code와 함께하는 더 나은 코딩 리듬을 위한 7가지 skill.
+> 더 열심히, 그리고 잠깐 쉬어가기. Claude Code와 함께하는 더 나은 코딩 리듬을 위한 8가지 skill.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-7-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-8-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -29,6 +29,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|------|-------------|
 | **block-break** | 포기하기 전에 모든 방법을 소진하도록 강제합니다 | `/block-break` |
 | **ralph-boost** | 수렴을 보장하는 자율 개발 루프 | `/ralph-boost setup` |
+| **claim-ground** | 모든 "지금 이 순간"의 주장을 runtime 증거에 고정 | 자동 트리거 |
 
 ### Crucible
 
@@ -100,42 +101,26 @@ ralph-claude-code의 자율 루프 기능을 skill 형태로 구현했으며, Bl
 
 > [ralph-claude-code](https://github.com/frankbria/ralph-claude-code)의 자율 루프 기능을 참고하여, 수렴 보장이 내장된 제로 의존성 skill로 재구현했습니다.
 
-## Skill Lint — Skill 플러그인 검증 도구
+## Claim Ground — 인식 제약 엔진
 
-명령어 한 줄로 Claude Code 플러그인을 검증합니다.
+오래된 훈련 지식의 환각을 멈추세요. `claim-ground` 는 모든 "지금 이 순간" 의 주장을 runtime 증거에 고정합니다.
 
-Claude Code plugin 프로젝트 내 skill 파일의 구조적 완전성과 의미적 품질을 검사합니다. Bash 스크립트가 구조 검사를, AI가 의미 검사를 담당하여 상호 보완합니다.
+자동 트리거 (slash 명령어 없음). Claude 가 현재 상태에 관한 사실 질문 — 실행 중인 모델, 설치된 도구, 환경 변수, 설정 값 — 에 답하려 하거나, 사용자가 이전 주장에 이의를 제기할 때, Claim Ground 는 결론을 내기 **전에** 시스템 프롬프트 / 도구 출력 / 파일 내용의 인용을 강제합니다. 반박받으면 Claude 는 재표현이 아닌 재검증을 수행합니다.
 
-| 검사 유형 | 설명 |
-|-----------|------|
-| **구조 검사** | frontmatter 필수 필드 / 파일 존재 여부 / references 참조 / marketplace 항목 |
-| **의미 검사** | description 품질 / name 일관성 / command 라우팅 / eval 커버리지 |
+| 메커니즘 | 설명 |
+|----------|------|
+| **3 개의 레드 라인** | 근거 없는 단언 / 예시를 열거로 취급 / 반박에 재표현으로 응답 |
+| **Runtime > Training** | 시스템 프롬프트, env, 도구 출력은 항상 훈련 기억보다 우선 |
+| **인용 먼저, 결론 나중** | 결론 전 원본 증거 조각 인용 |
+| **검증 플레이북** | 질문 유형 → 증거 출처 (모델 / CLI / 패키지 / env / 파일 / git / 날짜) |
 
-```text
-/skill-lint              # 사용법 표시
-/skill-lint .            # 현재 프로젝트 검증
-/skill-lint /path/to/plugin  # 특정 경로 검증
-```
+트리거 예시 (description 에 의해 자동 감지):
 
-## News Fetch — 스프린트 사이의 재충전
+- "현재 실행 중인 모델은?" / "What model is running?"
+- "X 의 설치된 버전은?"
+- "정말? / 확실? / 이미 업데이트되지 않았나?"
 
-디버깅에 지치셨습니까? `/news-fetch` — 2분짜리 리프레시 타임.
-
-나머지 skill들은 더 열심히 일하게 만듭니다. 이것은 잠시 숨을 돌리라고 알려줍니다. 터미널에서 바로 원하는 주제의 최신 뉴스를 확인하세요 — 컨텍스트 전환도, 브라우저에 빠져드는 일도 없습니다. 빠르게 훑어보고, 머리를 환기시킨 다음, 다시 코딩으로 돌아가십시오.
-
-| 기능 | 설명 |
-|------|------|
-| **3단계 Fallback** | L1 WebSearch → L2 WebFetch (지역 소스) → L3 curl |
-| **중복 제거 및 병합** | 여러 소스의 동일 이벤트를 자동 병합, 최고 점수 항목 유지 |
-| **관련성 점수** | AI가 주제 일치도 기준으로 점수를 매기고 정렬 |
-| **자동 요약** | 기사 본문에서 요약을 자동 생성 |
-
-```text
-/news-fetch AI                    # 이번 주 AI 뉴스
-/news-fetch AI today              # 오늘의 AI 뉴스
-/news-fetch robotics month        # 이번 달 로보틱스 뉴스
-/news-fetch climate 2026-03-01~2026-03-31  # 기간 지정
-```
+block-break 와 직교적으로 협업: 둘 다 활성화되면 block-break 는 "포기" 를 막고 claim-ground 는 "같은 오답 재표현" 을 막습니다.
 
 ## Council Fuse — 다관점 심의 엔진
 
@@ -197,6 +182,43 @@ LLM이 편찬하고 유지하는 개인 지식 베이스를 구축합니다. [Ka
 ```
 
 > [Karpathy의 LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)에서 영감, 제로 의존성 스킬로 구축.
+
+## Skill Lint — Skill 플러그인 검증 도구
+
+명령어 한 줄로 Claude Code 플러그인을 검증합니다.
+
+Claude Code plugin 프로젝트 내 skill 파일의 구조적 완전성과 의미적 품질을 검사합니다. Bash 스크립트가 구조 검사를, AI가 의미 검사를 담당하여 상호 보완합니다.
+
+| 검사 유형 | 설명 |
+|-----------|------|
+| **구조 검사** | frontmatter 필수 필드 / 파일 존재 여부 / references 참조 / marketplace 항목 |
+| **의미 검사** | description 품질 / name 일관성 / command 라우팅 / eval 커버리지 |
+
+```text
+/skill-lint              # 사용법 표시
+/skill-lint .            # 현재 프로젝트 검증
+/skill-lint /path/to/plugin  # 특정 경로 검증
+```
+
+## News Fetch — 스프린트 사이의 재충전
+
+디버깅에 지치셨습니까? `/news-fetch` — 2분짜리 리프레시 타임.
+
+나머지 skill들은 더 열심히 일하게 만듭니다. 이것은 잠시 숨을 돌리라고 알려줍니다. 터미널에서 바로 원하는 주제의 최신 뉴스를 확인하세요 — 컨텍스트 전환도, 브라우저에 빠져드는 일도 없습니다. 빠르게 훑어보고, 머리를 환기시킨 다음, 다시 코딩으로 돌아가십시오.
+
+| 기능 | 설명 |
+|------|------|
+| **3단계 Fallback** | L1 WebSearch → L2 WebFetch (지역 소스) → L3 curl |
+| **중복 제거 및 병합** | 여러 소스의 동일 이벤트를 자동 병합, 최고 점수 항목 유지 |
+| **관련성 점수** | AI가 주제 일치도 기준으로 점수를 매기고 정렬 |
+| **자동 요약** | 기사 본문에서 요약을 자동 생성 |
+
+```text
+/news-fetch AI                    # 이번 주 AI 뉴스
+/news-fetch AI today              # 오늘의 AI 뉴스
+/news-fetch robotics month        # 이번 달 로보틱스 뉴스
+/news-fetch climate 2026-03-01~2026-03-31  # 기간 지정
+```
 
 ## 품질 보증
 

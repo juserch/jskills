@@ -226,6 +226,26 @@ compiled_by: claude-opus-4-6
 
 ---
 
+## कब उपयोग करें / कब उपयोग न करें
+
+### ✅ इन मामलों में उपयोग करें
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ इन मामलों में उपयोग न करें
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> LLM-compiled व्यक्तिगत library — human insights सुरक्षित रखता है, केवल व्यक्ति के लिए; team sync या permission नहीं।
+
+पूर्ण सीमा विश्लेषण: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 **प्रश्न: विकी कितना बड़ा हो सकता है?**

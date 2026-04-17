@@ -144,6 +144,26 @@ Articles are sorted by score in descending order. The scoring is heuristic and b
 
 ---
 
+## When to use / When NOT to use
+
+### ✅ Use when
+
+- You want a quick news brief between coding sessions
+- Bilingual aggregation (English + domestic sources)
+- Network-restricted environments (3-tier fallback handles blocked sources)
+
+### ❌ Don't use when
+
+- You need synthesized research (use `insight-fuse` instead)
+- Targeted source monitoring (use an RSS reader)
+- Translation tasks (news-fetch returns source language as-is)
+
+> News brief for coding breaks — 2-minute scan, not a research tool or translator.
+
+Full boundary analysis: [references/scope-boundaries.md](../../skills/news-fetch/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 ### Do I need an API key?

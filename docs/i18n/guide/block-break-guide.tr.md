@@ -323,6 +323,26 @@ Temel SKILL.md, sistem promptlarını destekleyen herhangi bir AI aracına kopya
 
 ---
 
+## Ne zaman kullanılmalı / Ne zaman kullanılMAMAlı
+
+### ✅ Şu durumlarda kullanın
+
+- Claude gave up too easily ("I can't", rationalized impossibility)
+- The same fix attempt has failed 2-3 times
+- You need exhaustive diagnosis before accepting defeat
+
+### ❌ Şu durumlarda kullanmayın
+
+- Doing creative / divergent work (pressure kills exploration)
+- The task is genuinely impossible (missing hardware, no permissions)
+- You want to pause and step back on purpose
+
+> Kapsamlı hata ayıklama motoru — Claude'un erken pes etmemesini sağlar, ama çözümün doğruluğunu garanti etmez.
+
+Tam sınır analizi: [references/scope-boundaries.md](../../../skills/block-break/references/scope-boundaries.md)
+
+---
+
 ## Lisans
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

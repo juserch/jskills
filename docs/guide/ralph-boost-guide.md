@@ -323,6 +323,26 @@ Code is fully independent; concepts are shared.
 
 ---
 
+## When to use / When NOT to use
+
+### ✅ Use when
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ Don't use when
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> Autonomous dev loop with convergence guarantee — needs clear goals and a stable environment to truly converge.
+
+Full boundary analysis: [references/scope-boundaries.md](../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 ### How do I choose between the primary path and fallback?

@@ -46,7 +46,7 @@ metadata:
 13. **设计文档** — `docs/plans/<name>-design.md` 是否存在
 14. **平台适配** — 配置中 `platforms` 数组指定的平台目录下是否有对应 SKILL.md 及 references
 15. **i18n 覆盖** — 配置中 `i18n-dir` 指定目录下的每个 README 是否包含该 skill
-16. **i18n 使用手册** — `docs/guide/i18n/<name>-guide.<lang>.md` 是否对每个语言都存在
+16. **i18n 使用手册** — `docs/i18n/guide/<name>-guide.<lang>.md` 是否对每个语言都存在
 
 **`.skill-lint.json` 配置示例：**
 

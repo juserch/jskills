@@ -13,6 +13,12 @@ Block Break — 高能动性行为约束引擎。被阻塞时突破它。
 
 > **参考来源**：核心机制（三条红线、压力升级、五步方法论）参考 [PUA](https://github.com/tanweai/pua)，精简为零依赖的行为约束 skill。
 
+## 覆盖与边界
+
+> block-break 是**穷尽式调试的发动机**——它保证 agent 不会过早退出，但不保证退出时的方案是最优、正确或应该执行的。它管"有没有努力"，不管"努力的方向对不对"。
+
+完整分析（能解决 / 不能解决 / 不应使用）：[references/scope-boundaries.md](../../skills/block-break/references/scope-boundaries.md)
+
 ## 命名决策
 
 | 候选名 | 评价 | 结果 |

@@ -128,6 +128,26 @@ Chinh sua truong `model:` trong moi tap tin tac tu:
 
 ---
 
+## Khi nào dùng / Khi nào KHÔNG dùng
+
+### ✅ Dùng khi
+
+- Architectural decisions needing multiple perspectives
+- You suspect confirmation bias in your current answer
+- You want dissenting views preserved, not erased
+
+### ❌ Không dùng khi
+
+- Pure factual queries (use `claim-ground` instead)
+- Creative writing (synthesis flattens style)
+- Speed-critical decisions (3 agents run sequentially — not fast)
+
+> Động cơ tranh biện dựa trên tri thức huấn luyện — phơi bày điểm mù đơn góc nhìn, nhưng kết luận vẫn giới hạn bởi tri thức huấn luyện.
+
+Phân tích phạm vi đầy đủ: [references/scope-boundaries.md](../../../skills/council-fuse/references/scope-boundaries.md)
+
+---
+
 ## Cau hoi thuong gap
 
 **H: Co ton 3 lan token khong?**

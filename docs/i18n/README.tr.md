@@ -1,9 +1,9 @@
 # Forge
 
-> Daha çok çalış, sonra bir mola ver. Claude Code ile daha iyi bir kodlama ritmi için 7 skill.
+> Daha çok çalış, sonra bir mola ver. Claude Code ile daha iyi bir kodlama ritmi için 8 skill.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-7-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-8-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -49,6 +49,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|----------|------|
 | **block-break** | Pes etmeden önce tüm yaklaşımları denemeye zorlar | `/block-break` |
 | **ralph-boost** | Yakınsama garantili otonom geliştirme döngüleri | `/ralph-boost setup` |
+| **claim-ground** | Her "şu anki" iddiayı runtime kanıtına bağlar | otomatik tetikleme |
 
 ### Crucible
 
@@ -120,42 +121,26 @@ ralph-claude-code'un otonom döngü yeteneğini bir skill olarak yeniden üretir
 
 > [ralph-claude-code](https://github.com/frankbria/ralph-claude-code)'dan ilham alınmıştır, yakınsama garantili sıfır bağımlılıklı bir skill olarak yeniden tasarlanmıştır.
 
-## Skill Lint — Skill Plugin Doğrulayıcı
+## Claim Ground — Epistemik Kısıtlama Motoru
 
-Claude Code plugin'lerini tek komutla doğrula.
+Eski eğitim olgularından halüsinasyonu durdur. `claim-ground` her "şu anki" iddiayı runtime kanıtına bağlar.
 
-Herhangi bir Claude Code plugin projesindeki skill dosyalarının yapısal bütünlüğünü ve anlamsal kalitesini kontrol eder. Bash scriptleri yapısal kontrolleri, AI anlamsal kontrolleri üstlenir — tamamlayıcı kapsam.
+Otomatik tetiklenir (slash komutu yok). Claude mevcut durumla ilgili olgusal sorulara cevap vermek üzereyken — çalışan model, kurulu araçlar, env vars, yapılandırma değerleri — veya kullanıcı önceki bir iddiaya itiraz ettiğinde, Claim Ground sonuç çıkarmadan **önce** sistem promptu / tool çıktısı / dosya içeriğinin alıntılanmasını zorunlu kılar. İtiraz edildiğinde Claude yeniden ifade etmek yerine yeniden doğrular.
 
-| Kontrol Türü | Açıklama |
-|--------------|----------|
-| **Yapısal** | Frontmatter zorunlu alanları / dosya varlığı / referans bağlantıları / marketplace girdileri |
-| **Anlamsal** | Açıklama kalitesi / isim tutarlılığı / komut yönlendirme / eval kapsamı |
+| Mekanizma | Açıklama |
+|-----------|----------|
+| **3 Kırmızı Çizgi** | Kaynağı olmayan iddia yok / Örneği kapsayıcı sayma yok / İtiraza yeniden ifadeyle cevap yok |
+| **Runtime > Training** | Sistem promptu, env ve tool çıktısı her zaman eğitim hafızasından üstün |
+| **Önce-alıntıla-sonra-sonuçlandır** | Her sonuçtan önce ham kanıt parçası inline alıntılanır |
+| **Doğrulama Playbook** | Soru türü → kanıt kaynağı (model / CLI / paketler / env / dosyalar / git / tarih) |
 
-```text
-/skill-lint              # Kullanımı göster
-/skill-lint .            # Mevcut projeyi doğrula
-/skill-lint /path/to/plugin  # Belirli bir yolu doğrula
-```
+Tetikleme örnekleri (description tarafından otomatik tespit):
 
-## News Fetch — Sprint'ler Arasında Zihinsel Molan
+- "Hangi model çalışıyor?" / "What model is running?"
+- "X'in hangi sürümü kurulu?"
+- "Gerçekten mi? / Emin misin? / Güncellendi sanıyordum"
 
-Hata ayıklamaktan tükendin mi? `/news-fetch` — 2 dakikalık zihinsel molan.
-
-Diğer skill'ler seni daha çok çalışmaya zorlar. Bu skill nefes almayı hatırlatır. Herhangi bir konudaki son haberleri doğrudan terminalden al — bağlam değişikliği yok, tarayıcı tavşan delikleri yok. Hızlı bir göz at ve tazelenmiş olarak işe geri dön.
-
-| Özellik | Açıklama |
-|---------|----------|
-| **3 Kademeli Yedekleme** | L1 WebSearch → L2 WebFetch (bölgesel kaynaklar) → L3 curl |
-| **Tekilleştirme ve Birleştirme** | Birden fazla kaynaktan aynı olay otomatik birleştirilir, en yüksek puanlı tutulur |
-| **Alaka Puanlama** | AI konu eşleşmesine göre puanlar ve sıralar |
-| **Otomatik Özet** | Eksik özetler makale gövdesinden otomatik oluşturulur |
-
-```text
-/news-fetch AI                    # Bu haftanın AI haberleri
-/news-fetch AI today              # Bugünün AI haberleri
-/news-fetch robotics month        # Bu ayın robotik haberleri
-/news-fetch climate 2026-03-01~2026-03-31  # Özel tarih aralığı
-```
+block-break ile dikey çalışır: ikisi de aktifken, block-break "pes ediyorum"u engeller, claim-ground "sadece yanlış cevabımı yeniden ifade ettim"i engeller.
 
 ## Council Fuse — Çok Perspektifli Müzakere Motoru
 
@@ -217,6 +202,43 @@ LLM tarafından derlenen ve bakımı yapılan kişisel bilgi tabanı oluşturun.
 ```
 
 > [Karpathy'nin LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)'sinden ilham alınmıştır, sıfır bağımlılıklı bir skill olarak oluşturulmuştur.
+
+## Skill Lint — Skill Plugin Doğrulayıcı
+
+Claude Code plugin'lerini tek komutla doğrula.
+
+Herhangi bir Claude Code plugin projesindeki skill dosyalarının yapısal bütünlüğünü ve anlamsal kalitesini kontrol eder. Bash scriptleri yapısal kontrolleri, AI anlamsal kontrolleri üstlenir — tamamlayıcı kapsam.
+
+| Kontrol Türü | Açıklama |
+|--------------|----------|
+| **Yapısal** | Frontmatter zorunlu alanları / dosya varlığı / referans bağlantıları / marketplace girdileri |
+| **Anlamsal** | Açıklama kalitesi / isim tutarlılığı / komut yönlendirme / eval kapsamı |
+
+```text
+/skill-lint              # Kullanımı göster
+/skill-lint .            # Mevcut projeyi doğrula
+/skill-lint /path/to/plugin  # Belirli bir yolu doğrula
+```
+
+## News Fetch — Sprint'ler Arasında Zihinsel Molan
+
+Hata ayıklamaktan tükendin mi? `/news-fetch` — 2 dakikalık zihinsel molan.
+
+Diğer skill'ler seni daha çok çalışmaya zorlar. Bu skill nefes almayı hatırlatır. Herhangi bir konudaki son haberleri doğrudan terminalden al — bağlam değişikliği yok, tarayıcı tavşan delikleri yok. Hızlı bir göz at ve tazelenmiş olarak işe geri dön.
+
+| Özellik | Açıklama |
+|---------|----------|
+| **3 Kademeli Yedekleme** | L1 WebSearch → L2 WebFetch (bölgesel kaynaklar) → L3 curl |
+| **Tekilleştirme ve Birleştirme** | Birden fazla kaynaktan aynı olay otomatik birleştirilir, en yüksek puanlı tutulur |
+| **Alaka Puanlama** | AI konu eşleşmesine göre puanlar ve sıralar |
+| **Otomatik Özet** | Eksik özetler makale gövdesinden otomatik oluşturulur |
+
+```text
+/news-fetch AI                    # Bu haftanın AI haberleri
+/news-fetch AI today              # Bugünün AI haberleri
+/news-fetch robotics month        # Bu ayın robotik haberleri
+/news-fetch climate 2026-03-01~2026-03-31  # Özel tarih aralığı
+```
 
 ## Kalite
 

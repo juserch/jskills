@@ -1,9 +1,9 @@
 # Forge
 
-> Làm việc chăm chỉ hơn, rồi nghỉ ngơi một chút. 7 skill giúp bạn có nhịp code tốt hơn với Claude Code.
+> Làm việc chăm chỉ hơn, rồi nghỉ ngơi một chút. 8 skill giúp bạn có nhịp code tốt hơn với Claude Code.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE)
-[![Skills](https://img.shields.io/badge/skills-7-blue.svg)]()
+[![Skills](https://img.shields.io/badge/skills-8-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/platform-Claude%20Code-purple.svg)]()
 [![OpenClaw](https://img.shields.io/badge/platform-OpenClaw-orange.svg)]()
@@ -49,6 +49,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|-----------|----------|
 | **block-break** | Buộc phải thử hết mọi cách trước khi bỏ cuộc | `/block-break` |
 | **ralph-boost** | Vòng lặp phát triển tự động với đảm bảo hội tụ | `/ralph-boost setup` |
+| **claim-ground** | Neo mỗi tuyên bố "khoảnh khắc hiện tại" vào bằng chứng runtime | tự kích hoạt |
 
 ### Crucible
 
@@ -120,42 +121,26 @@ Tái tạo khả năng vòng lặp tự động của ralph-claude-code dưới 
 
 > Lấy cảm hứng từ [ralph-claude-code](https://github.com/frankbria/ralph-claude-code), tái thiết kế thành skill không phụ thuộc với đảm bảo hội tụ.
 
-## Skill Lint — Công cụ Kiểm tra Skill Plugin
+## Claim Ground — Công cụ Ràng buộc Nhận thức
 
-Kiểm tra Claude Code plugin của bạn chỉ với một lệnh.
+Ngừng ảo giác các sự kiện lỗi thời. `claim-ground` neo mỗi tuyên bố "khoảnh khắc hiện tại" vào bằng chứng runtime.
 
-Kiểm tra tính toàn vẹn cấu trúc và chất lượng ngữ nghĩa của các file skill trong bất kỳ dự án Claude Code plugin nào. Bash script xử lý kiểm tra cấu trúc, AI xử lý kiểm tra ngữ nghĩa — bổ trợ lẫn nhau.
+Tự động kích hoạt (không có slash command). Khi Claude sắp trả lời các câu hỏi sự kiện về trạng thái hiện tại — model đang chạy, công cụ đã cài, env vars, giá trị cấu hình — hoặc khi người dùng phản đối một khẳng định trước đó, Claim Ground buộc trích dẫn system prompt / output của tool / nội dung file **trước khi** rút ra kết luận. Khi bị phản đối, Claude xác minh lại thay vì diễn đạt lại.
 
-| Loại kiểm tra | Mô tả |
-|---------------|-------|
-| **Cấu trúc** | Các trường bắt buộc trong frontmatter / sự tồn tại file / liên kết tham chiếu / mục marketplace |
-| **Ngữ nghĩa** | Chất lượng mô tả / tính nhất quán tên / định tuyến lệnh / phạm vi eval |
+| Cơ chế | Mô tả |
+|--------|-------|
+| **3 Ranh giới Đỏ** | Không khẳng định không nguồn / Không coi ví dụ là danh sách đầy đủ / Không phản hồi phản đối bằng diễn đạt lại |
+| **Runtime > Training** | System prompt, env và output tool luôn vượt trội bộ nhớ huấn luyện |
+| **Trích trước-kết luận sau** | Đoạn bằng chứng thô được trích dẫn inline trước mọi kết luận |
+| **Playbook Xác minh** | Loại câu hỏi → nguồn bằng chứng (model / CLI / packages / env / files / git / ngày) |
 
-```text
-/skill-lint              # Hiển thị hướng dẫn sử dụng
-/skill-lint .            # Kiểm tra dự án hiện tại
-/skill-lint /path/to/plugin  # Kiểm tra một đường dẫn cụ thể
-```
+Ví dụ kích hoạt (tự động phát hiện qua description):
 
-## News Fetch — Giải lao Tinh thần Giữa các Sprint
+- "Model nào đang chạy?" / "What model is running?"
+- "Phiên bản nào của X đã cài?"
+- "Thật sao? / Chắc chứ? / Tôi tưởng đã cập nhật rồi"
 
-Kiệt sức vì debug? `/news-fetch` — 2 phút giải lao tinh thần cho bạn.
-
-Các skill khác đẩy bạn làm việc chăm chỉ hơn. Skill này nhắc bạn hít thở. Lấy tin tức mới nhất về bất kỳ chủ đề nào, ngay từ terminal — không cần chuyển ngữ cảnh, không lạc vào hố thỏ trình duyệt. Lướt nhanh rồi quay lại công việc, tinh thần sảng khoái.
-
-| Tính năng | Mô tả |
-|-----------|-------|
-| **Dự phòng 3 Tầng** | L1 WebSearch → L2 WebFetch (nguồn khu vực) → L3 curl |
-| **Loại trùng & Gộp** | Cùng sự kiện từ nhiều nguồn tự động gộp, giữ bản điểm cao nhất |
-| **Chấm điểm Liên quan** | AI chấm điểm và sắp xếp theo độ phù hợp chủ đề |
-| **Tóm tắt Tự động** | Tóm tắt thiếu được tự động tạo từ nội dung bài viết |
-
-```text
-/news-fetch AI                    # Tin AI tuần này
-/news-fetch AI today              # Tin AI hôm nay
-/news-fetch robotics month        # Tin robotics tháng này
-/news-fetch climate 2026-03-01~2026-03-31  # Khoảng thời gian tùy chọn
-```
+Hoạt động trực giao với block-break: khi cả hai kích hoạt, block-break ngăn "tôi bỏ cuộc", claim-ground ngăn "tôi chỉ diễn đạt lại câu trả lời sai".
 
 ## Council Fuse — Công cụ Thảo luận Đa Góc nhìn
 
@@ -217,6 +202,43 @@ Tạo cơ sở tri thức cá nhân được LLM biên soạn và duy trì. Dự
 ```
 
 > Lấy cảm hứng từ [LLM Wiki của Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), xây dựng thành skill không phụ thuộc.
+
+## Skill Lint — Công cụ Kiểm tra Skill Plugin
+
+Kiểm tra Claude Code plugin của bạn chỉ với một lệnh.
+
+Kiểm tra tính toàn vẹn cấu trúc và chất lượng ngữ nghĩa của các file skill trong bất kỳ dự án Claude Code plugin nào. Bash script xử lý kiểm tra cấu trúc, AI xử lý kiểm tra ngữ nghĩa — bổ trợ lẫn nhau.
+
+| Loại kiểm tra | Mô tả |
+|---------------|-------|
+| **Cấu trúc** | Các trường bắt buộc trong frontmatter / sự tồn tại file / liên kết tham chiếu / mục marketplace |
+| **Ngữ nghĩa** | Chất lượng mô tả / tính nhất quán tên / định tuyến lệnh / phạm vi eval |
+
+```text
+/skill-lint              # Hiển thị hướng dẫn sử dụng
+/skill-lint .            # Kiểm tra dự án hiện tại
+/skill-lint /path/to/plugin  # Kiểm tra một đường dẫn cụ thể
+```
+
+## News Fetch — Giải lao Tinh thần Giữa các Sprint
+
+Kiệt sức vì debug? `/news-fetch` — 2 phút giải lao tinh thần cho bạn.
+
+Các skill khác đẩy bạn làm việc chăm chỉ hơn. Skill này nhắc bạn hít thở. Lấy tin tức mới nhất về bất kỳ chủ đề nào, ngay từ terminal — không cần chuyển ngữ cảnh, không lạc vào hố thỏ trình duyệt. Lướt nhanh rồi quay lại công việc, tinh thần sảng khoái.
+
+| Tính năng | Mô tả |
+|-----------|-------|
+| **Dự phòng 3 Tầng** | L1 WebSearch → L2 WebFetch (nguồn khu vực) → L3 curl |
+| **Loại trùng & Gộp** | Cùng sự kiện từ nhiều nguồn tự động gộp, giữ bản điểm cao nhất |
+| **Chấm điểm Liên quan** | AI chấm điểm và sắp xếp theo độ phù hợp chủ đề |
+| **Tóm tắt Tự động** | Tóm tắt thiếu được tự động tạo từ nội dung bài viết |
+
+```text
+/news-fetch AI                    # Tin AI tuần này
+/news-fetch AI today              # Tin AI hôm nay
+/news-fetch robotics month        # Tin robotics tháng này
+/news-fetch climate 2026-03-01~2026-03-31  # Khoảng thời gian tùy chọn
+```
 
 ## Chất lượng
 

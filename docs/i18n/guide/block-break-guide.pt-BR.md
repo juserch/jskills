@@ -323,6 +323,26 @@ Use [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ---
 
+## Quando usar / Quando NÃO usar
+
+### ✅ Use quando
+
+- Claude gave up too easily ("I can't", rationalized impossibility)
+- The same fix attempt has failed 2-3 times
+- You need exhaustive diagnosis before accepting defeat
+
+### ❌ Não use quando
+
+- Doing creative / divergent work (pressure kills exploration)
+- The task is genuinely impossible (missing hardware, no permissions)
+- You want to pause and step back on purpose
+
+> Motor de depuração exaustiva — garante que Claude não desista cedo, mas não que a solução esteja certa.
+
+Análise completa de limites: [references/scope-boundaries.md](../../../skills/block-break/references/scope-boundaries.md)
+
+---
+
 ## Licença
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

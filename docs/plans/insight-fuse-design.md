@@ -9,6 +9,12 @@
 
 与 council-fuse 的关系：独立并行。insight-fuse 是调研引擎（主动采集+分析），council-fuse 是思辨引擎（对已知信息做多视角分析）。两者共属 crucible 分类的 fuse 系列。
 
+## 覆盖与边界
+
+> insight-fuse 是**desk research 的流水线**——它把"看 20 个源 + 写一份报告"变成可配置流程，但不做 primary research（采访、现场调查、付费墙），也不保证源本身的时效。
+
+完整分析（能解决 / 不能解决 / 不应使用）：[references/scope-boundaries.md](../../skills/insight-fuse/references/scope-boundaries.md)
+
 ## 命名
 
 遵循 `名词-动词` 模式：insight(洞察) + fuse(熔合)。分类为 crucible（坩埚 — 多源融合、知识沉淀）。

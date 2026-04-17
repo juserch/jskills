@@ -91,6 +91,26 @@ Stage 1 + 3 + 5 निष्पादित करता है। मानक 
 - एकल स्रोत का अनुपात 40% से अधिक नहीं
 - सभी तुलनात्मक दावे डेटा द्वारा समर्थित
 
+## कब उपयोग करें / कब उपयोग न करें
+
+### ✅ इन मामलों में उपयोग करें
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ इन मामलों में उपयोग न करें
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> Desk research का pipeline — multi-source synthesis को configurable process में बदलता है, primary research नहीं करता।
+
+पूर्ण सीमा विश्लेषण: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## council-fuse से अंतर
 
 | | insight-fuse | council-fuse |

@@ -91,6 +91,26 @@
 - Доля одного источника не превышает 40%
 - Все сравнительные утверждения подкреплены данными
 
+## Когда использовать / Когда НЕ использовать
+
+### ✅ Используйте когда
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ Не используйте когда
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> Конвейер desk research — превращает многоисточниковый синтез в настраиваемый процесс, не делает первичных исследований.
+
+Полный анализ границ: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## Отличие от council-fuse
 
 | | insight-fuse | council-fuse |

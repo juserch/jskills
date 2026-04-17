@@ -226,6 +226,26 @@ compiled_by: claude-opus-4-6
 
 ---
 
+## 使用场景 / 不应使用场景
+
+### ✅ 适用
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ 不适用
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> LLM 编纂的私人图书馆——保留人类洞察，但只为个人设计、不做实时同步或权限控制。
+
+完整边界分析: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## 常见问题
 
 **问：Wiki 能有多大？**

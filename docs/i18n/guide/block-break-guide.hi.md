@@ -323,6 +323,26 @@ Block Break [PUA](https://github.com/tanweai/pua) के मुख्य तं�
 
 ---
 
+## कब उपयोग करें / कब उपयोग न करें
+
+### ✅ इन मामलों में उपयोग करें
+
+- Claude gave up too easily ("I can't", rationalized impossibility)
+- The same fix attempt has failed 2-3 times
+- You need exhaustive diagnosis before accepting defeat
+
+### ❌ इन मामलों में उपयोग न करें
+
+- Doing creative / divergent work (pressure kills exploration)
+- The task is genuinely impossible (missing hardware, no permissions)
+- You want to pause and step back on purpose
+
+> संपूर्ण debugging का engine — Claude जल्दी हार न माने यह सुनिश्चित करता है, पर समाधान सही होगा यह नहीं।
+
+पूर्ण सीमा विश्लेषण: [references/scope-boundaries.md](../../../skills/block-break/references/scope-boundaries.md)
+
+---
+
 ## लाइसेंस
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

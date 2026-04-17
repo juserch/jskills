@@ -15,6 +15,12 @@ Ralph Boost — 自主开发循环引擎。以 skill 形式复刻 ralph-claude-c
 
 > **参考来源**：循环模式参考 [ralph-claude-code](https://github.com/frankbria/ralph-claude-code)；收敛保证机制（L0-L4 压力升级、五步方法论、7 项检查清单）来自同项目的 [Block Break](../guide/block-break-guide.md)，后者参考 [PUA](https://github.com/tanweai/pua)。
 
+## 覆盖与边界
+
+> ralph-boost 是**带收敛保证的自主循环引擎**——它把 block-break 的"别放弃"嵌进 loop，让 agent 能在无人值守下跑几小时而不空转，但它需要**清晰的目标**和**稳态环境**才能真正收敛。
+
+完整分析（能解决 / 不能解决 / 不应使用）：[references/scope-boundaries.md](../../skills/ralph-boost/references/scope-boundaries.md)
+
 ## 目标
 
 ### 复刻：从 ralph-claude-code 继承的核心能力

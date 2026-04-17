@@ -365,6 +365,26 @@ tail -f .ralph-boost/logs/boost.log
 
 ---
 
+## 使用场景 / 不应使用场景
+
+### ✅ 适用
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ 不适用
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> 带收敛保证的自主循环引擎——需要清晰目标和稳态环境才能真正收敛。
+
+完整边界分析: [references/scope-boundaries.md](../../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## 许可证
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

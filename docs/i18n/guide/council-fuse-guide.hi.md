@@ -128,6 +128,26 @@ Council Fuse Karpathy के LLM Council पैटर्न को एक ही
 
 ---
 
+## कब उपयोग करें / कब उपयोग न करें
+
+### ✅ इन मामलों में उपयोग करें
+
+- Architectural decisions needing multiple perspectives
+- You suspect confirmation bias in your current answer
+- You want dissenting views preserved, not erased
+
+### ❌ इन मामलों में उपयोग न करें
+
+- Pure factual queries (use `claim-ground` instead)
+- Creative writing (synthesis flattens style)
+- Speed-critical decisions (3 agents run sequentially — not fast)
+
+> Training knowledge-आधारित debate engine — single-perspective blind spots उजागर करता है, पर निष्कर्ष training knowledge से सीमित हैं।
+
+पूर्ण सीमा विश्लेषण: [references/scope-boundaries.md](../../../skills/council-fuse/references/scope-boundaries.md)
+
+---
+
 ## अक्सर पूछे जाने वाले प्रश्न
 
 **प्र: क्या इसमें 3 गुना टोकन खर्च होते हैं?**

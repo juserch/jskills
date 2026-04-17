@@ -128,6 +128,26 @@ Her ajan dosyasindaki `model:` alanini duzenleyin:
 
 ---
 
+## Ne zaman kullanılmalı / Ne zaman kullanılMAMAlı
+
+### ✅ Şu durumlarda kullanın
+
+- Architectural decisions needing multiple perspectives
+- You suspect confirmation bias in your current answer
+- You want dissenting views preserved, not erased
+
+### ❌ Şu durumlarda kullanmayın
+
+- Pure factual queries (use `claim-ground` instead)
+- Creative writing (synthesis flattens style)
+- Speed-critical decisions (3 agents run sequentially — not fast)
+
+> Eğitim bilgisi tabanlı tartışma motoru — tek perspektiflik kör noktaları ortaya çıkarır, ama sonuçlar eğitim bilgisiyle sınırlı kalır.
+
+Tam sınır analizi: [references/scope-boundaries.md](../../../skills/council-fuse/references/scope-boundaries.md)
+
+---
+
 ## SSS
 
 **S: 3 kat token maliyeti olur mu?**

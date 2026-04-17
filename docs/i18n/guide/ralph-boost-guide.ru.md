@@ -365,6 +365,26 @@ tail -f .ralph-boost/logs/boost.log
 
 ---
 
+## Когда использовать / Когда НЕ использовать
+
+### ✅ Используйте когда
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ Не используйте когда
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> Движок автономного цикла с гарантией сходимости — нужны чёткие цели и стабильная среда.
+
+Полный анализ границ: [references/scope-boundaries.md](../../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## Лицензия
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

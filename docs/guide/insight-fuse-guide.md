@@ -101,3 +101,21 @@
 | **阶段** | 5 阶段渐进式 | 3 阶段（召集→评分→综合） |
 
 两者可组合使用：先用 insight-fuse 调研收集信息，再用 council-fuse 对关键决策做深度思辨。
+
+## 使用场景 / 不应使用场景
+
+### ✅ 适用
+
+- 写一份多源综合的调研报告
+- 需要可配置深度（快速扫描 → 深度挖掘）
+- 要对新信息做多视角交叉
+
+### ❌ 不适用
+
+- 快速事实查询（过度工程；用 claim-ground 或 WebSearch）
+- 单源深度阅读（流水线用不上）
+- 需要真人访谈的 primary research
+
+> insight-fuse 是 **desk research 的流水线**——把"看 20 个源写一份报告"变成可配置流程，但不做 primary research（采访、现场调查、付费墙），也不保证源本身的时效。
+
+完整边界分析：[references/scope-boundaries.md](../../skills/insight-fuse/references/scope-boundaries.md)

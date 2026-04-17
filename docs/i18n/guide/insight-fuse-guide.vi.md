@@ -91,6 +91,26 @@ Moi bao cao duoc tu dong kiem tra:
 - Ti le mot nguon khong vuot qua 40%
 - Tat ca cac khang dinh so sanh deu co du lieu ho tro
 
+## Khi nào dùng / Khi nào KHÔNG dùng
+
+### ✅ Dùng khi
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ Không dùng khi
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> Quy trình desk research — biến tổng hợp đa nguồn thành quy trình cấu hình được, không làm primary research.
+
+Phân tích phạm vi đầy đủ: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## Su khac biet voi council-fuse
 
 | | insight-fuse | council-fuse |

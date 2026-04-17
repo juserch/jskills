@@ -164,6 +164,26 @@ Tối đa 20 (sau khi loại bỏ trùng lặp). Số lượng thực tế phụ
 
 ---
 
+## Khi nào dùng / Khi nào KHÔNG dùng
+
+### ✅ Dùng khi
+
+- You want a quick news brief between coding sessions
+- Bilingual aggregation (English + domestic sources)
+- Network-restricted environments (3-tier fallback handles blocked sources)
+
+### ❌ Không dùng khi
+
+- You need synthesized research (use `insight-fuse` instead)
+- Targeted source monitoring (use an RSS reader)
+- Translation tasks (news-fetch returns source language as-is)
+
+> Bản tin cho giờ giải lao code — quét trong 2 phút, không phân tích sâu hay dịch.
+
+Phân tích phạm vi đầy đủ: [references/scope-boundaries.md](../../../skills/news-fetch/references/scope-boundaries.md)
+
+---
+
 ## Giấy phép
 
 [MIT](../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

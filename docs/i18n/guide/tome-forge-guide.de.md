@@ -226,6 +226,26 @@ Erforderliche Abschnitte:
 
 ---
 
+## Wann verwenden / Wann NICHT verwenden
+
+### ✅ Verwenden wenn
+
+- Building a personal knowledge base from scattered notes
+- You want LLM-compiled wiki that preserves human insights
+- Zero-infra solution (just Markdown + Git)
+
+### ❌ Nicht verwenden wenn
+
+- Team collaboration or real-time sync
+- Ad-hoc notes (too structured — plain Markdown is fine)
+- Transactional data (use a real database)
+
+> LLM-kompilierte persönliche Bibliothek — bewahrt menschliche Einsichten, für Einzelpersonen konzipiert, keine Echtzeit-Synchronisation.
+
+Vollständige Grenzanalyse: [references/scope-boundaries.md](../../../skills/tome-forge/references/scope-boundaries.md)
+
+---
+
 ## FAQ
 
 **F: Wie gross kann das Wiki werden?**

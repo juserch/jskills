@@ -164,6 +164,26 @@ News Fetch 内置了回退策略，确保在不同网络条件下都能获取新
 
 ---
 
+## 使用场景 / 不应使用场景
+
+### ✅ 适用
+
+- You want a quick news brief between coding sessions
+- Bilingual aggregation (English + domestic sources)
+- Network-restricted environments (3-tier fallback handles blocked sources)
+
+### ❌ 不适用
+
+- You need synthesized research (use `insight-fuse` instead)
+- Targeted source monitoring (use an RSS reader)
+- Translation tasks (news-fetch returns source language as-is)
+
+> 编码间隙的新闻简报器——2 分钟扫一眼世界，不做深度分析或翻译。
+
+完整边界分析: [references/scope-boundaries.md](../../../skills/news-fetch/references/scope-boundaries.md)
+
+---
+
 ## 许可证
 
 [MIT](../../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

@@ -91,6 +91,26 @@ Cada informe se verifica automaticamente:
 - Una sola fuente no supera el 40% del total
 - Todas las afirmaciones comparativas respaldadas con datos
 
+## Cuándo usar / Cuándo NO usar
+
+### ✅ Usar cuando
+
+- Writing a professional research report from multiple sources
+- You want configurable depth (scan → deep-dive)
+- Multi-perspective crossing of new information
+
+### ❌ No usar cuando
+
+- Quick factual lookup (overkill; use `claim-ground` / WebSearch)
+- Single-source deep reading
+- Tasks requiring primary research (interviews, field work)
+
+> Pipeline de desk research — convierte síntesis multifuente en proceso configurable, no hace primary research ni maneja paywalls.
+
+Análisis completo de límites: [references/scope-boundaries.md](../../../skills/insight-fuse/references/scope-boundaries.md)
+
+---
+
 ## Diferencia con council-fuse
 
 | | insight-fuse | council-fuse |

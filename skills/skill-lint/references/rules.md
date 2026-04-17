@@ -115,17 +115,17 @@
 
 ### S16: i18n 使用手册覆盖
 
-- **检查**: 对于 `i18n-dir` 下发现的每个语言，`docs/guide/i18n/<name>-guide.<lang>.md` 是否存在
+- **检查**: 对于 `i18n-dir` 下发现的每个语言，`docs/i18n/guide/<name>-guide.<lang>.md` 是否存在
 - **级别**: warning
 - **配置**: `"require-i18n-guide": true`（同时需要 `i18n-dir` 配置）
-- **说明**: 使用手册的多语言版本存放在 `docs/guide/i18n/` 下，文件名格式为 `<skill>-guide.<lang>.md`，语言列表从 i18n README 文件名自动推断
+- **说明**: 使用手册的多语言版本存放在 `docs/i18n/guide/` 下，文件名格式为 `<skill>-guide.<lang>.md`，语言列表从 i18n README 文件名自动推断。与 CLAUDE.md 目录约定一致（i18n 相关资源统一在 `docs/i18n/` 下）
 
 ### S17: i18n guide 路径守卫
 
-- **检查**: `docs/i18n/guide/` 目录是否存在且包含 .md 文件（常见误放位置）
+- **检查**: `docs/guide/i18n/` 目录是否存在且包含 .md 文件（常见误放位置）
 - **级别**: error
 - **配置**: `"require-i18n-guide": true`（复用 S16 配置）
-- **说明**: i18n guide 的正确位置是 `docs/guide/i18n/`，而非 `docs/i18n/guide/`。此规则防止文件放错位置
+- **说明**: i18n guide 的正确位置是 `docs/i18n/guide/`，而非 `docs/guide/i18n/`。此规则防止文件放错位置
 
 ## 语义检查规则（AI 执行）
 

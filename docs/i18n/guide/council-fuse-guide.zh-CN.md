@@ -128,6 +128,26 @@ Council Fuse 将 Karpathy 的 LLM Council 模式浓缩为单个命令：
 
 ---
 
+## 使用场景 / 不应使用场景
+
+### ✅ 适用
+
+- Architectural decisions needing multiple perspectives
+- You suspect confirmation bias in your current answer
+- You want dissenting views preserved, not erased
+
+### ❌ 不适用
+
+- Pure factual queries (use `claim-ground` instead)
+- Creative writing (synthesis flattens style)
+- Speed-critical decisions (3 agents run sequentially — not fast)
+
+> 基于训练知识的辩证引擎——暴露单视角盲点，但结论仍受训练知识限制。
+
+完整边界分析: [references/scope-boundaries.md](../../../skills/council-fuse/references/scope-boundaries.md)
+
+---
+
 ## 常见问题
 
 **问：是否消耗 3 倍 token？**

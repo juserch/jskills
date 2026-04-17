@@ -365,6 +365,26 @@ Sử dụng [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ---
 
+## Khi nào dùng / Khi nào KHÔNG dùng
+
+### ✅ Dùng khi
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ Không dùng khi
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> Động cơ vòng lặp tự động có đảm bảo hội tụ — cần mục tiêu rõ ràng và môi trường ổn định.
+
+Phân tích phạm vi đầy đủ: [references/scope-boundaries.md](../../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## Giấy phép
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)

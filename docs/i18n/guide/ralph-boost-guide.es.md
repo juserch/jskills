@@ -365,6 +365,26 @@ Usa [Skill Lint](skill-lint-guide.md): `/skill-lint .`
 
 ---
 
+## Cuándo usar / Cuándo NO usar
+
+### ✅ Usar cuando
+
+- You have a well-defined task and want Claude to loop on it unattended
+- Previous autonomous attempts spun forever without progress
+- You need a graceful handoff report if the loop can't finish
+
+### ❌ No usar cuando
+
+- Interactive debugging (use `/block-break` directly — lighter weight)
+- One-shot tasks (setup/run/clean overhead exceeds benefit)
+- Work requiring frequent human checkpoints
+
+> Motor de bucle autónomo con garantía de convergencia — necesita objetivos claros y entorno estable.
+
+Análisis completo de límites: [references/scope-boundaries.md](../../../skills/ralph-boost/references/scope-boundaries.md)
+
+---
+
 ## Licencia
 
 [MIT](../../LICENSE) - [Juneq Cheung](https://github.com/juserai)
