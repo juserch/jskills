@@ -1,12 +1,12 @@
 ---
 name: claim-ground
-description: "Claim Ground v1.1 — Epistemic constraint engine. Use when answering factual questions about current/live state (model version, tool version, installed packages, environment config, feature availability), when defining professional terms with authoritative standards bodies (IIBA / CFA / ISO / IEEE / RFC / W3C / NIST etc., Red Line 7), or when the user challenges a prior factual assertion (pushback like 'really? / are you sure? / I thought X was already updated'). Forces runtime-context-first reasoning: quote system prompt / env / tool outputs / standards-body verbatim before concluding, and RE-VERIFY instead of rephrasing when challenged. Adds /claim-ground verify <claim> manual grounding mode. Prevents stale-training-data hallucinations."
+description: "Claim Ground v1.2 — Epistemic constraint engine. Use when answering factual questions about current/live state, when defining professional terms with authoritative standards bodies (Red Line 7), when the user challenges a prior factual assertion (pushback regex), OR proactively when input contains ambiguity (path/pronoun/quantity/preference/missing-param), destructive actions (rm -rf / reset --hard / push --force), scope creep (Edit/Write unmentioned files), env-var assumptions, ecosystem-scope questions ('latest/strongest model'), or hard constraints ('don't / never'). Forces runtime-context-first reasoning + dispatches across UserPromptSubmit / PreToolUse / PostToolUse / SessionStart hooks. Detects under-specified deploy/path commands and verification gaps across Claude Code and openclaw."
 license: MIT
 metadata:
   category: hammer
   permissions:
     network: false
-    filesystem: read-only
+    filesystem: read-write
     execution: none
     tools: [Read, Bash, Grep]
 ---
@@ -77,14 +77,21 @@ For arbitrary multi-source research, use /insight-fuse instead.
 - **不做** `verify` 缺省兜底：避免与 insight-fuse 重叠；scope creep 比 UX 摩擦更危险
 - **不绕开 hook**：手动 verify 不抑制 PostToolUse 的 evidence-reminder hook
 
-## 触发场景
+## 触发场景（v1.2）
 
-- 用户问"当前/最新 X 是什么"——**先判断作用域**：
-  - **本地作用域**（此会话的模型 / 本机 CLI / 本项目安装的包 / 本地 env）→ 系统 prompt / 本地命令为权威
-  - **生态作用域**（某厂商最新模型 / 某语言最新稳定版 / 某服务当前状态）→ **必须**外部验证（WebSearch / 官方文档 / API 端点），系统 prompt 只覆盖 GA 部分，看不到 preview / gated / research 版本
-- 用户反驳既往回答：`真的吗 / 不对吧 / 你确定 / 已经更新了吧 / 官方不是已经 X 了吗 / really / are you sure` —— 以及多语言（`本当に / 진짜 / ¿en serio / vraiment / wirklich / неужели / حقا / sério / सच में`）和隐式混淆（`wait.*thought / hold on / 等下 / 不是说 / 我以为`）
-- **带外部引用的反驳**（用户贴了 URL / 官方文档名 / 新闻截图）：视为**更高风险**触发——不是更低（见 Red Line 3a）
-- 自省：我即将给出一个关于"此刻系统状态"的断言
+5 个 hook surface 自动触发：
+
+| Hook | 触发时机 | 检测内容 |
+|---|---|---|
+| **epistemic-pushback-trigger** (UserPromptSubmit) | 用户反驳既往回答 | 多语言质疑词（"真的吗 / are you sure / 本当に / 진짜 / ..."）；带 URL 引用反驳 → R3a 更高风险 |
+| **prompt-gate** (UserPromptSubmit, v1.2) | 模糊 / 硬约束 / 生态作用域指令 | R9 ambiguity（路径/代词/数量/偏好/缺参数/缺 framework）；R14 hard_constraint（"不要/别/禁止/don't/never"）；R15 scope_collapse（"最新/官方/最强 + 模型/版本"） |
+| **pre-tool-gate** (PreToolUse, v1.2) | Bash/Edit/Write 工具调用前 | R10 destructive（`rm -rf`/`reset --hard`/`push --force`/`DROP`/`kill -9`）；R12 env_var_unverified（`$VAR` 无前序 echo）；R13 scope_creep（改未点名文件） |
+| **evidence-reminder** (PostToolUse, 扩 v1.2) | Read/Grep/Bash 结束 | 引用提醒；R8 路径抽取写 seen_paths；R11 测试输出 passed/skipped 区分 |
+| **session-anchor** (SessionStart, 扩 v1.2) | 会话启动 / resume / clear / 压缩 | 注入 anchors / 未验证 seen_paths / hard_constraints / 24h+ 标 needs_reconfirm |
+
+手动触发：`/claim-ground verify <claim>` 进入 grounding 模式（详见 § Manual Execution）。
+
+自省触发：我即将给出关于"此刻系统状态"的断言；我即将操作一个**未独立验证**的路径或工具名。
 
 ## 核心规则
 
@@ -117,17 +124,23 @@ For arbitrary multi-source research, use /insight-fuse instead.
 
 ## 红线
 
-七条红线违反即 skill 失效：
+15 条红线违反即 skill 失效（详细反例与识别信号见 [references/red-lines.md](references/red-lines.md)）：
 
 1. **无源断言** — 没有引用 context / 工具输出就给事实结论
 2. **示例当穷举** — 用举例推断完整功能集
-3. **被质疑换措辞** — 用户反驳后，没有重新验证就换个说法说同一件事（含 3a：**带引用反驳 → 更高风险**，必须独立 WebFetch 用户的 URL + 独立重查原断言）
-4. **代码 API 断言** — 断言某符号存在或签名时，**必须先 Read / Grep 源码**；凭记忆写 API 调用视为违规
-5. **引用 URL 伪造** — 引用任何 URL / 文档 / DOI / API 端点前，**必须 WebFetch 验证存在**；贴"像真的"的链接 = 违规
-6. **摘要不锚定** — 被要求 summarize / recap 某个文件 / PR / log 时，每条事实断言必须引用具体行号 / 段落；"流畅加料"视为违规
-7. **术语凭印象**（v1.1） — 给出专业术语 / 行业标准的**定义**时，**必须**引用权威标准体原文（IIBA、CFA、ISO、IEEE、RFC、GAAP、IFRS、W3C、NIST、SemVer、Unicode、LaTeX/TeX 规范、各语言官方 spec 等）或同行评议学术源；凭训练记忆直接给定义视为违规。识别信号：句形如 "X **是** Y"、"X 的定义是..."、"X **指的是**..."，且 X 属于有标准体 / 规范的专业领域
-
-详细反例与识别信号见 `references/red-lines.md`。
+3. **被质疑换措辞** — 用户反驳后，没有重新验证就换个说法说同一件事（含 3a：**带引用反驳 → 更高风险**）
+4. **代码 API 断言必须先读源** — 断言某符号存在或签名时必须先 Read / Grep
+5. **引用 URL 伪造** — 引用任何 URL / 文档 / DOI / API 端点前必须 WebFetch 验证存在
+6. **摘要不锚定** — summarize / recap 必须引用具体行号 / 段落
+7. **术语凭印象**（v1.1） — 给出专业术语定义时必须引用权威标准体原文
+8. **上下文路径锚点污染**（v1.2） — 把 tool result 里偶然出现的路径当成已验证锚点（openclaw 真实失败案例）
+9. **模糊指令消歧**（v1.2） — 模糊指代/数量/偏好/缺参数 + 强动作时不能默认猜
+10. **破坏性动作前列项反向确认**（v1.2） — `rm -rf`/`reset --hard`/`push --force` 前必须 dry-run + 反问
+11. **测试通过须区分 passed/skipped**（v1.2） — "tests passed" 必须看清 skipped/error 计数
+12. **env var 用前必须验证存在**（v1.2） — 写代码用 `$X` 前先 `echo $X`
+13. **改文件必须在用户消息出现**（v1.2） — scope creep 检测，未点名的文件改前 ask permission
+14. **硬约束跨 turn 保留**（v1.2） — "不要/别/禁止" 类约束在后续 turn 仍有效
+15. **"最新/官方" 强制 WebSearch**（v1.2） — 生态作用域问题不能仅读 system prompt
 
 ## 查证 Playbook
 
@@ -158,6 +171,35 @@ schema 与生命周期详见 `references/anchors.md`。SessionStart 侧由 `hook
 ## 与 block-break 的协同
 
 正交互补。被质疑时，block-break 强制"不许放弃"，claim-ground 强制"必须重查"。两者同时激活时：换措辞重申 = 同时触犯两个 skill 的红线。
+
+prompt-gate 与 frustration-trigger / epistemic-pushback-trigger 互斥让位（脚本头有 mutual yield 检测），避免单条 prompt 三 hook 同时火。
+
+## 平台 hook 等价位置
+
+per [openspec/specs/platform-parity/spec.md](../../openspec/specs/platform-parity/spec.md) §"Hook 镜像在有等价系统的平台为 mandatory"——claim-ground 的 5 个 hook 在两平台等价镜像如下：
+
+| Hook | Claude Code（bash） | OpenClaw（TS/JS） |
+|---|---|---|
+| epistemic-pushback | [skills/claim-ground/hooks/epistemic-pushback-trigger.sh](hooks/epistemic-pushback-trigger.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/epistemic-pushback/` (PR-3) |
+| prompt-gate | [skills/claim-ground/hooks/prompt-gate.sh](hooks/prompt-gate.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/prompt-gate/` (PR-3) |
+| pre-tool-gate | [skills/claim-ground/hooks/pre-tool-gate.sh](hooks/pre-tool-gate.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/pre-tool-gate/` (PR-3) |
+| evidence-reminder | [skills/claim-ground/hooks/evidence-reminder.sh](hooks/evidence-reminder.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/evidence-reminder/` (PR-3) |
+| session-anchor | [skills/claim-ground/hooks/session-anchor.sh](hooks/session-anchor.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/session-anchor/` (PR-3) |
+
+**openclaw 启用命令**（PR-3 实施后可用）：
+
+```bash
+openclaw plugins install <forge-spec>
+openclaw hooks enable claim-ground-prompt-gate
+openclaw hooks enable claim-ground-pre-tool-gate
+openclaw hooks enable claim-ground-evidence-reminder
+openclaw hooks enable claim-ground-session-anchor
+openclaw hooks enable claim-ground-epistemic-pushback
+```
+
+**共享状态**：`~/.forge/claim-ground-anchors.json` 路径平台无关，两平台 hook 共读共写（详见 [references/anchors.md](references/anchors.md)）。
+
+**共享 matcher / reminder 模板**：[references/matchers.json](references/matchers.json) + [references/reminders.json](references/reminders.json)，bash 用 `jq`/python 读、TS/JS 用 `import` 读，强制双平台行为对齐。
 
 ## Attribution
 

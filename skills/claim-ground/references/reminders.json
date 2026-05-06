@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "version": "1.2",
+    "purpose": "Shared context-block templates for claim-ground hooks. Bash hooks read via jq; openclaw TS handlers import as JSON. Each block has zh + en bilingual body. Placeholders use {name} syntax, hook fills at emit time.",
+    "consumers": [
+      "skills/claim-ground/hooks/prompt-gate.sh",
+      "skills/claim-ground/hooks/pre-tool-gate.sh",
+      "skills/claim-ground/hooks/evidence-reminder.sh",
+      "skills/claim-ground/hooks/session-anchor.sh",
+      "platforms/openclaw/claim-ground/hooks/openclaw/*/handler.{ts,js}"
+    ]
+  },
+  "AMBIGUITY": {
+    "tag": "CLAIM_GROUND_AMBIGUITY",
+    "trigger": "UserPromptSubmit ambiguity matcher hit",
+    "zh": "[Claim Ground 🎯 — 检测到模糊指令]\n\n用户指令含强动作动词 + 模糊标的。命中类型: {match_type}。\n\n行动前必须：\n1. 跑 `which <名>` 和/或 `ls ~/.<名>` 把术语绑定到具体路径\n2. 若 2+ 候选（如 repo 目录 vs 外部 runtime），用 AskUserQuestion 让用户选\n3. 引用验证输出后再动手\n\n不允许：\n- 用之前 tool result 里见过的路径作为锚点而不重验\n- 默认挑\"最方便\"的解读\n- 没消歧就开始 sync / copy / install\n\n> 错误锚点的成本是把数据写到错的地方；消歧的成本是一条 `which`。",
+    "en": "[Claim Ground 🎯 — Under-specified instruction detected]\n\nUser instruction contains an action verb + ambiguous target. Match type: {match_type}.\n\nBefore any Bash / Edit / Write tool call, you MUST:\n1. Run `which <name>` and/or `ls ~/.<name>` to bind the name to a concrete path\n2. If 2+ candidates exist (e.g. repo dir vs external runtime dir), use AskUserQuestion to confirm which one — never pick by intuition\n3. Quote the verification output before acting\n\nNOT allowed:\n- Picking a path seen in earlier tool results without re-verifying\n- Acting on the most \"convenient\" interpretation\n- Sync / copy / install before disambiguation\n\n> Anchor-error costs misplaced data; disambiguation costs one `which`."
+  },
+  "DESTRUCTIVE": {
+    "tag": "CLAIM_GROUND_DESTRUCTIVE",
+    "trigger": "PreToolUse destructive matcher hit on Bash",
+    "zh": "[Claim Ground 🎯 — 检测到破坏性命令]\n\n即将执行不可逆操作: `{command}` (匹配类型: {match_type})。\n\n执行前必须：\n1. **dry-run 列项**：先跑不带破坏 flag 的版本 (如 `find` 不带 `-delete`、`ls` 替 `rm`、`SELECT` 替 `DROP`)，列出实际会受影响的目标\n2. **反向确认**：把列项结果贴给用户，明示\"将影响以下 N 个目标，授权吗？(y/n)\"\n3. **优先安全变体**: `--force` → `--force-with-lease`；`rm -rf` → `mv 到 /tmp/__trash`；`DROP TABLE` → `RENAME TO _backup_X`；`kill -9` → `kill -TERM`\n\n特别警告: `git push --force` 到 main/master 受 system prompt 硬规则保护，LLM 不允许自动跑——必须改 `--force-with-lease=<branch>:<sha>` 或退回到 reset --soft + new commit + 普通 push。",
+    "en": "[Claim Ground 🎯 — Destructive command detected]\n\nAbout to execute irreversible operation: `{command}` (match: {match_type}).\n\nBefore executing, you MUST:\n1. **dry-run preview**: run a non-destructive variant first (`find` without `-delete`, `ls` instead of `rm`, `SELECT` instead of `DROP`) to enumerate affected targets\n2. **reverse-confirm**: show the enumerated list to user; ask \"Will affect N targets, authorize? (y/n)\"\n3. **prefer safer variant**: `--force` → `--force-with-lease`; `rm -rf` → `mv to /tmp/__trash`; `DROP TABLE` → `RENAME TO _backup_X`; `kill -9` → `kill -TERM`\n\nSpecial: `git push --force` to main/master is hard-blocked by system prompt — LLM may not auto-run; must use `--force-with-lease=<branch>:<sha>` or revert to reset --soft + new commit + normal push."
+  },
+  "SCOPE_CREEP": {
+    "tag": "CLAIM_GROUND_SCOPE_CREEP",
+    "trigger": "PreToolUse Edit/Write file_path not in recent user turns",
+    "zh": "[Claim Ground 🎯 — 检测到 scope creep]\n\n即将修改 `{file_path}`，但该文件**未在最近 3 turn 用户消息中提及**。可能的原因：\n- (a) 跨文件依赖修复（改 X 必须改 Y 的 caller）\n- (b) 顺手 refactor / 觉得相关\n- (c) 误判文件位置\n\n行动前必须：\n1. 在回答里**明示**为什么改这个文件\n2. 若是 (b)，先 ask permission 而非直接改\n3. 若是 (a)，把因果链贴出来让用户审\n\n豁免情形：用户明示批量指令 (\"all *.ts\" / \"整个 src/\" / \"every X\")。",
+    "en": "[Claim Ground 🎯 — Scope creep detected]\n\nAbout to modify `{file_path}`, but it was NOT mentioned in the last 3 user turns. Possible causes:\n- (a) cross-file dependency fix (changing X requires updating Y's caller)\n- (b) opportunistic refactor / \"seems related\"\n- (c) wrong file location\n\nBefore acting, you MUST:\n1. Explicitly explain in your response WHY this file needs editing\n2. If (b), ask permission first rather than just edit\n3. If (a), show the causal chain for user review\n\nExempt: user gave batch instruction (\"all *.ts\" / \"entire src/\" / \"every X\")."
+  },
+  "ENV_VAR": {
+    "tag": "CLAIM_GROUND_ENV_VAR",
+    "trigger": "Edit/Write/Bash uses $VAR without prior echo $VAR",
+    "zh": "[Claim Ground 🎯 — env var 未验证]\n\n即将使用 env var: `${var_name}`，但本会话未见到 `echo ${var_name}` / `printenv {var_name}` 的验证输出。\n\n行动前必须：\n1. 跑 `echo \"${{var_name}:-NOT_SET}\"` 验证是否设置且非空\n2. 若 NOT_SET，反问用户怎么提供该变量（env / 配置文件 / 命令行参数）\n3. 在代码里加显式检查 + 错误提示，不要静默失败\n\n常见错误: 假设 `$DATABASE_URL` / `$API_KEY` 等\"通常应该有\"——用户当前 shell 可能根本没设。",
+    "en": "[Claim Ground 🎯 — Unverified env var]\n\nAbout to use env var: `${var_name}`, but no `echo ${var_name}` / `printenv {var_name}` verification output observed in this session.\n\nBefore acting, you MUST:\n1. Run `echo \"${{var_name}:-NOT_SET}\"` to verify it's set and non-empty\n2. If NOT_SET, ask user how the variable should be provided (env / config file / command-line arg)\n3. Add explicit checks + error messages in code; don't fail silently\n\nCommon error: assuming `$DATABASE_URL` / `$API_KEY` \"usually exist\" — user's current shell may not have them set."
+  },
+  "TEST_RESULT": {
+    "tag": "CLAIM_GROUND_TEST_RESULT",
+    "trigger": "PostToolUse Bash output contains test framework + skipped/errored count",
+    "zh": "[Claim Ground 🎯 — 测试输出含 skipped/errored]\n\n刚跑的测试输出含: passed={passed}, skipped={skipped}, errored={errored}。\n\n**\"X passed\" ≠ \"all tests ran\"**。下一步必须：\n1. 跑 verbose 看 skip/error 详情 (e.g., `pytest -v --tb=long` / `jest --verbose` / `go test -v`)\n2. 区分 skip 类型：\n   - 显式 `@skip` 标记（开发者主动跳，可视为 OK）\n   - 环境/依赖缺失（`--no-network` flag、缺包）—— **不算 passed**\n   - 平台不兼容 —— **不算 passed**\n3. errored 必须修，不能忽略\n\n**禁止**直接说\"所有测试通过\"或\"tests pass\"—— 必须明示 skipped/errored 计数与原因。",
+    "en": "[Claim Ground 🎯 — Test output contains skipped/errored]\n\nLatest test output: passed={passed}, skipped={skipped}, errored={errored}.\n\n**\"X passed\" ≠ \"all tests ran\"**. Next steps required:\n1. Run verbose to see skip/error details (e.g., `pytest -v --tb=long` / `jest --verbose` / `go test -v`)\n2. Distinguish skip types:\n   - Explicit `@skip` marker (developer-chosen, OK)\n   - Env/dependency missing (`--no-network` flag, missing package) — **NOT passed**\n   - Platform incompatibility — **NOT passed**\n3. Errored must be fixed, not ignored\n\n**FORBIDDEN**: stating \"all tests pass\" or \"tests passing\" without showing the skipped/errored counts and reasons."
+  },
+  "HARD_CONSTRAINTS": {
+    "tag": "CLAIM_GROUND_HARD_CONSTRAINTS",
+    "trigger": "SessionStart with non-empty hard_constraints",
+    "zh": "[Claim Ground 🎯 — 已激活的硬约束]\n\n用户在过往 turn 表达过下列硬约束（仍生效）：\n\n{constraints_list}\n\n规则：\n- 即将做的动作若**潜在违反**任一条 → 必须在回答里明示提醒并请用户确认\n- 用户用 \"现在可以了 / 解除约束 / 取消\" 等词显式解除 → 该条作废\n- session 级约束关 session 自动清空；cross-session 级（用户用 \"永远 / always\" 触发）跨会话保留",
+    "en": "[Claim Ground 🎯 — Active hard constraints]\n\nUser expressed the following hard constraints in past turns (still in effect):\n\n{constraints_list}\n\nRules:\n- If your planned action POTENTIALLY violates any constraint → you MUST flag it in your response and request user confirmation\n- User explicitly lifts via \"OK now / lift constraint / cancel\" → that entry is voided\n- Session-scoped constraints clear at session end; cross-session (triggered by \"forever / always\") persist across sessions"
+  },
+  "SEEN_PATHS": {
+    "tag": "CLAIM_GROUND_SEEN_PATHS",
+    "trigger": "SessionStart with non-empty unverified seen_paths",
+    "zh": "[Claim Ground 🎯 — 已见但未验证路径]\n\n下列路径在过往会话的 tool 输出里出现过但**未独立验证**——视作候选，不是锚点：\n\n{paths_list}\n\n当用户提到这些名字时，必须先跑 `which`/`ls` 验证再行动。\n**\"出现 ≠ 锚定\"** —— 见 [red-lines.md §红线 8](references/red-lines.md)。",
+    "en": "[Claim Ground 🎯 — Paths seen but not verified]\n\nThese paths appeared in tool results in past sessions but were **never independently verified**. Treat as candidates, not anchors:\n\n{paths_list}\n\nWhen user references these names, RUN `which`/`ls` first before acting.\n**\"Appeared ≠ Anchored\"** — see [red-lines.md §Red Line 8](references/red-lines.md)."
+  },
+  "SCOPE_COLLAPSE": {
+    "tag": "CLAIM_GROUND_SCOPE_COLLAPSE",
+    "trigger": "UserPromptSubmit scope_collapse matcher hit",
+    "zh": "[Claim Ground 🎯 — 检测到生态作用域问题]\n\n用户问 \"最新/最强/官方\" 类问题。**仅读 system prompt 不够**——它的 \"latest\" 字段只覆盖 GA 线，看不到 preview / gated / research 模型。\n\n行动前必须：\n1. WebSearch \"<厂商> latest model 2026\" 或类似关键词\n2. WebFetch 官方 news/release 页面（如 `anthropic.com/news/`）\n3. 比较 GA 线 vs preview/gated 线\n4. 引用 WebFetch 返回原文，明示作用域（GA / preview / 内部）\n\n反例：仅引用 system prompt 的 \"Opus 4.7 (most recent)\" 就回答 \"Anthropic 最强是 4.7\"——可能漏掉 Preview / gated 模型。",
+    "en": "[Claim Ground 🎯 — Ecosystem-scope question detected]\n\nUser asked about \"latest / strongest / official\". **Reading system prompt alone is NOT enough** — its \"latest\" field only covers GA tier, missing preview / gated / research models.\n\nBefore answering, you MUST:\n1. WebSearch \"<vendor> latest model 2026\" or similar\n2. WebFetch official news/release page (e.g., `anthropic.com/news/`)\n3. Compare GA tier vs preview/gated tier\n4. Quote WebFetch return text verbatim; clarify scope (GA / preview / internal)\n\nBad example: answering \"Anthropic strongest is 4.7\" by only quoting system prompt's \"Opus 4.7 (most recent)\" — may miss Preview / gated models."
+  }
+}

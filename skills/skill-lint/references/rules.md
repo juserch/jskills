@@ -144,6 +144,23 @@
 - **说明**: 配合 [CLAUDE.md § Help 模式约定](../../../CLAUDE.md) 的统一 parsing 规则。对有默认行为的 skill（block-break / skill-lint），Help 段首段需显式声明"无参数 ≠ help"。本规则不检查 openclaw 镜像（openclaw 的 help 机制未定义，follow-up PR 处理）
 - **兼容**: 配置值也接受 `true`（等价 `"error"`）/ `false`（等价 `"off"`），方便旧项目迁移
 
+### S27: 术语引用密度（v1.2）
+
+- **检查**: 每个 SKILL.md 出现的专有术语（环境名 / 工具名 / 路径片段，启发式 = hyphenated 英文词如 `openclaw` 或带 `-` 的 kebab-case，加上前缀 `~/.X` 形式的路径片段）必须在 repo 内有 ≥1 处定义引用（grep 命中其他文件）
+- **级别**: warning（不阻断）
+- **配置**: 始终执行，无开关
+- **白名单**: `git`/`ls`/`bash`/`jq`/`sed`/`awk`/`grep`/`find`/`curl`/`python`/`python3`/`node`/`npm`/`cd`/`echo`/`cat`/`diff`/`rsync`/`cp`/`mv`/`rm`/`mkdir`/`tee`/`xargs`/`sort`/`uniq`/`wc`/`head`/`tail`/`md`/`json`/`yaml`/`txt`/`sh` 等通用 token 豁免
+- **说明**: SKILL.md 出现 "openclaw 环境" 这类术语，若 repo 内（除该 SKILL.md 自身外）无任何文件提及 `openclaw` —— 视为孤立术语，可能产生歧义指代，需 reference 段补定义引用（如 [scope-boundaries.md] 链接）。本规则启发性强，false positive 率非零，因此为 warn 级别仅提示
+- **真实案例**: openclaw 失败 — 用户说 "更新到 openclaw 环境" 时 LLM 误锚定到 Claude Code cache，因为 `platforms/openclaw/` 目录在 SKILL.md 没有被明确链接定义
+
+### S28: 平台 hook 镜像（v1.2）
+
+- **检查**: 若某 skill 有 `skills/<s>/hooks/` 目录（owner skill），且 `.skill-lint.json` 的 `platforms` 数组含 `<p>`，则 `platforms/<p>/<s>/hooks/<p>/` 必须存在；且该目录下每个子目录的 `HOOK.md` frontmatter 中 `events` 字段（数组形态）必须非空
+- **级别**: error
+- **配置**: 始终执行（条件性触发，不需开关）
+- **说明**: per [platform-parity spec ADDED Requirement](../../../openspec/specs/platform-parity/spec.md) — hook 等价镜像从 advisory 升 mandatory 的强制点。若平台真无等价 hook 系统，需在 SKILL.md `## 平台 hook 等价位置` 段明示"无等价机制可用"，本规则需配合此段做豁免（实施时检测段内文本）
+- **真实案例**: claim-ground 在 `platforms/openclaw/claim-ground/` 下原本无 `hooks/openclaw/`，导致 epistemic-pushback / frustration / evidence-reminder 等 hook 在 openclaw 上完全失效
+
 ## 语义检查规则（AI 执行）
 
 ### M01: Description 质量

@@ -1,6 +1,8 @@
 # Skill Lint 规则详情
 
-## 结构检查规则（Bash 脚本执行）
+规则分两层：Core（S01-S08）始终执行，Extended（S09-S16）需 `.skill-lint.json` 配置驱动。
+
+## Core 结构检查规则（始终执行）
 
 ### S01: plugin.json 存在性
 
@@ -57,6 +59,107 @@
 - **检查**: `evals/<name>/scenarios.md` 是否存在
 - **级别**: warning
 - **说明**: 没有评估场景的 skill 难以验证质量，但不阻断使用
+
+## Extended 结构检查规则（需 `.skill-lint.json` 配置）
+
+以下规则仅在目标目录下存在 `.skill-lint.json` 且包含对应配置字段时执行。无配置文件的项目不会触发这些检查。
+
+### S09: 命名规范
+
+- **检查**: skill 目录名是否匹配配置中 `naming-pattern` 正则表达式
+- **级别**: warning
+- **配置**: `"naming-pattern": "^[a-z]+-[a-z]+$"`
+- **说明**: 命名规范因项目而异，通过正则自定义
+
+### S10: Category 字段
+
+- **检查**: SKILL.md frontmatter 中 `category` 值是否在配置的 `category-values` 列表中
+- **级别**: error
+- **配置**: `"category-values": ["hammer", "crucible", "anvil", "quench"]`
+- **说明**: category 值由项目自行定义，脚本仅校验值是否在允许列表内
+
+### S11: 触发测试脚本
+
+- **检查**: `evals/<name>/run-trigger-test.sh` 是否存在
+- **级别**: warning
+- **配置**: `"require-trigger-test": true`
+- **说明**: 触发测试用于验证 skill 的注册完整性
+
+### S12: 使用手册
+
+- **检查**: `<user-guide-dir>/<name>-guide.md` (default `docs/user-guide/<name>-guide.md`) 是否存在
+- **级别**: warning
+- **配置**: `"require-guide": true`
+- **说明**: 使用手册是用户了解 skill 的入口
+
+### S13: 设计文档
+
+- **检查**: `<design-dir>/**/<name>-design.md` 是否存在（递归查找）
+- **级别**: warning
+- **配置**: `"require-design-doc": true`
+- **说明**: 设计文档记录 skill 的定位、机制和决策理由。典型布局是 `docs/design/<category>/<name>-design.md`（按 forge 4 分类组织，hammer/crucible/anvil/quench/cross），递归查找避免硬绑路径。
+
+### S14: 平台适配
+
+- **检查**: 配置中 `platforms` 数组指定的每个平台目录下，是否有对应的 `SKILL.md` 和 `references/*.md`
+- **级别**: warning
+- **配置**: `"platforms": ["openclaw"]`
+- **说明**: 支持任意平台名称，不限于 OpenClaw
+
+### S15: i18n README 覆盖
+
+- **检查**: `<i18n-dir>/<lang>/README.md`（按目录扫描发现的每种语言）是否包含该 skill 名称
+- **级别**: warning
+- **配置**: `"i18n-dir": "docs/i18n"`
+- **说明**: 单轨布局——每语言一目录，README 与 skill guide 同处。语言列表从 `<i18n-dir>/` 下的子目录自动推断
+
+### S16: i18n 使用手册覆盖
+
+- **检查**: 对于 `<i18n-dir>/` 下每个语言目录，`<i18n-dir>/<lang>/<name>-guide.md` 是否存在
+- **级别**: warning
+- **配置**: `"require-i18n-guide": true`（同时需要 `i18n-dir` 配置）
+- **说明**: 单轨布局，i18n guide 与 README 同住 `<i18n-dir>/<lang>/`，文件名与英文版对齐（仅目录不同）
+
+### S17: 旧 i18n 路径守卫
+
+- **检查**: `<user-guide-dir>/i18n/` 目录是否存在且包含 .md 文件
+- **级别**: error
+- **配置**: `"require-i18n-guide": true`（复用 S16 配置）
+- **说明**: 单轨迁移完成后 `<user-guide-dir>/i18n/` 应该不存在或为空。任何残留 .md 文件视为迁移未完成或被回退。i18n guide 的正确位置是 `<i18n-dir>/<lang>/<name>-guide.md`
+
+### S26: `docs/design/cross-*` 命名空间保护
+
+- **检查**: `<design-dir>/` 顶层下 `cross-<token>[-design].md` 文件的 `<token>`（去前缀、去 `-design` 后缀）不得与任何 `skills/*/` 目录名重名
+- **级别**: error
+- **配置**: `"protect-cross-namespace": true`
+- **说明**: 横切设计文档放在 `docs/design/cross/` 子目录下（典型路径 `docs/design/cross/cross-kb-archival-design.md`）。本规则保护 `<design-dir>/` 顶层不被 `cross-<skill>-design.md` 污染——若有人把 `docs/design/cross-block-break-design.md` 放在顶层并与 `skills/block-break/` 并存，视为命名冲突。Skill 本身以 `cross-` 开头（例如 `cross-check` 作为合法的 noun-verb kebab-case skill 名）不会被误伤——只检查 `docs/design/` 顶层文件。
+
+### S25: Help 段落要求
+
+- **检查**: `skills/<name>/SKILL.md` 必须：
+  1. 含 `## Help` 标题行（独占一行）
+  2. 正文提及 `` `help` `` 和 `` `--help` `` 两个 token（加反引号，避免与叙述文本撞车）
+- **级别**: 由配置值决定（`"error"` / `"warn"`；`"off"` 或缺省则跳过此规则）
+- **配置**: `"require-help-section": "warn"`（灰度阶段）→ `"error"`（所有 skill 就位后切换）
+- **说明**: 配合 [CLAUDE.md § Help 模式约定](../../../CLAUDE.md) 的统一 parsing 规则。对有默认行为的 skill（block-break / skill-lint），Help 段首段需显式声明"无参数 ≠ help"。本规则不检查 openclaw 镜像（openclaw 的 help 机制未定义，follow-up PR 处理）
+- **兼容**: 配置值也接受 `true`（等价 `"error"`）/ `false`（等价 `"off"`），方便旧项目迁移
+
+### S27: 术语引用密度（v1.2）
+
+- **检查**: 每个 SKILL.md 出现的专有术语（环境名 / 工具名 / 路径片段，启发式 = hyphenated 英文词如 `openclaw` 或带 `-` 的 kebab-case，加上前缀 `~/.X` 形式的路径片段）必须在 repo 内有 ≥1 处定义引用（grep 命中其他文件）
+- **级别**: warning（不阻断）
+- **配置**: 始终执行，无开关
+- **白名单**: `git`/`ls`/`bash`/`jq`/`sed`/`awk`/`grep`/`find`/`curl`/`python`/`python3`/`node`/`npm`/`cd`/`echo`/`cat`/`diff`/`rsync`/`cp`/`mv`/`rm`/`mkdir`/`tee`/`xargs`/`sort`/`uniq`/`wc`/`head`/`tail`/`md`/`json`/`yaml`/`txt`/`sh` 等通用 token 豁免
+- **说明**: SKILL.md 出现 "openclaw 环境" 这类术语，若 repo 内（除该 SKILL.md 自身外）无任何文件提及 `openclaw` —— 视为孤立术语，可能产生歧义指代，需 reference 段补定义引用（如 [scope-boundaries.md] 链接）。本规则启发性强，false positive 率非零，因此为 warn 级别仅提示
+- **真实案例**: openclaw 失败 — 用户说 "更新到 openclaw 环境" 时 LLM 误锚定到 Claude Code cache，因为 `platforms/openclaw/` 目录在 SKILL.md 没有被明确链接定义
+
+### S28: 平台 hook 镜像（v1.2）
+
+- **检查**: 若某 skill 有 `skills/<s>/hooks/` 目录（owner skill），且 `.skill-lint.json` 的 `platforms` 数组含 `<p>`，则 `platforms/<p>/<s>/hooks/<p>/` 必须存在；且该目录下每个子目录的 `HOOK.md` frontmatter 中 `events` 字段（数组形态）必须非空
+- **级别**: error
+- **配置**: 始终执行（条件性触发，不需开关）
+- **说明**: per [platform-parity spec ADDED Requirement](../../../openspec/specs/platform-parity/spec.md) — hook 等价镜像从 advisory 升 mandatory 的强制点。若平台真无等价 hook 系统，需在 SKILL.md `## 平台 hook 等价位置` 段明示"无等价机制可用"，本规则需配合此段做豁免（实施时检测段内文本）
+- **真实案例**: claim-ground 在 `platforms/openclaw/claim-ground/` 下原本无 `hooks/openclaw/`，导致 epistemic-pushback / frustration / evidence-reminder 等 hook 在 openclaw 上完全失效
 
 ## 语义检查规则（AI 执行）
 

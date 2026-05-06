@@ -39,7 +39,14 @@ claude plugin add juserai/forge
 # OpenClaw
 git clone https://github.com/juserai/forge.git
 cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
+
+# OpenClaw — enable claim-ground hooks (v1.2)
+openclaw hooks enable claim-ground-prompt-gate
+openclaw hooks enable claim-ground-session-anchor
+openclaw hooks enable claim-ground-epistemic-pushback
 ```
+
+> **OpenClaw 平台限制**：claim-ground v1.2 的 5 个 hook 中只有 3 个能镜像到 OpenClaw（架构差异——OpenClaw 当前 hook 系统在 message/session/gateway 层，无 PreToolUse/PostToolUse 等价事件）。Claude Code 平台保留全 5 hook 覆盖。详见 [platforms/openclaw/claim-ground/SKILL.md](platforms/openclaw/claim-ground/SKILL.md) §"平台 hook 等价位置"。
 
 ## Skills
 
@@ -51,7 +58,7 @@ cp -r forge/platforms/openclaw/* ~/.openclaw/skills/
 |-------|-------------|--------|
 | **block-break** | Forces exhaustive problem-solving before giving up | `/block-break` |
 | **ralph-boost** | Autonomous dev loops with convergence guarantee | `/ralph-boost setup` |
-| **claim-ground** | Ground every "current state" claim to runtime evidence | auto-triggered |
+| **claim-ground** | 15 Red Lines + 5 hook surfaces. Detects ambiguity / destructive actions / scope creep / hard constraints | auto-triggered |
 
 ### Crucible
 

@@ -71,3 +71,37 @@
 
 **设置**: .skill-lint.json 中 `platforms` 为 `["openclaw", "gemini"]`
 **期望**: S14 分别检查 `platforms/openclaw/` 和 `platforms/gemini/` 下的适配文件
+
+---
+
+## v1.2 新增场景（S27 / S28）
+
+## 场景 15: S27 watchlist 命中且无其他引用 → warn
+
+**设置**: 临时在 SKILL.md 末尾追加 "本 skill 与 flarp 环境集成"，且 repo 内无任何文件提及 `flarp`
+**期望**: S27 不报 warn（因为 `flarp` 不在 watchlist；S27 是 white-list 模式）
+
+## 场景 16: S27 watchlist 命中且有其他引用 → 通过
+
+**设置**: SKILL.md 含 `openclaw`，且 platforms/openclaw/ 等其他位置也提及 `openclaw`
+**期望**: S27 不报 warn（命中但有其他引用）；passed 列表含 `S27: All watchlist terms in SKILL.md have repo-wide references`
+
+## 场景 17: S27 watchlist 命中但无任何其他引用 → warn（合成测试）
+
+**设置**: 临时把 SKILL.md 改为含 `clawhub`（在 watchlist 中），并临时把 repo 内**所有**其他 `clawhub` 提及改名（或在干净 fixture 中只让该 SKILL.md 含此 term）
+**期望**: S27 报 warn — `S27: skills/<name>/SKILL.md mentions 'clawhub' but no other reference exists in repo (potential ambiguity)`
+
+## 场景 18: S28 hook owner skill 缺平台镜像 → error
+
+**设置**: `skills/claim-ground/hooks/` 存在，`.skill-lint.json` 含 `"openclaw"`，但 `platforms/openclaw/claim-ground/hooks/openclaw/` 不存在
+**期望**: S28 报 error — `S28: skills/claim-ground has hooks/ but platforms/openclaw/claim-ground/hooks/openclaw/ missing`
+
+## 场景 19: S28 platform 镜像 HOOK.md events 字段为空 → error
+
+**设置**: `platforms/openclaw/claim-ground/hooks/openclaw/prompt-gate/HOOK.md` 存在但 frontmatter `events: []`
+**期望**: S28 报 error — `S28: HOOK.md events field is empty`
+
+## 场景 20: S28 平台无等价 hook 系统的豁免
+
+**设置**: `.skill-lint.json` 含 `"docsite"`（假想纯文档平台），且 `platforms/docsite/claim-ground/SKILL.md` 的 `## 平台 hook 等价位置` 段含 "无等价机制可用" 文本
+**期望**: S28 不报 error（豁免触发）

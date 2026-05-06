@@ -284,6 +284,114 @@
 
 ---
 
+## 11. 模糊指令分类与必查命令（v1.2，红线 9）
+
+用户用模糊指代/数量/偏好/缺参数发出强动作时，先归类再走对应必查命令。
+
+| 模糊类型 | 用户语 | 必查命令 / 反问模板 |
+|---|---|---|
+| **路径/环境** | "X 环境 / X 路径 / X cache" | `which X` + `ls ~/.X` + `find ~ -maxdepth 3 -name "*X*"` |
+| **代词指代** | "把它优化一下 / 改这个 / 那个怎么样" | 列出 prior turn 提到的候选；AskUserQuestion 让用户挑 |
+| **数量集合** | "重要的文件 / 所有 / 这些 / 相关的" | `ls`/`git ls-files` 列候选；AskUserQuestion 选具体子集 |
+| **偏好维度** | "更好 / 更快 / 更简洁" | AskUserQuestion 让用户选优化指标（速度/内存/可读/体积/...） |
+| **强动作缺参数** | "部署到生产 / run 一下" | AskUserQuestion 补关键参数（集群 / 分支 / target） |
+| **缺 framework** | "写个单元测试 / 加个 component" | `ls package.json` + `cat package.json` 看依赖；或反问 |
+
+**核心规则**：消歧成本 < 猜错成本。一条 `which` 或 AskUserQuestion 的 5 秒比改错文件后回滚便宜得多。
+
+---
+
+## 12. 破坏性动作清单与反向确认模板（v1.2，红线 10）
+
+跑下列命令前 **MUST**：(a) dry-run 列项，(b) 反向确认用户授权该具体范围，(c) 优先用更安全变体。
+
+| 命令模式 | 安全变体 | dry-run / 列项命令 |
+|---|---|---|
+| `rm -rf <path>` | `mv <path> /tmp/__trash` | `ls -la <path>` 先看会删什么 |
+| `rm <path>` 通配 | 单文件指定 | `ls <path>` 列出 |
+| `git reset --hard` | `git stash` 或 `git branch backup-X` | `git status` + `git diff` |
+| `git push --force` | `git push --force-with-lease=<branch>:<expected-sha>` | `git rev-parse HEAD` + `git rev-parse origin/<branch>` |
+| `find <path> -delete` | `find <path> -print` 先列出 | `find <path>` 不带 `-delete` |
+| `DROP TABLE <t>` | `RENAME TO _backup_<t>` | `SELECT COUNT(*) FROM <t>` |
+| `kill -9 <pid>` | `kill -TERM <pid>`（让进程清理） | `ps aux \| grep <pid>` |
+| `truncate -s 0 <file>` | `mv <file> <file>.bak` | `ls -la <file>` 看大小 |
+
+**反向确认模板**：
+
+```
+计划执行：<命令>
+将影响以下目标（dry-run 输出）：
+  <list>
+
+是否授权？(y/n)
+```
+
+**特例 — `git push --force` 到 main/master**：system prompt 有硬规则不允许 LLM 自动跑，必须改用 `--force-with-lease=<branch>:<sha>` 或退回到 reset --soft + new commit + 普通 push。
+
+---
+
+## 13. 测试输出 passed/skipped 区分（v1.2，红线 11）
+
+**测试 framework 输出格式与必查项**：
+
+| Framework | passed/skipped/error 字段 | 看清的命令 |
+|---|---|---|
+| pytest | `X passed, Y skipped, Z errors, A xfailed` | `pytest -v --tb=long` |
+| jest | `X passed, Y skipped, Z failed` | `jest --verbose` |
+| mocha | `X passing, Y pending, Z failing` | `mocha --reporter spec` |
+| go test | `--- PASS / SKIP / FAIL` 行 | `go test -v ./...` |
+| cargo test | `test result: ok. X passed; Y failed; Z ignored` | `cargo test -- --nocapture` |
+| vitest | `X passed, Y skipped, Z failed` | `vitest --reporter verbose` |
+
+**核心规则**：
+
+- "passed" ≠ "all tests ran"
+- "skipped" 必须知道**为什么**：
+  - 显式 `@pytest.mark.skip`（开发者主动跳，OK）
+  - 环境/依赖缺失（如 `--no-network` flag）—— 不算 passed
+  - 平台不兼容（如 Windows-only）—— 不算 passed
+- "errored" 完全没跑 —— 必须修
+
+**标准回应模板**：
+
+> 输出："X passed, Y skipped, Z errored"——具体来看：
+> [pytest -v 看 skip / error 详情]
+> Y 个 skip 是因为 <原因>；Z 个 error 是 <原因>。
+> 真实通过 X/N；需要 <下一步动作>。
+
+---
+
+## 14. 硬约束词典（v1.2，红线 14）
+
+**触发硬约束捕获的关键词集**：
+
+| 语言 | 硬约束关键词 | 示例 |
+|---|---|---|
+| 中文 | 不要 / 别 / 禁止 / 不许 / 不能 / 永远不 / 绝对不 | "不要碰 auth" / "永远不要直接改生产" |
+| English | don't / do not / never / must not / forbidden / prohibited | "don't touch auth" / "never push to main" |
+| 日本語 | しないで / だめ / 禁止 | "auth を触らないで" |
+| 한국어 | 하지 마 / 안 돼 / 금지 | "auth 만지지 마" |
+
+**捕获规则**：
+
+1. 关键词后跟着的最近名词短语作为约束**目标**
+2. 默认 `scope:"session"`（关 session 清空）
+3. prompt 含 "永远 / always / forever / 永久 / permanent" → 升 `scope:"cross-session"`，写到 anchors.json `hard_constraints[]` 跨 session 保留
+4. SessionStart 自动注入 `<CLAIM_GROUND_HARD_CONSTRAINTS>` 提醒
+
+**冲突处理**：
+
+- LLM 即将做的动作可能违反某条 hard_constraint → 必须在回答里明示提醒并请用户确认
+- 用户用 "现在可以了 / 解除约束 / 取消" 等词显式解除 → 从 hard_constraints[] 移除该条
+
+**不算硬约束的情况**：
+
+- 偏好（"我喜欢 X"、"我想用 Y"）—— 不强制
+- 临时建议（"先 X 再 Y"）—— 是工作流序，不是约束
+- 单次否定（"这次不要 X"）—— 是 turn 级，不进 anchors
+
+---
+
 ## 跨类通用原则
 
 1. **先列证据，再下结论** — 贴命令 + 输出，再总结

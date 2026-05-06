@@ -1,6 +1,6 @@
 ---
 name: claim-ground
-description: "Claim Ground v1.1 — Epistemic constraint engine. Use when answering factual questions about current/live state (model version, tool version, installed packages, environment config, feature availability), when defining professional terms with authoritative standards bodies (IIBA / CFA / ISO / IEEE / RFC / W3C / NIST etc., Red Line 7), or when the user challenges a prior factual assertion (pushback like 'really? / are you sure? / I thought X was already updated'). Forces runtime-context-first reasoning: quote system prompt / env / tool outputs / standards-body verbatim before concluding, and RE-VERIFY instead of rephrasing when challenged. Adds /claim-ground verify <claim> manual grounding mode. Prevents stale-training-data hallucinations."
+description: "Claim Ground v1.2 — Epistemic constraint engine. Use when answering factual questions about current/live state, when defining professional terms with authoritative standards bodies (Red Line 7), when the user challenges a prior factual assertion (pushback regex), OR proactively when input contains ambiguity (path/pronoun/quantity/preference/missing-param), ecosystem-scope questions ('latest/strongest model'), or hard constraints ('don't / never'). Forces runtime-context-first reasoning + dispatches across message:received / agent:bootstrap events on OpenClaw."
 license: MIT
 metadata:
   category: hammer
@@ -158,6 +158,37 @@ schema 与生命周期详见 `references/anchors.md`。SessionStart 侧由 `hook
 ## 与 block-break 的协同
 
 正交互补。被质疑时，block-break 强制"不许放弃"，claim-ground 强制"必须重查"。两者同时激活时：换措辞重申 = 同时触犯两个 skill 的红线。
+
+prompt-gate 与 frustration-trigger / epistemic-pushback 互斥让位（handler 头有 mutual yield 检测），避免单条 message 三 hook 同时火。
+
+## 平台 hook 等价位置
+
+per [openspec/specs/platform-parity/spec.md](../../openspec/specs/platform-parity/spec.md) §"Hook 镜像在有等价系统的平台为 mandatory"——claim-ground 的 5 个 hook 在 OpenClaw 的等价镜像如下：
+
+| Hook (Claude Code) | OpenClaw 镜像 | OpenClaw 事件 |
+|---|---|---|
+| epistemic-pushback-trigger | [hooks/openclaw/epistemic-pushback/](hooks/openclaw/epistemic-pushback/) | `message:received` |
+| prompt-gate | [hooks/openclaw/prompt-gate/](hooks/openclaw/prompt-gate/) | `message:received` |
+| session-anchor | [hooks/openclaw/session-anchor/](hooks/openclaw/session-anchor/) | `agent:bootstrap` |
+| **pre-tool-gate** | **无等价机制可用**——OpenClaw 当前 hook 系统是 message/session/gateway/command 层，无 PreToolUse 等价事件（架构差异） | — |
+| **evidence-reminder** | **无等价机制可用**——OpenClaw 无 PostToolUse 等价事件，所以 R8 路径抽取 + R11 测试输出扫描在本平台**仅靠 SKILL 加载后的 Red Line 文档约束** | — |
+
+**架构限制后果**：在 OpenClaw 平台上，C/D5/D6/E 四类失败模式（破坏性动作 / 测试输出 / env var / scope creep）**没有 hook 级 just-in-time 防御**，只能依赖 LLM 加载 claim-ground skill 后通过 R10/R11/R12/R13 文档约束。Claude Code 平台保留全 5 hook 覆盖。
+
+`seen_paths[]` 累积：OpenClaw runtime 不会自动写入（无 PostToolUse 事件），但 Claude Code 写过的 seen_paths 仍能被 OpenClaw `agent:bootstrap` 读取注入（共享 `~/.forge/claim-ground-anchors.json`）。
+
+**OpenClaw 启用命令**：
+
+```bash
+openclaw plugins install <forge-spec>
+openclaw hooks enable claim-ground-prompt-gate
+openclaw hooks enable claim-ground-session-anchor
+openclaw hooks enable claim-ground-epistemic-pushback
+```
+
+**共享状态**：`~/.forge/claim-ground-anchors.json` 路径平台无关；TS handler 与 Claude Code bash hook 共读共写（详见 [references/anchors.md](references/anchors.md)）。
+
+**共享 matcher / reminder 模板**：[references/matchers.json](references/matchers.json) + [references/reminders.json](references/reminders.json)，TS handler 用 `import` 读，强制双平台行为对齐。
 
 ## Attribution
 

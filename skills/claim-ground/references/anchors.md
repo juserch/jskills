@@ -10,7 +10,7 @@
 
 `~/.forge/claim-ground-anchors.json` —— 与 `block-break-state.json` 同目录，运行时创建。不在 Forge 仓库内，也不在 git 版本控制。
 
-## Schema
+## Schema（v1.2）
 
 ```json
 {
@@ -21,7 +21,8 @@
       "key": "string — 短名，例如 'model' / 'cli-version' / 'repo-main-branch'",
       "value": "string — 事实值，例如 'claude-opus-4-7[1m]' / 'v2.3.1' / 'main'",
       "source": "string — 证据来源，例如 'system-prompt' / '`claude --version` output' / '`git branch --show-current`'",
-      "verified_at": "ISO-8601 timestamp"
+      "verified_at": "ISO-8601 timestamp",
+      "needs_reconfirm": "boolean — v1.2 新增。SessionStart 跨 session 加载时若 last_updated 距今 >24h，自动设 true；用户重确认或 LLM 重新跑命令验证后清回 false"
     }
   ],
   "user_corrections": [
@@ -31,9 +32,32 @@
       "source": "string — 用户纠正时给的依据或验证命令",
       "corrected_at": "ISO-8601 timestamp"
     }
+  ],
+  "seen_paths": [
+    {
+      "path": "string — tool result 里出现过的文件系统路径片段，如 '~/.claude/plugins/cache/forge/'",
+      "source_tool": "Skill | Bash | Read | Grep | <openclaw-event-name>",
+      "source_platform": "claude-code | openclaw",
+      "seen_at": "ISO-8601",
+      "verified": "boolean — 是否独立 which/ls 验证过；默认 false",
+      "verified_at": "ISO-8601 | null",
+      "verified_by": "string | null — 升级 verified 时跑的命令，如 '`which openclaw`' / '`ls ~/.openclaw/skills/`'"
+    }
+  ],
+  "hard_constraints": [
+    {
+      "constraint": "string — 用户表达的硬约束原话片段，如 '不要碰 auth 模块'",
+      "source_turn": "integer — 用户提出该约束的 turn 序号（可估算）",
+      "source_text": "string — 完整 prompt 片段",
+      "captured_at": "ISO-8601",
+      "expires_at": "ISO-8601 | null — null 表示 session 级（关 session 清空）",
+      "scope": "session | cross-session — cross-session 由用户用 '永远 / always / 永久' 等词触发"
+    }
   ]
 }
 ```
+
+**跨平台共享**：本文件路径 `~/.forge/claim-ground-anchors.json` 平台无关，schema 平台无关。Claude Code 与 openclaw 的 hook 共读同一份文件，使用相同的"读→改→原子 mv"单写者契约。`source_platform` 字段帮助调试出处。
 
 ## 生命周期
 
@@ -45,6 +69,52 @@
 3. 更新 `last_updated`
 
 写入**不是强制**的——只有在"同类问题可能再次出现"且"答案在本会话窗口内稳定"时才值得固化。一次性问题（"这条命令输出了什么"）不需要。
+
+### seen_paths 写入（v1.2，自动）
+
+`evidence-reminder.sh` 在 PostToolUse 后自动扫 tool result 里出现的路径片段：
+
+1. `grep -oE '(~/[^ ]*|/home/[^ ]*|/.claude/[^ ]*|/.openclaw/[^ ]*)'` 抽取
+2. 去重（path + source_tool 复合键）
+3. FIFO 上限 50 条；超过则淘汰最老
+4. `verified:false` 默认；7 天 TTL（last_updated 比对）
+
+### seen_paths 升级 verified（v1.2，主动）
+
+skill 在跑 `which X` / `ls X` / `find X` 验证某路径后：
+
+1. 读 anchors.json
+2. 找到匹配的 seen_paths 条目（按 path 字符串）
+3. 升 `verified:true`，记 `verified_at` + `verified_by`（命令字符串）
+4. 原子写回
+
+被质疑时仍适用 Red Line 3：`verified:true` 不是免死金牌，必须重查。
+
+### hard_constraints 捕获（v1.2，自动）
+
+`prompt-gate.sh` 在 UserPromptSubmit 时检测到否定关键词（"不要 / 别 / 禁止 / don't / never"）+ 名词目标短语后：
+
+1. 提取约束目标（关键词后跟着的最近名词短语）
+2. 默认 `scope:"session"`；prompt 含 "永远 / always / 永久" 时升 `scope:"cross-session"`
+3. 写入 `hard_constraints[]`
+4. SessionStart 注入提醒
+
+### needs_reconfirm 升起（v1.2，自动）
+
+`session-anchor.sh` 在 SessionStart 时：
+
+1. 比对每条 anchor 的 `verified_at` 与当前时间
+2. 距今 >24h 则设 `needs_reconfirm:true`
+3. 注入 `<CLAIM_GROUND_ANCHORS>` 时把 `needs_reconfirm:true` 的 anchor 标 "(needs reconfirm)"
+4. skill 在引用前 SHOULD 重跑命令验证；验证后清回 false
+
+### 读取
+`SessionStart` hook 自动执行：
+- startup / resume / clear 触发点都注入 anchors / seen_paths / hard_constraints
+- 文件不存在 → 静默跳过
+- 文件存在但 `last_updated > 7 天` → 静默跳过（防止 stale）
+- 文件存在但解析失败（JSON 破损）→ 静默跳过（防御性读）
+- 其余 → emit `<CLAIM_GROUND_ANCHORS>` + （若有 unverified seen_paths）`<CLAIM_GROUND_SEEN_PATHS>` + （若有未 expire constraints）`<CLAIM_GROUND_HARD_CONSTRAINTS>`
 
 ### 读取
 `SessionStart` hook 自动执行：
@@ -71,17 +141,21 @@
 
 ## 适合 anchor 的事实类型
 
-| 类型 | 是否适合 | 原因 |
-|------|---------|------|
-| 本会话运行的模型 ID | ✅ 适合 | 会话内稳定，session 级 anchor |
-| CLI 版本 | ✅ 适合 | 会话内稳定 |
-| 项目当前 git branch / commit | ⚠️ 慎用 | 会话内可能变；anchor 时记录 `verified_at` 更重要 |
-| 已安装的全局包列表 | ✅ 适合 | 稳定度高 |
-| 环境变量值 | ⚠️ 慎用 | 用户可能 `export` 覆盖；短期有效 |
-| 用户身份信息 / 邮箱 | ✅ 适合 | 跨会话稳定 |
-| 网络服务状态 | ❌ 不适合 | 外部状态，变化快 |
-| 当前时间 | ❌ 不适合 | 永远在变 |
-| 生态最新模型 | ❌ 不适合 | 需外部查证，不是会话级事实 |
+| 类型 | 字段 | 是否适合 | 原因 |
+|------|------|---------|------|
+| 本会话运行的模型 ID | anchors[] | ✅ 适合 | 会话内稳定，session 级 anchor |
+| CLI 版本 | anchors[] | ✅ 适合 | 会话内稳定 |
+| 项目当前 git branch / commit | anchors[] | ⚠️ 慎用 | 会话内可能变；anchor 时记录 `verified_at` 更重要 |
+| 已安装的全局包列表 | anchors[] | ✅ 适合 | 稳定度高 |
+| 环境变量值 | anchors[] | ⚠️ 慎用 | 用户可能 `export` 覆盖；短期有效 |
+| 用户身份信息 / 邮箱 | anchors[] | ✅ 适合 | 跨会话稳定 |
+| 网络服务状态 | anchors[] | ❌ 不适合 | 外部状态，变化快 |
+| 当前时间 | anchors[] | ❌ 不适合 | 永远在变 |
+| 生态最新模型 | anchors[] | ❌ 不适合 | 需外部查证，不是会话级事实 |
+| **tool result 里出现过的路径片段（未验证）** | seen_paths[] | ✅ 自动写入 | 防止"context 见过 = 已锚定"幻觉；FIFO 50 上限 |
+| **完整文件树映射** | seen_paths[] | ❌ 不适合 | 体积爆炸；只存出现过的片段而非穷举 |
+| **用户硬约束（"不要 / 别 / 禁止"）** | hard_constraints[] | ✅ 自动捕获 | 跨 turn 保留；session 级默认，"永远"升 cross-session |
+| **用户的偏好（"我喜欢 X"）** | hard_constraints[] | ❌ 不适合 | 偏好 ≠ 约束；不放硬约束表 |
 
 ## 示例
 

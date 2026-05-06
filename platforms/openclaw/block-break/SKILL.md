@@ -98,3 +98,17 @@ Spawn sub-agent 时必须注入行为约束。将 `agents/block-break-worker.md`
 7 项清单全部完成仍未解决 → 输出：已验证事实 → 已排除可能性 → 缩小后范围 → 推荐下一步 → 交接信息。
 
 > 这不是"我不行"。这是"问题的边界在这里"。
+
+## 平台 hook 等价位置
+
+per [openspec/specs/platform-parity/spec.md](../../openspec/specs/platform-parity/spec.md) §"Hook 镜像在有等价系统的平台为 mandatory"——block-break 在 Claude Code 持有 3 个 hook，OpenClaw 当前**无等价镜像**：
+
+| Hook (Claude Code) | OpenClaw 镜像 | 状态 |
+|---|---|---|
+| frustration-trigger | **无等价机制可用** | UserPromptSubmit 检测挫败词；可映射到 `message:received`，待后续 PR |
+| failure-detector | **无等价机制可用** | PostToolUse 跟踪 Bash 失败计数；OpenClaw 无 PostToolUse 等价事件（架构差异） |
+| session-restore | **无等价机制可用** | SessionStart 恢复压力等级；可映射到 `agent:bootstrap`，待后续 PR |
+
+**架构限制后果**：OpenClaw 平台上 Block Break 进入"自我监控模式"——靠 SKILL.md §"自动激活（无 Hook 环境）"段的自检规则代替 hook 自动触发。3 项检测条件（连续失败 2+ 次 / 即将放弃 / 被动等待 / 用户不满信号）由 LLM 主动监控，不依赖事件分发。
+
+`block-break-state.json` 在 OpenClaw 上由 LLM 在意识到压力等级变化时手动更新（不是 hook 自动写入），跨 session 状态恢复仍可用（`agent:bootstrap` 读取，但 v1.2 未实现 handler）。

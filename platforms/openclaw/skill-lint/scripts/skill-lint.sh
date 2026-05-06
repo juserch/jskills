@@ -37,10 +37,12 @@ CFG_NO_DANGEROUS_PATTERNS=""
 CFG_VERIFY_PLATFORM_SUBDIRS=""
 CFG_VERIFY_I18N_STRUCTURE=""
 CFG_VERIFY_CROSS_SKILL_CATEGORY=""
+CFG_REQUIRE_HELP_SECTION=""
 # Path config (see rules.md): fallback to legacy layout if keys absent.
 # i18n is single-track: <i18n-dir>/<lang>/{README.md, <skill>-guide.md}
 CFG_USER_GUIDE_DIR="docs/guide"
 CFG_DESIGN_DIR="docs/plans"
+CFG_PROTECT_CROSS_NAMESPACE=""
 
 if [ -f "$CONFIG_FILE" ]; then
     # Parse config using python
@@ -79,11 +81,19 @@ if rules.get('verify-i18n-structure-parity'):
     print('CFG_VERIFY_I18N_STRUCTURE=1')
 if rules.get('verify-cross-skill-category-claim'):
     print('CFG_VERIFY_CROSS_SKILL_CATEGORY=1')
+# require-help-section: tri-value 'warn' / 'error' / 'off' (also accepts true/false for back-compat)
+help_rule = rules.get('require-help-section')
+if help_rule is True or help_rule == 'error':
+    print('CFG_REQUIRE_HELP_SECTION=error')
+elif help_rule == 'warn':
+    print('CFG_REQUIRE_HELP_SECTION=warn')
 # Path config — single source of truth; legacy defaults applied in shell if absent.
 if 'user-guide-dir' in rules:
     print(f'CFG_USER_GUIDE_DIR={shlex.quote(rules[\"user-guide-dir\"])}')
 if 'design-dir' in rules:
     print(f'CFG_DESIGN_DIR={shlex.quote(rules[\"design-dir\"])}')
+if rules.get('protect-cross-namespace'):
+    print('CFG_PROTECT_CROSS_NAMESPACE=1')
 " 2>/dev/null)" || true
 fi
 
@@ -327,6 +337,7 @@ done
 
 # --- S17: legacy i18n path guard ---
 # After single-track migration, <user-guide-dir>/i18n/ should not contain any .md files.
+# Any leftover signals an incomplete or reverted migration.
 if [ -n "$CFG_REQUIRE_I18N_GUIDE" ] \
     && [ -d "$PLUGIN_ROOT/$CFG_USER_GUIDE_DIR/i18n" ]; then
     wrong_count=$(find "$PLUGIN_ROOT/$CFG_USER_GUIDE_DIR/i18n" -type f -name "*.md" 2>/dev/null | wc -l)
@@ -360,8 +371,15 @@ if [ -n "$CFG_VERIFY_INTEGRITY" ] && [ -f "$PLUGIN_ROOT/.claude-plugin/marketpla
 import json
 with open('$PLUGIN_ROOT/.claude-plugin/marketplace.json') as f:
     data = json.load(f)
+target = '$skill_name'
+target_path = '$skill_rel'
 for p in data.get('plugins', []):
-    if '$skill_rel' in p.get('skills', []):
+    # Match either legacy layout (source='./' + skills=['./skills/<name>'])
+    # or per-skill source layout (source='./skills/<name>' + skills=['./']).
+    if target_path in p.get('skills', []):
+        print(p.get('integrity', {}).get('skill-md-sha256', ''))
+        break
+    if p.get('source', '').rstrip('/').endswith('/' + target) and p.get('name') == target:
         print(p.get('integrity', {}).get('skill-md-sha256', ''))
         break
 " 2>/dev/null)
@@ -376,6 +394,61 @@ for p in data.get('plugins', []):
         fi
     done
     [ "$s19_fail" -eq 0 ] && add_passed "S19: All integrity hashes match"
+fi
+
+# --- S25: require-help-section (user-invokable skills must carry `## Help`) ---
+# Tri-value: 'error' → add_error, 'warn' → add_warning, empty → skip.
+# Note: S24 is already taken by the cross-skill-category-claim rule below.
+if [ -n "$CFG_REQUIRE_HELP_SECTION" ]; then
+    s25_fail=0
+    # Report helper resolves tri-value to the correct add_* function.
+    _s25_report() {
+        local severity="$1" msg="$2"
+        case "$severity" in
+            error) add_error "$msg"; s25_fail=1 ;;
+            warn)  add_warning "$msg" ;;
+        esac
+    }
+    for skill_md in "$PLUGIN_ROOT"/skills/*/SKILL.md; do
+        [ -f "$skill_md" ] || continue
+        skill_name="$(basename "$(dirname "$skill_md")")"
+        # 1) Must contain `## Help` heading (standalone, not `## Help Text` variants)
+        if ! grep -qE '^## Help[[:space:]]*$' "$skill_md"; then
+            _s25_report "$CFG_REQUIRE_HELP_SECTION" "S25: $skill_name SKILL.md missing '## Help' section"
+            continue
+        fi
+        # 2) Must mention both `help` and `--help` tokens somewhere in the file (literal, in backticks)
+        if ! grep -q '`help`' "$skill_md"; then
+            _s25_report "$CFG_REQUIRE_HELP_SECTION" "S25: $skill_name SKILL.md Help section missing \`help\` token"
+            continue
+        fi
+        if ! grep -q '`--help`' "$skill_md"; then
+            _s25_report "$CFG_REQUIRE_HELP_SECTION" "S25: $skill_name SKILL.md Help section missing \`--help\` token"
+            continue
+        fi
+    done
+    [ "$s25_fail" -eq 0 ] && add_passed "S25: All skills declare '## Help' section with required tokens"
+fi
+
+# --- S26: cross-namespace protection in <design-dir>/ ---
+# Any file in $CFG_DESIGN_DIR named cross-<token>-design.md must NOT shadow an existing skill
+# named <token>. Preserves the 'cross-' prefix as a reserved namespace for horizontal design docs
+# without restricting skill naming itself.
+if [ -n "$CFG_PROTECT_CROSS_NAMESPACE" ] && [ -d "$PLUGIN_ROOT/$CFG_DESIGN_DIR" ]; then
+    s26_fail=0
+    for cross_file in "$PLUGIN_ROOT/$CFG_DESIGN_DIR"/cross-*.md; do
+        [ -f "$cross_file" ] || continue
+        # Strip `cross-` prefix and `-design.md` suffix (both optional; prefix required)
+        token=$(basename "$cross_file")
+        token="${token#cross-}"
+        token="${token%-design.md}"
+        token="${token%.md}"
+        if [ -d "$PLUGIN_ROOT/skills/$token" ]; then
+            add_error "S26: $CFG_DESIGN_DIR/$(basename "$cross_file") collides with skills/$token/ — 'cross-' prefix is reserved for horizontal design docs, not per-skill files"
+            s26_fail=1
+        fi
+    done
+    [ "$s26_fail" -eq 0 ] && add_passed "S26: cross-* namespace in $CFG_DESIGN_DIR/ does not shadow any skill"
 fi
 
 # --- S20: agent model declaration ---
@@ -535,6 +608,187 @@ if [ -n "$CFG_VERIFY_CROSS_SKILL_CATEGORY" ]; then
     done
     [ "$s24_fail" -eq 0 ] && add_passed "S24: Cross-skill category claims consistent with SKILL.md frontmatter"
 fi
+
+# --- S28: platform-hook parity (error, v1.2) ---
+# 若 skills/<s>/hooks/ 存在 + .skill-lint.json platforms 含 <p>，
+# 则 platforms/<p>/<s>/hooks/<p>/ 必须存在且每个 HOOK.md frontmatter events 非空。
+# 豁免：SKILL.md "## 平台 hook 等价位置" 段含"无等价机制可用"则跳过对应 hook 的检查。
+s28_warnings_raw=$(python3 - "$PLUGIN_ROOT" << 'S28EOF' 2>/dev/null || true
+import json
+import os
+import re
+import sys
+
+root = sys.argv[1]
+platforms_cfg = []
+sl_cfg_path = os.path.join(root, ".skill-lint.json")
+if os.path.isfile(sl_cfg_path):
+    try:
+        with open(sl_cfg_path, "r", encoding="utf-8") as fh:
+            cfg = json.load(fh)
+        # platforms 在 rules.platforms 嵌套层（与 .skill-lint.json schema 对齐）
+        rules = cfg.get("rules", {}) or {}
+        platforms_cfg = rules.get("platforms", []) or cfg.get("platforms", []) or []
+    except Exception:
+        pass
+
+if not platforms_cfg:
+    sys.exit(0)
+
+skills_dir = os.path.join(root, "skills")
+errors = []
+
+if not os.path.isdir(skills_dir):
+    sys.exit(0)
+
+for skill_name in sorted(os.listdir(skills_dir)):
+    skill_path = os.path.join(skills_dir, skill_name)
+    if not os.path.isdir(skill_path):
+        continue
+    canonical_hooks = os.path.join(skill_path, "hooks")
+    # 仅 owner skill（有 hooks/ 目录）需要 platform 镜像
+    if not os.path.isdir(canonical_hooks):
+        continue
+    # 收集 canonical hook 名（hooks/ 下的 .sh 脚本对应 hook 名）
+    canonical_hook_names = set()
+    for f in os.listdir(canonical_hooks):
+        if f.endswith(".sh"):
+            # e.g. prompt-gate.sh → prompt-gate；epistemic-pushback-trigger.sh → epistemic-pushback-trigger
+            canonical_hook_names.add(f[:-3])
+
+    for plat in platforms_cfg:
+        plat_skill = os.path.join(root, "platforms", plat, skill_name)
+        # 读 platform SKILL.md 检查"无等价机制可用"豁免段
+        plat_skill_md = os.path.join(plat_skill, "SKILL.md")
+        exempted_hooks = set()
+        if os.path.isfile(plat_skill_md):
+            try:
+                with open(plat_skill_md, "r", encoding="utf-8") as fh:
+                    md = fh.read()
+                # 在 "## 平台 hook 等价位置" 段查找"无等价机制可用"行
+                m = re.search(r"##\s+平台 hook 等价位置.*?(?=\n##\s|\Z)", md, re.DOTALL)
+                if m:
+                    section = m.group(0)
+                    # 每行查 hook 名 + "无等价"
+                    for line in section.splitlines():
+                        if "无等价机制可用" in line or "no equivalent" in line.lower():
+                            for hn in canonical_hook_names:
+                                # 接受 prompt-gate / claim-ground-prompt-gate 等命名变体
+                                hn_short = hn.replace(f"{skill_name}-", "")
+                                hn_strip = hn.replace("-trigger", "")
+                                if hn in line or hn_short in line or hn_strip in line:
+                                    exempted_hooks.add(hn)
+            except Exception:
+                pass
+
+        # 平台 hooks/<plat>/ 目录
+        plat_hooks_dir = os.path.join(plat_skill, "hooks", plat)
+
+        for hn in canonical_hook_names:
+            if hn in exempted_hooks:
+                continue
+            # 命名兼容：canonical 的 epistemic-pushback-trigger 可能在 platform 叫 epistemic-pushback
+            hn_strip = hn.replace("-trigger", "")
+            candidate_dirs = [
+                os.path.join(plat_hooks_dir, hn),
+                os.path.join(plat_hooks_dir, hn_strip),
+            ]
+            found_dir = next((d for d in candidate_dirs if os.path.isdir(d)), None)
+            if not found_dir:
+                errors.append(f"S28: skills/{skill_name}/hooks/{hn} has no openclaw mirror at platforms/{plat}/{skill_name}/hooks/{plat}/{hn}/ (and no '无等价机制可用' exemption in SKILL.md)")
+                continue
+            # 检 HOOK.md events 字段非空
+            hook_md = os.path.join(found_dir, "HOOK.md")
+            if not os.path.isfile(hook_md):
+                errors.append(f"S28: {os.path.relpath(found_dir, root)} missing HOOK.md")
+                continue
+            try:
+                with open(hook_md, "r", encoding="utf-8") as fh:
+                    content = fh.read()
+                ev_match = re.search(r'"events"\s*:\s*\[([^\]]*)\]', content, re.DOTALL)
+                if not ev_match or not ev_match.group(1).strip():
+                    errors.append(f"S28: {os.path.relpath(hook_md, root)} 'events' field is empty")
+            except Exception as e:
+                errors.append(f"S28: {os.path.relpath(hook_md, root)} parse failed: {e}")
+
+for e in errors:
+    print(e)
+S28EOF
+) || true
+
+s28_fail=0
+if [ -n "$s28_warnings_raw" ]; then
+    while IFS= read -r line; do
+        [ -n "$line" ] && add_error "$line"
+    done <<< "$s28_warnings_raw"
+    s28_fail=1
+fi
+[ "$s28_fail" -eq 0 ] && add_passed "S28: All hook-owner skills have platform-mirror hooks (or '无等价机制可用' exemption)"
+
+# --- S27: term-reference density (warning, v1.2, white-list mode) ---
+# Python 单次扫描：对 watchlist 内每个 term 建一次 file-list，per skill 检查 O(1)
+s27_warnings_raw=$(python3 - "$PLUGIN_ROOT" << 'PYEOF'
+import os, re, sys
+root = sys.argv[1]
+watchlist = ['openclaw', 'clawhub', 'forge', 'claude-code', 'anthropic', 'openspec', 'marketplace']
+patterns = {t: re.compile(r'\b' + re.escape(t) + r'\b') for t in watchlist}
+
+# 收集所有 .md / .json 文件（限定 skills/, platforms/, openspec/, docs/, README.md）
+target_files = []
+for sub in ['skills', 'platforms', 'openspec', 'docs']:
+    sub_path = os.path.join(root, sub)
+    if not os.path.isdir(sub_path):
+        continue
+    for dirpath, _, filenames in os.walk(sub_path):
+        if '.git' in dirpath:
+            continue
+        for f in filenames:
+            if f.endswith('.md') or f.endswith('.json'):
+                target_files.append(os.path.join(dirpath, f))
+readme = os.path.join(root, 'README.md')
+if os.path.isfile(readme):
+    target_files.append(readme)
+
+# 单次读全部文件 → term -> set(filepaths)
+term_index = {t: set() for t in watchlist}
+for fp in target_files:
+    try:
+        with open(fp, 'r', encoding='utf-8', errors='ignore') as fh:
+            content = fh.read()
+        for t, p in patterns.items():
+            if p.search(content):
+                term_index[t].add(fp)
+    except Exception:
+        pass
+
+# Per SKILL.md check
+skills_dir = os.path.join(root, 'skills')
+warnings = []
+if os.path.isdir(skills_dir):
+    for skill_name in sorted(os.listdir(skills_dir)):
+        skill_md = os.path.join(skills_dir, skill_name, 'SKILL.md')
+        if not os.path.isfile(skill_md):
+            continue
+        for t in watchlist:
+            if skill_md in term_index[t]:
+                # 该 SKILL.md 提及 term；查其他文件
+                other_refs = term_index[t] - {skill_md}
+                if not other_refs:
+                    warnings.append(f"S27: skills/{skill_name}/SKILL.md mentions '{t}' but no other reference exists in repo (potential ambiguity)")
+
+for w in warnings:
+    print(w)
+PYEOF
+) || true
+
+s27_fail=0
+if [ -n "$s27_warnings_raw" ]; then
+    while IFS= read -r line; do
+        [ -n "$line" ] && add_warning "$line"
+    done <<< "$s27_warnings_raw"
+    s27_fail=1
+fi
+[ "$s27_fail" -eq 0 ] && add_passed "S27: All watchlist terms in SKILL.md have repo-wide references"
 
 # --- Output JSON ---
 json_array() {

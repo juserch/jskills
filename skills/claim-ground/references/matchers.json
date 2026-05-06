@@ -1,0 +1,52 @@
+{
+  "_meta": {
+    "version": "1.2",
+    "purpose": "Shared regex matchers for claim-ground hooks. Bash hooks read via jq; openclaw TS handlers import as JSON. Single source of truth ensures Claude Code and openclaw behavior alignment.",
+    "consumers": [
+      "skills/claim-ground/hooks/prompt-gate.sh",
+      "skills/claim-ground/hooks/pre-tool-gate.sh",
+      "skills/claim-ground/hooks/evidence-reminder.sh",
+      "platforms/openclaw/claim-ground/hooks/openclaw/*/handler.{ts,js}"
+    ]
+  },
+  "ambiguity": {
+    "path_env": "(更新|部署|同步|安装|装|发布|推送|push|deploy|sync|install|update|publish|release).{0,30}(到|至|to|into).{1,40}(环境|环境里|环境中|env|目录|路径|path|cache|缓存|配置|config)",
+    "vague_pronoun": "(它|这个|那个|这些|那些|the (one|thing|file|item)).{0,40}(优化|改一下|修一下|调整|fix|optimize|adjust|refactor|tune)",
+    "fuzzy_quantifier": "(所有|每个|重要的?|相关的?|主要的?|核心|关键|all|important|relevant|main|core|key|critical).{0,20}(文件|files|tests|功能|feature|配置|settings|代码|code)",
+    "vague_preference": "(更好|更快|更简洁|更优|better|faster|cleaner|simpler|nicer|prettier).{0,20}(一点|some|a bit|一些)",
+    "missing_param_action": "^(部署|deploy|run|跑|执行|启动|start).{0,30}(到生产|to prod|to production|生产)$",
+    "missing_framework": "(写|create|generate|添加|加|做).{0,20}(单元测试|unit test|集成测试|integration test|component|API|服务|service|端点|endpoint)"
+  },
+  "destructive": {
+    "rm_recursive": "rm\\s+-[rRf]+\\b",
+    "rm_glob": "rm\\s+(-\\w+\\s+)?[^|;]*\\*",
+    "git_reset_hard": "git\\s+reset\\s+--hard",
+    "git_push_force": "git\\s+push.*--force(?!-with-lease)",
+    "git_clean_force": "git\\s+clean\\s+-[fdx]+",
+    "git_branch_delete": "git\\s+branch\\s+-D",
+    "find_delete": "find\\b.*-delete\\b",
+    "find_exec_rm": "find\\b.*-exec\\s+rm",
+    "drop_table": "DROP\\s+(TABLE|DATABASE|SCHEMA)",
+    "truncate_table": "TRUNCATE\\s+TABLE",
+    "kill_9": "kill\\s+-9",
+    "killall": "killall\\b",
+    "truncate_file": "truncate\\s+-s\\s+0",
+    "dd_of_dev": "dd\\s+.*of=/dev/"
+  },
+  "scope_creep_logic": "Edit/Write 的 file_path 不在最近 3 turn 用户消息中出现（substring 或 basename match），且不属于批量指令豁免（用户明示 'all *.ts' / '整个 src/' / 'every file in X' 等）",
+  "env_var_unverified": "\\$([A-Z_][A-Z0-9_]*)\\b(?!.*echo\\s+\\$\\1)",
+  "test_result_framework": "(pytest|jest|mocha|go\\s+test|cargo\\s+test|vitest|rspec|phpunit|dotnet\\s+test)",
+  "test_result_skipped": "(\\d+)\\s+(skipped|pending|ignored|skip|xfail)",
+  "test_result_errored": "(\\d+)\\s+(errors?|errored|failed|failure)",
+  "hard_constraint": {
+    "zh": "(不要|别|禁止|不许|不能|永远不|绝对不|千万不要)\\s*([^，,。.\\n]{2,40})",
+    "en": "(don'?t|do not|never|must not|forbidden|prohibited)\\s+(\\w[\\w\\s-]{1,40})",
+    "ja": "(しないで|だめ|禁止|やめて)",
+    "ko": "(하지\\s*마|안\\s*돼|금지)",
+    "cross_session_upgrade": "(永远|always|forever|永久|permanent|永远地)"
+  },
+  "scope_collapse": "(最新|最强|最好|最大|官方|当前|生态|latest|strongest|best|biggest|official|current|state[\\s-]of[\\s-]the[\\s-]art).{0,15}(模型|版本|版本号|版本是|发布|发布的|model|version|release|product|library)",
+  "self_invocation": "^\\s*/claim-ground\\b",
+  "yield_to_pushback": "(真的吗|不对吧|你确定|已经更新|官方不是|我记得.*已经|不是.*已经|等下|等一下|不是说|不是吧|我以为|really\\?|are you sure|I thought.*(was|were)|isn'?t it already|wait.*thought|hold on|wasn't that|didn't.*(change|update)|本当に|本当ですか|確か\\?|진짜\\?|정말\\?|아닌데|확실\\?|¿en serio|¿seguro|¿de verdad|vraiment\\?|en réalité|t'es sûr|tu es sûr|wirklich\\?|bist du sicher|неужели|ты уверен|حقا\\?|حقاً\\?|هل أنت متأكد|mesmo\\?|tem certeza|sério\\?|सच में|पक्का)",
+  "yield_to_frustration": "(又错了|还错|还是不对|你别这样|stop spinning|try harder|原地打转|绕来绕去|kept failing|又失败|come on|seriously\\?)"
+}

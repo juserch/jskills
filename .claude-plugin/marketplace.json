@@ -120,15 +120,15 @@
         },
         {
             "name": "claim-ground",
-            "description": "Claim Ground v1.1 — Epistemic constraint engine. Forces runtime-context-first reasoning with inline evidence citation when answering factual questions about current state, when user challenges a prior assertion, or when defining professional terms (must cite authoritative standards body — IIBA / CFA / ISO / RFC / W3C / NIST etc.). Adds /claim-ground verify <claim> manual grounding mode. Zero-dep.",
-            "version": "1.1.0",
+            "description": "Claim Ground v1.2 — Epistemic constraint engine. 15 Red Lines + 5 hook surfaces (UserPromptSubmit / PreToolUse / PostToolUse / SessionStart). Detects ambiguity (path/pronoun/quantity/preference), destructive actions, scope creep, env-var assumptions, ecosystem-scope questions, hard constraints. Dual-platform: Claude Code (bash) + OpenClaw (TS handler). Shared anchors.json state. Zero-dep.",
+            "version": "1.2.0",
             "source": "./skills/claim-ground",
             "author": {
                 "name": "Juneq Cheung",
                 "url": "https://github.com/juserai"
             },
             "integrity": {
-                "skill-md-sha256": "b15c22f14863b03a1efdafdf05fe0dc02c0d97d569ab4742bc568417c7762d50"
+                "skill-md-sha256": "8aca0053439ae92dba29e0f2910548fb545069aa7cf83cde32e7f73154856472"
             },
             "skills": [
                 "./"
