@@ -30,9 +30,20 @@
 - 主体章节（type-specific）
 - 「参考来源」章节 + 独立性声明
 - `---` 下方可选 Advisory Appendix（仅当 `--audience` 指定）
-- footer 含质量评分块 + forge attribution
+- footer 含质量评分块（含 v3.4 author/reviewer 双分数 + Δ + disputed_checks 字段，见 [scoring-rubric.md §五](scoring-rubric.md)）+ forge attribution
+- 可选 `## §X Reconciliation` 段（仅当 Stage 6.5 Δ ≥ 1.0 触发；位于评分块**之前**）
 
 **FIR 标记**：每段首标 `[F]` / `[I]` / `[R]`（见 [research-protocol.md](research-protocol.md) § FIR）。
+
+**Calibration 标记**（v3.4，C19）：confidence 数字（百分比 / N/10 评分 / 概率表述）必须紧跟 `{cal: <reference-class>}` 或 `{uncal}`，TL;DR 与 Outlook 段禁止 `{uncal}`。详见 [research-protocol.md §3.10](research-protocol.md)。
+
+**SINGLE_SOURCE_RISK 注解槽**（v3.4，C18）：当 LOAD_BEARING source 触发且不可替代时，对应 section 末插入 advisory 注解块：
+
+```markdown
+> [SINGLE_SOURCE_RISK]: 本节论证关键依赖 <SourceName>，未找到独立交叉验证（<reason: 领域内独家披露 / 唯一一手数据>）。
+```
+
+注解为 advisory（不 block on `quick`），仅 C18 触发且 source 不可替代时填入；可替代时返工补 alternative source。详见 [quality-standards.md §1.10](quality-standards.md)。
 
 **段落标识**：`report`（多文件模式 → `report.md` 是规范 KB 条目；`--merge` 模式 → 文档唯一 H1 来源）
 

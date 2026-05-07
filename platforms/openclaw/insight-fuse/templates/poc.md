@@ -11,6 +11,12 @@
   硬约束：每条假设必须有量化成功标准；时间边界 1-2 周；环境三块齐全
 -->
 
+<!--
+  v3.4 增量（C18/C19）：
+  - confidence 数字必须紧跟 {cal: <ref-class>} 或 {uncal} 标注；TL;DR 与 Outlook 段禁 {uncal}
+  - 跨节单源 [F] 关节（C18 触发）且不可替代时，对应 section 末插 > [SINGLE_SOURCE_RISK]: ... 注解
+-->
+
 ## 1. 验证目标（对齐 skeleton.hypotheses）
 
 | 假设 id | 假设 | 成功标准（量化） | 验证方法 | 预期风险 |

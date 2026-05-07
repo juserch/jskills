@@ -10,6 +10,12 @@
   每个叶子必须含"适用边界"，禁止"推荐使用"式的无边界推荐
 -->
 
+<!--
+  v3.4 增量（C18/C19）：
+  - confidence 数字必须紧跟 {cal: <ref-class>} 或 {uncal} 标注；TL;DR 与 Outlook 段禁 {uncal}
+  - 跨节单源 [F] 关节（C18 触发）且不可替代时，对应 section 末插 > [SINGLE_SOURCE_RISK]: ... 注解
+-->
+
 ## 决策树结构
 
 ```

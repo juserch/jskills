@@ -9,6 +9,12 @@
   必须含：SWOT 四象限齐全 + 定位矩阵 ≥2 轴 + 护城河 ≥2 类识别
 -->
 
+<!--
+  v3.4 增量（C18/C19）：
+  - confidence 数字必须紧跟 {cal: <ref-class>} 或 {uncal} 标注；TL;DR 与 Outlook 段禁 {uncal}
+  - 跨节单源 [F] 关节（C18 触发）且不可替代时，对应 section 末插 > [SINGLE_SOURCE_RISK]: ... 注解
+-->
+
 ---
 
 ## 一、摘要（TL;DR / 执行摘要）

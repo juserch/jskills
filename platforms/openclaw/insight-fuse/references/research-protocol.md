@@ -193,6 +193,45 @@ Stage 3 / 5 的每个 agent 独立运行（Main agent spawn 时不共享其他 a
 
 CONTENT 必须是**完整可发布**的调研段落，不是摘要或指针。Main agent 需要完整内容去综合评分。
 
+### 3.10 Calibration Annotation（v3.4 — Check 19）
+
+报告中任何 confidence 数字必须紧跟内联标注，显式声明该数字是否被参考类锚定。与 §3.3 Citation Format 的 `{P}` / `{S→...}` 主次源标注**同级**——前者标"数字校准来源"，后者标"声明的源可靠性"。
+
+**触发**：以下三类表述任一出现：
+
+1. 概率 / 百分比附 confidence 框架：`H1 70-80%`、`probability 60%`、`likely 65%`、`概率约 70%`
+2. 评分级数：`H1 6/10`、`confidence 8/10`、`置信度 7/10`
+3. 概率词语：`可能性 X`、`probability of Y`
+
+**语法**：
+
+| 形式 | 含义 | 约束 |
+|------|------|------|
+| `<num>{cal: <reference-class>}` | **已校准** | reference-class 必须紧跟 inline citation 或 reference list 条目，指向 base rate / 类似事件历史频率 / OECD-or-similar reference dataset |
+| `<num>{uncal}` | **未校准（直觉估计）** | §2-§N 主体允许；**禁止出现在 §1 TL;DR 与末段 Outlook**（C19 fail） |
+
+**示例**：
+
+✅ `[I] 五年规划"AI+"专项落地概率约 70%{cal: OECD 同类 AI 政策五年达成率 N=14, 详见 [OECD 2025](url)}`（含参考类 + 锚点 citation）
+
+✅ `[I] §3 主体可包含 H1 6/10{uncal}`（明确承认是直觉估计；非 TL;DR / Outlook 段允许）
+
+❌ `[F] TL;DR：H1 70-80%`（数字无标注且在 TL;DR；C19 fail）
+
+❌ `[I] H4 8/10{uncal}` 出现在 §1 或 Outlook 段（C19 fail；要求降级为定性："likely / unclear / unlikely"）
+
+**与 FIR 的关系**：FIR (`[F]/[I]/[R]`) 是**段落粒度**（每段首标），calibration 是**数字粒度**（紧跟数字）。同一段可有多个数字，各自校准状态独立——例如：
+
+```markdown
+[I] 政策落地概率约 70%{cal: OECD N=14, [url]}，但执行细节质量目前估计 6/10{uncal}（无可比 reference class）。
+```
+
+**Grandfathering**：v3.4 起强制；v3.3-及之前的报告**不**强制回溯改写。
+
+**与 transparency 维度的协同**：6 维评分中 transparency 维度（[scoring-rubric.md](scoring-rubric.md)）已含"局限披露"语义；C19 的"显式 `{uncal}` 标记"等于把"承认这个数字是 vibes"硬编码进流程——TL;DR 出现 `{uncal}` 数字 → transparency 自动 -1（与 C19 fail 联动）。
+
+**分档**：所有 `--type` × `--depth` 一律 blocking（vibes 数字代价低、风险高，不分档软化）。
+
 ## 四、Sub-Question Quality Gates（Stage 1）
 
 Stage 1 子问题**数量不设上下限**——简单主题 2 个、复杂主题 9 个都合理。数量是主题结构的自然结果，不是流水线的配额。

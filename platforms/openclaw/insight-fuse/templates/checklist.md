@@ -10,6 +10,12 @@
   每项必须：1) 具体动作；2) 时间边界；3) 来源引用；4) 置信度标注
 -->
 
+<!--
+  v3.4 增量（C18/C19）：
+  - confidence 数字必须紧跟 {cal: <ref-class>} 或 {uncal} 标注；TL;DR 与 Outlook 段禁 {uncal}
+  - 跨节单源 [F] 关节（C18 触发）且不可替代时，对应 section 末插 > [SINGLE_SOURCE_RISK]: ... 注解
+-->
+
 ## 立即可落地（本周）
 
 - [ ] **[High]** {动作 1 — 具体可执行}
