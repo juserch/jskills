@@ -21,7 +21,7 @@ argument-hint: "[topic] [time-range] [--no-save]"
 当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
 
 ```
-News Fetch — Quick news between coding sessions (3-tier network fallback)
+News Fetch v1.1.0 — Quick news between coding sessions (3-tier network fallback)
 
 Usage:
   /news-fetch <topic> [time-range]   Fetch news for the topic in the range

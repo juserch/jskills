@@ -23,7 +23,7 @@ argument-hint: "[setup|run|status|clean]"
 当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
 
 ```
-Ralph Boost — Autonomous dev loop engine with convergence guarantee
+Ralph Boost v1.0.0 — Autonomous dev loop engine with convergence guarantee
 
 Usage:
   /ralph-boost setup             Initialize ralph-boost in current project

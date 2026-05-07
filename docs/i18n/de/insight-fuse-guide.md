@@ -1,8 +1,8 @@
-# Insight Fuse v3.1 Anleitung
+# Insight Fuse v3.4.0.4.0 Anleitung
 
 > Systematische Multi-Quellen-Recherche-Engine — **7-Stufen-Pipeline + skeleton.yaml-Datenvertrag + 6 Recherche-Typ-Presets + 6-dimensionale Qualitätsrubrik + 5 Ausgabeformate**.
 
-Insight Fuse v3.1 verwandelt jedes Thema in einen veröffentlichungsreifen Recherchebericht. Die Engine ist umfangsisoliert (keine CWD / IDE-Lecks), multi-perspektivisch (3 anonyme Agents auf 4 Dimensionen bewertet) und reproduzierbarkeits-zuerst (jede Behauptung hat eine Quelle, jede Inferenz ist gekennzeichnet, jede `known_dissensus` erhält eine dreiteilige Vorlage statt synthetischen Konsens).
+Insight Fuse v3.4.0.4.0 verwandelt jedes Thema in einen veröffentlichungsreifen Recherchebericht. Die Engine ist umfangsisoliert (keine CWD / IDE-Lecks), multi-perspektivisch (3 anonyme Agents auf 4 Dimensionen bewertet) und reproduzierbarkeits-zuerst (jede Behauptung hat eine Quelle, jede Inferenz ist gekennzeichnet, jede `known_dissensus` erhält eine dreiteilige Vorlage statt synthetischen Konsens).
 
 ## Schnellstart
 

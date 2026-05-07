@@ -50,6 +50,25 @@ grep -rn "<skill-name>" . --include="*.md" --include="*.json" --include="*.sh" \
       + 11 份 i18n guide 首段
 - [ ] 若 `metadata.permissions` 变动：MUST 同步平台适配版
 - [ ] 若 references 结构变动：MUST 检查 SKILL.md 内的引用 + 检查 platforms 镜像
+- [ ] **决策版本位**（MAJOR / MINOR / PATCH / 不 bump），并在 PR description
+      简述理由
+- [ ] 若 bump：MUST 同步 `.claude-plugin/marketplace.json` `plugins[].version`
+      + `skills/<name>/SKILL.md` `## Help` 段 code block 第一行版本字面量
+      + `/CHANGELOG.md` `## <name>` 段顶部插入新 `### [X.Y.Z]` 条目
+- [ ] 若 bump 且 `platforms/<platform>/<name>/SKILL.md` 含 `## Help` 段：
+      同步 platform mirror help-card 第一行版本字面量
+
+#### Version bump 触发规则（SemVer 2.0.0）
+
+| 改动类别 | 触发条件 | 版本位 |
+|---|---|---|
+| **MAJOR**（X.y.z） | 删除/重命名一条红线；改 hook 触发条件不向后兼容；删除/重命名 frontmatter 必填字段；删除/重命名 user-invokable 命令子命令 | 升 X，y/z 归零 |
+| **MINOR**（x.Y.z） | 新增 hook surface；新增 flag / 子命令；新增 stage / check / red line；行为强化 | 升 Y，z 归零 |
+| **PATCH**（x.y.Z） | 修 typo / 排版 / 链接修复；不影响行为的文档勘误 | 升 Z |
+
+无行为意义改动 SHALL 不 bump。skill-lint 不检测语义层面，但 S29/S30/S31 强制 bump
+后 marketplace.json + help-card + CHANGELOG 三处字面量同步（合并自
+[`version-governance`](../../changes/archive/version-governance/specs/skill-lifecycle/spec.md) spec delta）
 
 ### 场景 C — 调整分类
 

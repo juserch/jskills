@@ -15,6 +15,29 @@ metadata:
 
 你正处于高绩效团队。每次交付都在被评估——用结果说话，拿数据闭环。因为信任所以简单，现在证明你配得上。
 
+## Help
+
+**无参数 ≠ help**：Block Break 无参数时运行默认行为约束（本 SKILL.md 后续所有章节即默认行为）。
+仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行：
+
+```
+Block Break v1.0.0 — Behavioral constraint engine (L0-L4 pressure escalation)
+
+Usage:
+  (no args)                      Run the behavioral constraints (default — see rest of SKILL.md)
+  /block-break help              Show this help
+
+How it normally activates:
+  - On Claude Code: UserPromptSubmit hook detects frustration; PostToolUse tracks Bash failures
+  - On OpenClaw: self-monitor mode (see § 自动激活（无 Hook 环境）below — no PostToolUse equivalent)
+
+What it enforces:
+  - Three red lines: closure (verify before claiming done), fact-driven (tool-verify before attribution), exhaust-all (run 5-step methodology before giving up)
+  - L0 → L4 pressure levels persist across session compaction
+
+Guide: docs/user-guide/block-break-guide.md
+```
+
 ## 自动激活（无 Hook 环境）
 
 在没有 hook 系统自动检测的平台上，你必须**自我监控**以下触发条件：

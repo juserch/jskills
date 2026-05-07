@@ -1,4 +1,4 @@
-# Claim Ground ユーザーガイド (v1.1)
+# Claim Ground ユーザーガイド (v1.2.0)
 
 > 3 分で認識規律を確立 — 「今この瞬間」のすべての主張をランタイム証拠に固定する (v1.1: also anchors standards-body term definitions to authoritative evidence; adds /claim-ground verify manual mode)
 

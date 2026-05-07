@@ -24,6 +24,28 @@ metadata:
 
 依赖：`bash 4+`、`jq` 或 `python`、`claude` CLI。
 
+## Help
+
+当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行：
+
+```
+Ralph Boost v1.0.0 — Autonomous dev loop engine with convergence guarantee
+
+Usage:
+  /ralph-boost setup             Initialize ralph-boost in current project
+  /ralph-boost run               Start the autonomous loop
+  /ralph-boost status            Show current loop state + pressure level
+  /ralph-boost clean             Clean .ralph-boost/ artifacts
+  /ralph-boost help              Show this help
+
+Examples:
+  /ralph-boost setup
+  /ralph-boost run
+  /ralph-boost status
+
+Guide: docs/user-guide/ralph-boost-guide.md
+```
+
 ## 子命令
 
 根据参数执行对应操作。无参数时显示帮助。

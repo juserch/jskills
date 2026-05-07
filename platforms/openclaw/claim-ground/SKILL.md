@@ -6,9 +6,9 @@ metadata:
   category: hammer
   permissions:
     network: false
-    filesystem: read-only
+    filesystem: read-write
     execution: none
-    tools: [Read, Bash, Grep]
+    tools: [Read, Write, Bash, Grep]
 ---
 
 # Claim Ground — 事实锚定认知约束
@@ -20,7 +20,7 @@ metadata:
 当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）。Hook 自动触发（UserPromptSubmit + PostToolUse + SessionStart）不受此路径影响。手动执行路径见下方 §Manual Execution。
 
 ```
-Claim Ground v1.1 — Epistemic constraint engine (runtime evidence before assertions)
+Claim Ground v1.2.0 — Epistemic constraint engine (runtime evidence before assertions)
 
 Usage:
   /claim-ground                       Show this help

@@ -1,4 +1,4 @@
-# Claim Ground Kullanıcı Kılavuzu (v1.1)
+# Claim Ground Kullanıcı Kılavuzu (v1.2.0)
 
 > 3 dakikada epistemik disiplin — her "şu anki" iddiayı runtime kanıtına bağla (v1.1: also anchors standards-body term definitions to authoritative evidence; adds /claim-ground verify manual mode)
 

@@ -56,7 +56,17 @@ run_main_path(args)
 ### SKILL.md `## Help` 段落模板
 
 每个 user-invokable skill 的 SKILL.md 必须包含 `## Help` 段，使用
-**模板 A**（必填参数 skill）或**模板 B**（有默认行为 skill）：
+**模板 A**（必填参数 skill）或**模板 B**（有默认行为 skill）。
+
+**版本号字面量约束（合并自
+[`version-governance`](../../changes/archive/version-governance/specs/help-mode/spec.md) spec delta）**：
+help card 第一行 MUST 严格匹配正则 `^[A-Z][A-Za-z0-9 -]+ v\d+\.\d+\.\d+ — .+$`，
+其中 `v<X.Y.Z>` 字面量 MUST 等于 `.claude-plugin/marketplace.json` 中对应
+plugin 的 `version` 字段（**不是** SKILL.md frontmatter——frontmatter 不持
+version 字段，参 [repo-invariants § Skill version SSOT](../repo-invariants/spec.md)）。
+平台镜像 `platforms/<p>/<name>/SKILL.md` 若含 `## Help` 段（heading 允许
+`## Help` 严格形式或 `## Help <variant>` 如 `## Help (no arguments)`）同等
+受此约束。skill-lint S30 SHALL 强制此契约。
 
 **模板 A** — 必填参数 skill：
 
@@ -67,7 +77,7 @@ run_main_path(args)
 停止执行（parsing 规则详见 openspec/specs/help-mode/spec.md）：
 
 \`\`\`
-<Skill Name> — <one-line purpose>
+<Skill Name> v<X.Y.Z> — <one-line purpose>
 
 Usage:
   /<skill-name> <args>           <主路径>
@@ -91,7 +101,7 @@ Guide: docs/user-guide/<skill>-guide.md
 （parsing 规则详见 openspec/specs/help-mode/spec.md）：
 
 \`\`\`
-<Skill Name> — <one-line purpose>
+<Skill Name> v<X.Y.Z> — <one-line purpose>
 
 Usage:
   /<skill-name>                  <默认行为说明>

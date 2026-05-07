@@ -21,7 +21,7 @@ metadata:
 仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
 
 ```
-Skill Lint — Validate Claude Code skill plugins (structural + semantic)
+Skill Lint v1.0.0 — Validate Claude Code skill plugins (structural + semantic)
 
 Usage:
   /skill-lint                    Lint the current working directory (default)

@@ -1,4 +1,4 @@
-# Claim Ground Benutzerhandbuch (v1.1)
+# Claim Ground Benutzerhandbuch (v1.2.0)
 
 > Epistemische Disziplin in 3 Minuten — jede Aussage über den "aktuellen Moment" an Laufzeitbelege verankern (v1.1: also anchors standards-body term definitions to authoritative evidence; adds /claim-ground verify manual mode)
 

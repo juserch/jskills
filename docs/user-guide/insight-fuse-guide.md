@@ -1,4 +1,4 @@
-# Insight Fuse v3.3 Guide
+# Insight Fuse v3.4.0 Guide
 
 > Systematic multi-source research engine — **8-stage pipeline (Stage 7 KB archival mandatory + observable, opt-out via `--no-save`) + skeleton.yaml data contract + 6 research-type presets + 6-dimensional quality rubric + 17 blocking checks (incl. primary-source binding / verbatim snippet / numeric reconciliation, v3.1) + 5 output formats with multi-file default and `--merge` opt-in single-file**.
 

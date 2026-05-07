@@ -37,6 +37,9 @@ CFG_NO_DANGEROUS_PATTERNS=""
 CFG_VERIFY_PLATFORM_SUBDIRS=""
 CFG_VERIFY_I18N_STRUCTURE=""
 CFG_VERIFY_CROSS_SKILL_CATEGORY=""
+CFG_VERIFY_VERSION_LOCKSTEP=""
+CFG_VERIFY_HELP_CARD_VERSION_LINE=""
+CFG_VERIFY_CHANGELOG_ENTRY=""
 CFG_REQUIRE_HELP_SECTION=""
 # Path config (see rules.md): fallback to legacy layout if keys absent.
 # i18n is single-track: <i18n-dir>/<lang>/{README.md, <skill>-guide.md}
@@ -81,6 +84,12 @@ if rules.get('verify-i18n-structure-parity'):
     print('CFG_VERIFY_I18N_STRUCTURE=1')
 if rules.get('verify-cross-skill-category-claim'):
     print('CFG_VERIFY_CROSS_SKILL_CATEGORY=1')
+if rules.get('verify-version-lockstep'):
+    print('CFG_VERIFY_VERSION_LOCKSTEP=1')
+if rules.get('verify-help-card-version-line'):
+    print('CFG_VERIFY_HELP_CARD_VERSION_LINE=1')
+if rules.get('verify-changelog-entry'):
+    print('CFG_VERIFY_CHANGELOG_ENTRY=1')
 # require-help-section: tri-value 'warn' / 'error' / 'off' (also accepts true/false for back-compat)
 help_rule = rules.get('require-help-section')
 if help_rule is True or help_rule == 'error':
@@ -789,6 +798,208 @@ if [ -n "$s27_warnings_raw" ]; then
     s27_fail=1
 fi
 [ "$s27_fail" -eq 0 ] && add_passed "S27: All watchlist terms in SKILL.md have repo-wide references"
+
+# --- S29 / S30 / S31: version governance + CHANGELOG (error, version-governance change) ---
+# SSOT for skill version = .claude-plugin/marketplace.json `plugins[].version` (Claude Code
+# skill schema does NOT support a `version` field in SKILL.md frontmatter — see version-governance
+# change spec deltas for rationale).
+#
+# S29: marketplace.json plugins[].version MUST be SemVer 2.0.0 (MAJOR.MINOR.PATCH[-pre][+build]).
+#      Regression guard: SKILL.md frontmatter (canonical + platform mirrors) MUST NOT contain a
+#      top-level `version:` field (rejected by Claude Code official schema).
+# S30: `## Help` section's first code block first line MUST match
+#      `^[A-Z][A-Za-z0-9 -]+ v(<X.Y.Z>) — .+$` where <X.Y.Z> equals marketplace plugins[].version.
+#      Applied to canonical AND every platform mirror that has a Help section
+#      (heading regex tolerates variants like `## Help (no arguments)`).
+# S31: For each plugin in marketplace.json, root /CHANGELOG.md MUST contain a
+#      `### [<X.Y.Z>]` line under `## <skill-name>` heading where <X.Y.Z> equals
+#      marketplace plugins[].version (top-most entry).
+if [ "$CFG_VERIFY_VERSION_LOCKSTEP" = "1" ] || [ "$CFG_VERIFY_HELP_CARD_VERSION_LINE" = "1" ] || [ "$CFG_VERIFY_CHANGELOG_ENTRY" = "1" ]; then
+    s29s30s31_raw=$(python3 - "$PLUGIN_ROOT" "$CFG_VERIFY_VERSION_LOCKSTEP" "$CFG_VERIFY_HELP_CARD_VERSION_LINE" "$CFG_VERIFY_CHANGELOG_ENTRY" "${CFG_PLATFORMS:-}" << 'S29S30S31EOF' 2>/dev/null || true
+import json, os, re, sys
+
+root = sys.argv[1]
+do_s29 = sys.argv[2] == "1"
+do_s30 = sys.argv[3] == "1"
+do_s31 = sys.argv[4] == "1"
+platforms = [p for p in (sys.argv[5] or "").split() if p]
+
+mk_path = os.path.join(root, ".claude-plugin", "marketplace.json")
+mk = {}
+if os.path.isfile(mk_path):
+    try:
+        with open(mk_path, "r", encoding="utf-8") as fh:
+            mk = json.load(fh)
+    except Exception:
+        pass
+mk_versions = {p.get("name"): p.get("version") for p in mk.get("plugins", [])}
+
+semver_re = re.compile(r"^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$")
+help_first_line_re = re.compile(r"^[A-Z][A-Za-z0-9 -]+ v(\d+\.\d+\.\d+) — .+$")
+# `## Help` heading tolerates trailing tokens (e.g. `## Help (no arguments)`).
+help_section_re = re.compile(r"^##\s+Help\b.*?$(.*?)(?=^##\s|\Z)", re.MULTILINE | re.DOTALL)
+
+def has_frontmatter_version_field(content):
+    """Return True if frontmatter contains a top-level `version:` field (regression guard)."""
+    fm_match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
+    if not fm_match:
+        return False
+    return bool(re.search(r"^version:\s*\S+", fm_match.group(1), re.MULTILINE))
+
+def find_help_first_line(content):
+    """Return (first_line, no_code_block_flag). first_line is None if no Help section."""
+    m = help_section_re.search(content)
+    if not m:
+        return None, False
+    section = m.group(1)
+    code_m = re.search(r"```[a-zA-Z0-9_-]*\n(.*?)\n```", section, re.DOTALL)
+    if not code_m:
+        return None, True
+    return code_m.group(1).split("\n", 1)[0].rstrip(), False
+
+# --- Parse CHANGELOG.md once if S31 enabled ---
+changelog_versions = {}  # {skill_name: top-most version literal}
+changelog_present = False
+if do_s31:
+    changelog_path = os.path.join(root, "CHANGELOG.md")
+    if os.path.isfile(changelog_path):
+        changelog_present = True
+        try:
+            with open(changelog_path, "r", encoding="utf-8") as fh:
+                cl_content = fh.read()
+            current_skill = None
+            for line in cl_content.splitlines():
+                h2 = re.match(r"^##\s+([a-z0-9][a-z0-9-]*)\s*$", line)
+                if h2:
+                    current_skill = h2.group(1)
+                    continue
+                if current_skill is not None:
+                    h3 = re.match(r"^###\s+\[(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)\]", line)
+                    if h3 and current_skill not in changelog_versions:
+                        changelog_versions[current_skill] = h3.group(1)
+        except Exception:
+            pass
+
+skills_dir = os.path.join(root, "skills")
+errors = []
+checked_s29 = 0
+checked_s30 = 0
+checked_s31 = 0
+
+if not os.path.isdir(skills_dir):
+    print(f"##S29S30S31_CHECKED s29={checked_s29} s30={checked_s30} s31={checked_s31}")
+    for e in errors:
+        print(e)
+    sys.exit(0)
+
+if do_s31 and not changelog_present:
+    errors.append("S31: CHANGELOG.md missing at repo root (required when verify-changelog-entry is enabled)")
+
+# S29 — validate marketplace.json SemVer (skill-level, not per-skill-md)
+if do_s29:
+    for skill_name, mk_v in mk_versions.items():
+        if mk_v is None:
+            errors.append(f"S29: marketplace.json plugin '{skill_name}' missing `version` field")
+        elif not semver_re.match(mk_v):
+            errors.append(f"S29: marketplace.json plugin '{skill_name}' version='{mk_v}' is non-SemVer-2.0.0 format")
+
+for skill_name in sorted(os.listdir(skills_dir)):
+    skill_md = os.path.join(skills_dir, skill_name, "SKILL.md")
+    if not os.path.isfile(skill_md):
+        continue
+    try:
+        with open(skill_md, "r", encoding="utf-8") as fh:
+            content = fh.read()
+    except Exception:
+        continue
+
+    mk_v = mk_versions.get(skill_name)
+
+    # S29 regression guard — frontmatter MUST NOT have `version:` field
+    if do_s29:
+        checked_s29 += 1
+        if has_frontmatter_version_field(content):
+            errors.append(f"S29: skills/{skill_name}/SKILL.md frontmatter contains `version:` field (Claude Code schema rejects it; SSOT is marketplace.json)")
+        # Platform mirror regression guard
+        for plat in platforms:
+            plat_md = os.path.join(root, "platforms", plat, skill_name, "SKILL.md")
+            if not os.path.isfile(plat_md):
+                continue
+            try:
+                with open(plat_md, "r", encoding="utf-8") as fh:
+                    plat_content = fh.read()
+            except Exception:
+                continue
+            if has_frontmatter_version_field(plat_content):
+                errors.append(f"S29: platforms/{plat}/{skill_name}/SKILL.md frontmatter contains `version:` field (forbidden)")
+
+    if mk_v is None or not semver_re.match(str(mk_v)):
+        # Skip S30/S31 if marketplace version is invalid (S29 already reported)
+        continue
+
+    # S30 canonical — help-card-version-line vs marketplace SSOT
+    if do_s30:
+        first_line, no_code = find_help_first_line(content)
+        if no_code:
+            errors.append(f"S30: skills/{skill_name}/SKILL.md ## Help section has no code block")
+        elif first_line is not None:
+            checked_s30 += 1
+            m = help_first_line_re.match(first_line)
+            if not m:
+                errors.append(f"S30: skills/{skill_name}/SKILL.md help-card first line does not match `<Name> v<X.Y.Z> — <tagline>` pattern: {first_line!r}")
+            elif m.group(1) != mk_v:
+                errors.append(f"S30: skills/{skill_name}: help-card v{m.group(1)} ≠ marketplace v{mk_v}")
+
+    # S30 platform mirror — help-card-version-line vs canonical marketplace SSOT
+    if do_s30:
+        for plat in platforms:
+            plat_md = os.path.join(root, "platforms", plat, skill_name, "SKILL.md")
+            if not os.path.isfile(plat_md):
+                continue
+            try:
+                with open(plat_md, "r", encoding="utf-8") as fh:
+                    plat_content = fh.read()
+            except Exception:
+                continue
+            first_line, no_code = find_help_first_line(plat_content)
+            if no_code:
+                errors.append(f"S30: platforms/{plat}/{skill_name}/SKILL.md ## Help section has no code block")
+            elif first_line is not None:
+                m = help_first_line_re.match(first_line)
+                if not m:
+                    errors.append(f"S30: platforms/{plat}/{skill_name}/SKILL.md help-card first line does not match `<Name> v<X.Y.Z> — <tagline>` pattern: {first_line!r}")
+                elif m.group(1) != mk_v:
+                    errors.append(f"S30: platforms/{plat}/{skill_name}: help-card v{m.group(1)} ≠ marketplace v{mk_v}")
+
+    # S31 — root CHANGELOG.md entry per skill vs marketplace SSOT
+    if do_s31 and changelog_present:
+        checked_s31 += 1
+        cl_v = changelog_versions.get(skill_name)
+        if cl_v is None:
+            errors.append(f"S31: CHANGELOG.md has no `## {skill_name}` section or no `### [X.Y.Z]` entry under it (marketplace v{mk_v})")
+        elif cl_v != mk_v:
+            errors.append(f"S31: skills/{skill_name}: marketplace v{mk_v} ≠ CHANGELOG top entry v{cl_v} (add `### [{mk_v}]` under `## {skill_name}`)")
+
+print(f"##S29S30S31_CHECKED s29={checked_s29} s30={checked_s30} s31={checked_s31}")
+for e in errors:
+    print(e)
+S29S30S31EOF
+)
+
+    s29s30s31_fail=0
+    while IFS= read -r line; do
+        case "$line" in
+            "##S29S30S31_CHECKED"*) ;;
+            "S29:"*|"S30:"*|"S31:"*) add_error "$line"; s29s30s31_fail=1 ;;
+            "") ;;
+        esac
+    done <<< "$s29s30s31_raw"
+    if [ "$s29s30s31_fail" -eq 0 ]; then
+        [ "$CFG_VERIFY_VERSION_LOCKSTEP" = "1" ] && add_passed "S29: marketplace.json plugin versions are valid SemVer 2.0.0; SKILL.md frontmatter has no version field (canonical + platforms)"
+        [ "$CFG_VERIFY_HELP_CARD_VERSION_LINE" = "1" ] && add_passed "S30: All help-card first lines carry version equal to marketplace.json plugins[].version (canonical + platforms)"
+        [ "$CFG_VERIFY_CHANGELOG_ENTRY" = "1" ] && add_passed "S31: All skill versions in marketplace.json have matching CHANGELOG.md top entries"
+    fi
+fi
 
 # --- Output JSON ---
 json_array() {

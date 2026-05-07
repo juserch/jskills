@@ -1,4 +1,4 @@
-# Claim Ground User Guide (v1.1)
+# Claim Ground User Guide (v1.2.0)
 
 > Epistemic discipline in 3 minutes — anchor every "right-now" claim and every standards-body term definition to runtime / authoritative evidence
 
@@ -32,10 +32,10 @@ Claim Ground is **primarily auto-triggered** — the skill activates based on th
 | User pushback on a prior assertion | "Really?" / "Are you sure?" / "I thought X was already updated" / 多语言等价（`本当に / 진짜 / ¿en serio / vraiment / wirklich / неужели / حقا / sério / सच में`）/ 隐式混淆（`wait...thought / hold on / 等下 / 不是说 / 我以为`）|
 | **Citation-backed pushback** (higher-risk) | User attaches a URL / official doc / news clip claiming a different fact. Must be treated as *more* dangerous, not more credible — see Red Line 3a |
 | Self-check before asserting live-state | Before Claude writes "the current X is Y" in any answer |
-| **Standards-body term definition** (v1.1) | "What is BA / IA / GAAP / ISO 27001 / RFC 9110 / ...?" — Claude must cite IIBA / CFA / FASB / ISO / IETF original text before defining (Red Line 7) |
-| **Manual verify** (v1.1) | `/claim-ground verify <claim>` — explicitly ground a specific assertion without waiting for pushback |
+| **Standards-body term definition** (v1.2.0) | "What is BA / IA / GAAP / ISO 27001 / RFC 9110 / ...?" — Claude must cite IIBA / CFA / FASB / ISO / IETF original text before defining (Red Line 7) |
+| **Manual verify** (v1.2.0) | `/claim-ground verify <claim>` — explicitly ground a specific assertion without waiting for pushback |
 
-### Manual verify (v1.1)
+### Manual verify (v1.2.0)
 
 ```
 /claim-ground verify <claim>
@@ -61,8 +61,8 @@ Forces the grounding pipeline:
 5. **Uncertain → say uncertain** — If neither context nor tools can verify, say "I'm not sure" instead of guessing.
 6. **Pre-commit fact scan** — Before sending a reply, scan each sentence containing words from the following families. Each such claim must be immediately backed by an inline quote (system prompt / command output / file content / WebFetch return).
    - **Live-state verbs**: is / has / supports / latest / default / current
-   - **Definitional verbs (v1.1)**: defines / refers to / means / represents / belongs to / is essentially / is essentially equivalent to / is also known as
-   - **Authority assertions (v1.1)**: official / standard / specification / per the spec / according to / certified by
+   - **Definitional verbs (v1.2.0)**: defines / refers to / means / represents / belongs to / is essentially / is essentially equivalent to / is also known as
+   - **Authority assertions (v1.2.0)**: official / standard / specification / per the spec / according to / certified by
    
    Unsupported claims must be rewritten as "I'm not sure".
 7. **Cited rebuttals are higher-risk, not lower** — If the user pushes back by attaching a URL / doc name / screenshot, treat it as *more* dangerous. Citation-backed rebuttals cause the [highest regressive sycophancy](https://arxiv.org/abs/2502.08177). Independently WebFetch the user's URL *and* re-verify your own claim before flipping.
@@ -81,7 +81,7 @@ Red lines are the *always-on* prohibitions. Violating any of them means the skil
 | 4 | **Code-API assertion without Read/Grep** — assert a symbol exists / has signature X without first Reading the defining file | Code/API hallucination ([FSE 2025](https://conf.researchr.org/details/fse-2025/fse-2025-industry-papers/41/)) |
 | 5 | **Citation without WebFetch** — cite a URL, paper, DOI, or API endpoint without first fetching it | Citation fabrication (19.9% base rate per [EurekAlert 2025](https://www.eurekalert.org/news-releases/1106130)) |
 | 6 | **Summary without line anchoring** — summarize a specific file/PR/log without citing line numbers / sections per claim | Faithfulness / extrinsic addition ([HalluLens ACL 2025](https://arxiv.org/html/2504.17550v1)) |
-| 7 | **Term-by-memory (v1.1)** — define a professional term that has an authoritative standards body (IIBA / CFA / FASB / IFRS / ISO / IEEE / IETF / W3C / NIST / SemVer / Unicode / language official spec) without quoting the standards-body verbatim | Authority dilution; pseudo-definitional drift |
+| 7 | **Term-by-memory (v1.2.0)** — define a professional term that has an authoritative standards body (IIBA / CFA / FASB / IFRS / ISO / IEEE / IETF / W3C / NIST / SemVer / Unicode / language official spec) without quoting the standards-body verbatim | Authority dilution; pseudo-definitional drift |
 
 Full definitions with signals, bad/good examples, and boundary cases: [references/red-lines.md](../../skills/claim-ground/references/red-lines.md).
 
@@ -156,7 +156,7 @@ When the question matches one of these categories, use the corresponding evidenc
 | File existence | `ls`, `test -e`, Read tool |
 | Git state | `git branch --show-current`, `git log` |
 | Current date | System prompt `currentDate` field or `date` command |
-| **Standards-body term definition (v1.1)** | WebSearch / WebFetch the original publication: IIBA (BA / BABOK), CFA Institute (investment), FASB (US-GAAP), IFRS Foundation, ISO / IEC, IEEE (754, 802 series), IETF (RFC), W3C, NIST (SP-800), SemVer, Unicode Standard, language official specs. **Training memory and system prompt are not enough** for definitional claims. |
+| **Standards-body term definition (v1.2.0)** | WebSearch / WebFetch the original publication: IIBA (BA / BABOK), CFA Institute (investment), FASB (US-GAAP), IFRS Foundation, ISO / IEC, IEEE (754, 802 series), IETF (RFC), W3C, NIST (SP-800), SemVer, Unicode Standard, language official specs. **Training memory and system prompt are not enough** for definitional claims. |
 
 Full playbook: `skills/claim-ground/references/playbook.md`.
 

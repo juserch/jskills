@@ -107,7 +107,7 @@ Batch ingest all raw files since last compile.
 ## Help (no arguments)
 
 ```
-Tome Forge — Personal Knowledge Base Engine
+Tome Forge v1.1.0 — Personal Knowledge Base Engine
 
 Commands:
   /tome-forge init              Initialize KB in current directory

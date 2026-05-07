@@ -1,4 +1,4 @@
-# Claim Ground 用户指南 (v1.1)
+# Claim Ground 用户指南 (v1.2.0)
 
 > 3 分钟建立认知纪律 — 把每一个"此刻"的断言锚定到运行时证据 (v1.1: also anchors standards-body term definitions to authoritative evidence; adds /claim-ground verify manual mode)
 

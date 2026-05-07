@@ -65,12 +65,14 @@ scripts/recalc-all-hashes.sh                     # 重算 marketplace.json SHA-2
 任何 skill 改动结束 MUST 跑：
 
 ```bash
-bash skills/skill-lint/scripts/skill-lint.sh .                       # 4 条防线 + 24 条规则
+bash skills/skill-lint/scripts/skill-lint.sh .                       # 4 条防线 + 27 条规则(含 S29/S30/S31 版本治理)
 grep -rn "<skill-name>" . --include="*.md" --include="*.json"        # 漏网扫描
 bash scripts/recalc-all-hashes.sh                                    # 重算 marketplace.json hash
 ```
 
 任何一项不通过 = 变更未完成。详见 [skill-lifecycle/spec.md § 自检关键动作](openspec/specs/skill-lifecycle/spec.md)。
+
+**版本治理提示**(2026-05-07 起):skill 版本号 SSOT 在 `.claude-plugin/marketplace.json plugins[].version`(**不**在 SKILL.md frontmatter——Claude Code schema 拒绝该字段)。skill-lint S29 自动作为 frontmatter regression guard 扫描 `version:` 字段;S30 校验 help-card 第一行 `v<X.Y.Z>` 字面量;S31 校验 [/CHANGELOG.md](CHANGELOG.md) top entry。详见 [repo-invariants § Skill version SSOT](openspec/specs/repo-invariants/spec.md)。
 
 ## 用 OpenSpec 迭代
 

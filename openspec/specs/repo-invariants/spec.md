@@ -40,6 +40,40 @@ agent 定义文件。MUST NOT 内联拼接 prompt 字符串。
   - `argument-hint`（可选）
   - `user-invokable`（可选，默认 true）
   - `metadata`（包含 `category` 与 `permissions`）
+- SKILL.md frontmatter MUST NOT 含 `version` 字段（顶层或嵌套于 `metadata` 子结构）。
+  Claude Code 官方 skill schema 不支持 `version` 字段（IDE 实测告警:"Attribute 'version'
+  is not supported in skill files"）。skill 版本号 SSOT 见下条
+  "Skill version SSOT" 段。skill-lint S29 SHALL 作为 regression guard
+  扫描 frontmatter 任意位置的 `version:` 字段，命中报 error
+  （合并自 [`version-governance`](../../changes/archive/version-governance/specs/repo-invariants/spec.md) spec delta）
+
+### Skill version SSOT
+
+- 每个 skill 的版本号 single source of truth(SSOT) MUST 是
+  `.claude-plugin/marketplace.json` 中对应 plugin entry 的 `version` 字段
+- 该字段 MUST 为 SemVer 2.0.0 格式（`MAJOR.MINOR.PATCH[-prerelease][+build]`）
+- 下列衍生位置 MUST 字面量等于 SSOT：
+  - canonical `skills/<n>/SKILL.md` 内 `## Help` 段 code block 第一行的 `v<X.Y.Z>` 字面量
+  - 平台镜像 `platforms/<p>/<n>/SKILL.md` 内 `## Help` 段 code block 第一行的 `v<X.Y.Z>` 字面量（若 Help 段存在）
+  - 仓库根 `/CHANGELOG.md` 中 `## <skill-name>` H2 段下的 top-most `### [X.Y.Z]` 条目
+- skill-lint S29 / S30 / S31 SHALL 强制以上锁步契约
+  （合并自 [`version-governance`](../../changes/archive/version-governance/specs/repo-invariants/spec.md) spec delta）
+
+### CHANGELOG.md 强制登记
+
+- 仓库根 MUST 持有单个 `/CHANGELOG.md` 文件作为所有 skill 的版本变更登记
+- 顶层标题 MUST 是 `# Forge Changelog`
+- 每个 skill MUST 一个 `## <skill-name>` H2 段（skill-name 与 `skills/<n>/`
+  目录名一致，匹配 `.skill-lint.json` `naming-pattern` 正则 `^[a-z]+-[a-z]+$`）
+- 每个版本 MUST 一个 `### [<X.Y.Z>] — <YYYY-MM-DD>` H3 段
+  （date 可选；允许 `### [<X.Y.Z>]`）
+- 每个 skill 段下的**第一个** `### [X.Y.Z]` 条目即"latest"，其版本字面量 MUST
+  等于该 skill 的 marketplace.json `plugins[].version`
+- 每次 PR 改动 marketplace.json 的 plugin `version` MUST 在同 PR 内于
+  CHANGELOG.md 该 skill 段顶部插入新的 `### [<new-version>]` 条目
+- 格式遵循 [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/)
+- skill-lint S31 SHALL 强制此契约
+  （合并自 [`version-governance`](../../changes/archive/version-governance/specs/repo-invariants/spec.md) spec delta）
 
 ### Marketplace integrity 锁步
 

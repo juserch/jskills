@@ -1,8 +1,8 @@
-# Guía de Insight Fuse v3
+# Guía de Insight Fuse v3.4.0
 
 > Motor de investigación multifuente sistemática — **pipeline de 7 etapas + contrato de datos skeleton.yaml + 6 presets de tipo de investigación + rúbrica de calidad ortogonal 6-dim + 5 formatos de salida**.
 
-Insight Fuse v3.1 convierte cualquier tema en un informe de investigación publicable. El motor es aislado en alcance (sin fugas CWD / IDE), multiperspectiva (3 agents anónimos puntuados en 4 dimensiones) y orientado a reproducibilidad (cada afirmación tiene fuente, cada inferencia tiene etiqueta, cada `known_dissensus` recibe una plantilla de tres partes en lugar de colapsar en consenso sintético).
+Insight Fuse v3.4.0.4.0 convierte cualquier tema en un informe de investigación publicable. El motor es aislado en alcance (sin fugas CWD / IDE), multiperspectiva (3 agents anónimos puntuados en 4 dimensiones) y orientado a reproducibilidad (cada afirmación tiene fuente, cada inferencia tiene etiqueta, cada `known_dissensus` recibe una plantilla de tres partes en lugar de colapsar en consenso sintético).
 
 ## Inicio rápido
 

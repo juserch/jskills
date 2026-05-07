@@ -1,8 +1,8 @@
-# Insight Fuse v3.1 Kılavuzu
+# Insight Fuse v3.4.0.4.0 Kılavuzu
 
 > Sistematik çok kaynaklı araştırma motoru — **7 aşamalı boru hattı + skeleton.yaml veri sözleşmesi + 6 araştırma türü ön ayarı + 6 boyutlu ortogonal kalite rubriği + 5 çıktı formatı**.
 
-Insight Fuse v3, herhangi bir konuyu yayına hazır bir araştırma raporuna dönüştürür. Motor, kapsam izolasyonludur (CWD / IDE sızıntısı yok), çok perspektiflidir (3 anonim agent 4 boyutta puanlanır) ve tekrarlanabilirlik önceliklidir (her iddianın bir kaynağı vardır, her çıkarım etiketlenmiştir, her `known_dissensus` sentetik sahte uzlaşma yerine üç bölümlü şablon alır).
+Insight Fuse v3.4.0, herhangi bir konuyu yayına hazır bir araştırma raporuna dönüştürür. Motor, kapsam izolasyonludur (CWD / IDE sızıntısı yok), çok perspektiflidir (3 anonim agent 4 boyutta puanlanır) ve tekrarlanabilirlik önceliklidir (her iddianın bir kaynağı vardır, her çıkarım etiketlenmiştir, her `known_dissensus` sentetik sahte uzlaşma yerine üç bölümlü şablon alır).
 
 ## Hızlı başlangıç
 

@@ -16,6 +16,25 @@ argument-hint: "[question or task] [--no-save]"
 
 蒸馏 Karpathy 的 LLM Council 模式：同一问题发给 3 个独立视角的 agent，匿名评分后由 Chairman 综合最优答案。
 
+## Help
+
+当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行：
+
+```
+Council Fuse v1.1.0 — Multi-perspective deliberation engine (3 agents + Chairman synthesis)
+
+Usage:
+  /council-fuse <question or task>   Deliberate the question, return synthesized answer
+  /council-fuse help                 Show this help
+
+Examples:
+  /council-fuse 单体应用 vs 微服务怎么选
+  /council-fuse What's the best approach to implement rate limiting?
+  /council-fuse Review this architecture decision: using Redis as primary datastore
+
+Guide: docs/user-guide/council-fuse-guide.md
+```
+
 ## 自动激活（无 Hook 环境）
 
 在没有 hook 系统的平台上，当用户明确请求多视角分析、议会式讨论、或对重要决策需要多方论证时，你应主动进入 Council Fuse 模式。

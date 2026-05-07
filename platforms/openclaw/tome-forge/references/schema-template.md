@@ -16,6 +16,7 @@ This is a personal knowledge base. You are the wiki compiler and maintainer.
 - `raw/` — immutable source material. NEVER modify files here.
 - `wiki/` — compiled knowledge. You own this layer entirely.
 - `index.md` — content catalog. Update after every wiki change.
+- `raw/reports/` — archived reports from other skills (auto-populated, do not modify).
 - `logs/{YYYY-MM}.md` — monthly operation logs (auto-rotated).
 
 ## Wiki Page Format
@@ -89,9 +90,16 @@ confidence: medium
 
 | Field | Required | Values | Description |
 |-------|----------|--------|-------------|
-| domain | yes | free text | Knowledge category |
+| domain | yes | free text | Knowledge category (e.g., ai, systems, biology) |
 | maturity | yes | draft, growing, stable, deprecated | Content maturity level |
-| last_compiled | yes | YYYY-MM-DD | Last compilation date |
-| source_refs | yes | list of paths | Raw source files |
-| compiled_by | yes | model ID string | Which model compiled this |
-| confidence | yes | low, medium, high | Content accuracy confidence |
+| last_compiled | yes | YYYY-MM-DD | Last LLM compilation date |
+| source_refs | yes | list of paths | Raw files this page was compiled from |
+| compiled_by | yes | model ID string | Which LLM model compiled this page |
+| confidence | yes | low, medium, high | Confidence in content accuracy |
+
+## Maturity Transitions
+
+- `draft` — newly created, minimal content
+- `growing` — actively being updated with new ingests
+- `stable` — well-established, no major changes expected
+- `deprecated` — outdated, pending removal or rewrite

@@ -15,6 +15,27 @@ metadata:
 
 校验 AI agent plugin 项目中 skill 文件的结构完整性和语义质量。
 
+## Help
+
+**无参数 ≠ help**：Skill Lint 无参数时对当前工作目录运行完整 lint（默认行为）。
+仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行：
+
+```
+Skill Lint v1.0.0 — Validate Claude Code skill plugins (structural + semantic)
+
+Usage:
+  /skill-lint                    Lint the current working directory (default)
+  /skill-lint <path>             Lint the plugin project at <path>
+  /skill-lint help               Show this help
+
+Examples:
+  /skill-lint
+  /skill-lint ~/projects/my-forge-clone
+
+Rules are configured in .skill-lint.json (see references/rules.md).
+Guide: docs/user-guide/skill-lint-guide.md
+```
+
 ## 工作流
 
 1. 确定目标路径（用户参数或当前目录）
