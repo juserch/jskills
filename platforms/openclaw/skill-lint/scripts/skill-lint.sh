@@ -40,6 +40,9 @@ CFG_VERIFY_CROSS_SKILL_CATEGORY=""
 CFG_VERIFY_VERSION_LOCKSTEP=""
 CFG_VERIFY_HELP_CARD_VERSION_LINE=""
 CFG_VERIFY_CHANGELOG_ENTRY=""
+CFG_VERIFY_DOCS_VERSION_DRIFT=""
+CFG_VERIFY_ARCHIVED_SPEC_MERGE=""
+CFG_VERIFY_HELP_CARD_FLAG_COVERAGE=""
 CFG_REQUIRE_HELP_SECTION=""
 # Path config (see rules.md): fallback to legacy layout if keys absent.
 # i18n is single-track: <i18n-dir>/<lang>/{README.md, <skill>-guide.md}
@@ -90,6 +93,21 @@ if rules.get('verify-help-card-version-line'):
     print('CFG_VERIFY_HELP_CARD_VERSION_LINE=1')
 if rules.get('verify-changelog-entry'):
     print('CFG_VERIFY_CHANGELOG_ENTRY=1')
+docs_drift_rule = rules.get('verify-docs-version-drift')
+if docs_drift_rule is True or docs_drift_rule == 'error':
+    print('CFG_VERIFY_DOCS_VERSION_DRIFT=error')
+elif docs_drift_rule == 'warn':
+    print('CFG_VERIFY_DOCS_VERSION_DRIFT=warn')
+archived_merge_rule = rules.get('verify-archived-spec-merge')
+if archived_merge_rule is True or archived_merge_rule == 'error':
+    print('CFG_VERIFY_ARCHIVED_SPEC_MERGE=error')
+elif archived_merge_rule == 'warn':
+    print('CFG_VERIFY_ARCHIVED_SPEC_MERGE=warn')
+help_flag_coverage_rule = rules.get('verify-help-card-flag-coverage')
+if help_flag_coverage_rule is True or help_flag_coverage_rule == 'error':
+    print('CFG_VERIFY_HELP_CARD_FLAG_COVERAGE=error')
+elif help_flag_coverage_rule == 'warn':
+    print('CFG_VERIFY_HELP_CARD_FLAG_COVERAGE=warn')
 # require-help-section: tri-value 'warn' / 'error' / 'off' (also accepts true/false for back-compat)
 help_rule = rules.get('require-help-section')
 if help_rule is True or help_rule == 'error':
@@ -999,6 +1017,281 @@ S29S30S31EOF
         [ "$CFG_VERIFY_HELP_CARD_VERSION_LINE" = "1" ] && add_passed "S30: All help-card first lines carry version equal to marketplace.json plugins[].version (canonical + platforms)"
         [ "$CFG_VERIFY_CHANGELOG_ENTRY" = "1" ] && add_passed "S31: All skill versions in marketplace.json have matching CHANGELOG.md top entries"
     fi
+fi
+
+# --- S32: docs-version-drift detection (warn by default) ---
+# 扫 docs/user-guide/<skill>-guide.md + docs/i18n/<lang>/<skill>-guide.md 首行(H1)
+# 提取版本号字面量,与 marketplace.json plugins[].version 做 prefix-match;
+# drift 报 warn(初期不阻塞 PR,观察期满后可升 error)
+if [ -n "$CFG_VERIFY_DOCS_VERSION_DRIFT" ]; then
+    s32_raw=$(python3 - "$PLUGIN_ROOT" << 'S32EOF' 2>/dev/null || true
+import json, os, re, sys
+
+root = sys.argv[1]
+mk_path = os.path.join(root, ".claude-plugin", "marketplace.json")
+mk_versions = {}
+if os.path.isfile(mk_path):
+    try:
+        with open(mk_path, "r", encoding="utf-8") as fh:
+            mk = json.load(fh)
+        mk_versions = {p.get("name"): p.get("version") for p in mk.get("plugins", [])}
+    except Exception:
+        pass
+
+version_re = re.compile(r"\bv(\d+\.\d+(?:\.\d+)?)\b")
+
+def prefix_match(short, full):
+    if not short or not full:
+        return False
+    s = short.split(".")
+    f = full.split(".")
+    if len(s) > len(f):
+        return False
+    return all(a == b for a, b in zip(s, f))
+
+def extract_skill_from_path(p):
+    base = os.path.basename(p)
+    if base.endswith("-guide.md"):
+        return base[: -len("-guide.md")]
+    return None
+
+paths = []
+ug_dir = os.path.join(root, "docs", "user-guide")
+if os.path.isdir(ug_dir):
+    for f in os.listdir(ug_dir):
+        if f.endswith("-guide.md"):
+            paths.append(os.path.join(ug_dir, f))
+i18n_dir = os.path.join(root, "docs", "i18n")
+if os.path.isdir(i18n_dir):
+    for lang in os.listdir(i18n_dir):
+        lang_dir = os.path.join(i18n_dir, lang)
+        if not os.path.isdir(lang_dir):
+            continue
+        for f in os.listdir(lang_dir):
+            if f.endswith("-guide.md"):
+                paths.append(os.path.join(lang_dir, f))
+
+issues = []
+checked = 0
+for p in sorted(paths):
+    skill = extract_skill_from_path(p)
+    if skill is None or skill not in mk_versions:
+        continue
+    expected = mk_versions[skill]
+    try:
+        with open(p, "r", encoding="utf-8") as fh:
+            first_line = fh.readline()
+    except Exception:
+        continue
+    m = version_re.search(first_line)
+    if not m:
+        # 未声明版本号 — 不算 drift,跳过(P1 政策:仅 warn 飘移,不强制必须有)
+        continue
+    checked += 1
+    found = m.group(1)
+    if not prefix_match(found, expected):
+        rel = os.path.relpath(p, root)
+        issues.append(f"S32: {rel} H1 version 'v{found}' is not a prefix of marketplace v{expected}")
+
+print(f"##S32_CHECKED count={checked}")
+for i in issues:
+    print(i)
+S32EOF
+)
+    s32_fail=0
+    while IFS= read -r line; do
+        case "$line" in
+            "##S32_CHECKED"*) ;;
+            "S32:"*)
+                if [ "$CFG_VERIFY_DOCS_VERSION_DRIFT" = "error" ]; then
+                    add_error "$line"
+                else
+                    add_warning "$line"
+                fi
+                s32_fail=1
+                ;;
+            "") ;;
+        esac
+    done <<< "$s32_raw"
+    [ "$s32_fail" -eq 0 ] && add_passed "S32: docs/user-guide + docs/i18n H1 versions prefix-match marketplace SSOT"
+fi
+
+# --- S33: archived spec-merge completeness (warn by default) ---
+# 扫 openspec/changes/archive/<id>/specs/<capability>/spec.md;若主 spec
+# openspec/specs/<capability>/spec.md 不含对应 archive id 的"合并自"标记,
+# 则报 warn — 提醒 archive 流程缺漏(F3 即此机制缺位的活例)
+if [ -n "$CFG_VERIFY_ARCHIVED_SPEC_MERGE" ]; then
+    s33_raw=$(python3 - "$PLUGIN_ROOT" << 'S33EOF' 2>/dev/null || true
+import os, re, sys
+
+root = sys.argv[1]
+archive_root = os.path.join(root, "openspec", "changes", "archive")
+specs_root = os.path.join(root, "openspec", "specs")
+
+if not os.path.isdir(archive_root) or not os.path.isdir(specs_root):
+    sys.exit(0)
+
+issues = []
+checked = 0
+for change_id in sorted(os.listdir(archive_root)):
+    archive_specs_dir = os.path.join(archive_root, change_id, "specs")
+    if not os.path.isdir(archive_specs_dir):
+        continue
+    for capability in sorted(os.listdir(archive_specs_dir)):
+        archive_spec = os.path.join(archive_specs_dir, capability, "spec.md")
+        main_spec = os.path.join(specs_root, capability, "spec.md")
+        if not os.path.isfile(archive_spec) or not os.path.isfile(main_spec):
+            continue
+        try:
+            with open(archive_spec, "r", encoding="utf-8") as fh:
+                archive_content = fh.read()
+            with open(main_spec, "r", encoding="utf-8") as fh:
+                main_content = fh.read()
+        except Exception:
+            continue
+        # 统计 archive spec 中的 Requirement 数量
+        requirements = re.findall(r"^### Requirement:.*$", archive_content, re.MULTILINE)
+        if not requirements:
+            continue
+        checked += 1
+        # 主 spec 是否含对该 archive id 的"合并自"标记或 archive id substring
+        if change_id not in main_content:
+            issues.append(f"S33: archive/{change_id}/specs/{capability}/spec.md has {len(requirements)} Requirement(s) but main spec openspec/specs/{capability}/spec.md does not reference '{change_id}' (no '合并自' merge mark — archive sync may be incomplete)")
+
+print(f"##S33_CHECKED count={checked}")
+for i in issues:
+    print(i)
+S33EOF
+)
+    s33_fail=0
+    while IFS= read -r line; do
+        case "$line" in
+            "##S33_CHECKED"*) ;;
+            "S33:"*)
+                if [ "$CFG_VERIFY_ARCHIVED_SPEC_MERGE" = "error" ]; then
+                    add_error "$line"
+                else
+                    add_warning "$line"
+                fi
+                s33_fail=1
+                ;;
+            "") ;;
+        esac
+    done <<< "$s33_raw"
+    [ "$s33_fail" -eq 0 ] && add_passed "S33: All archived change spec deltas are referenced in main specs (merge marks present)"
+fi
+
+# --- S34: help-card-flag-coverage (warn by default) ---
+# 解析每个 SKILL.md frontmatter argument-hint 中的所有 --flag,与
+# `## Help` 段第一个 fenced code block 内出现的 --flag 集合比对;hint 有但 help 漏 → 报。
+# 子命令模式(argument-hint 不含任何 --flag)豁免;无 argument-hint 字段也豁免。
+# canonical + platform mirror 同等约束(mirror 含 Help 段时一并扫)。
+if [ -n "$CFG_VERIFY_HELP_CARD_FLAG_COVERAGE" ]; then
+    s34_raw=$(python3 - "$PLUGIN_ROOT" "${CFG_PLATFORMS:-}" << 'S34EOF' 2>/dev/null || true
+import os, re, sys
+
+root = sys.argv[1]
+platforms_raw = sys.argv[2] if len(sys.argv) > 2 else ""
+platforms = [p for p in platforms_raw.split() if p]
+
+flag_re = re.compile(r"--[a-z][a-z0-9-]+")
+
+def extract_argument_hint(text):
+    # 取 frontmatter 区域(--- ... ---)中的 argument-hint 字段值
+    fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.DOTALL)
+    if not fm_match:
+        return None
+    fm = fm_match.group(1)
+    m = re.search(r'^argument-hint:\s*"(.*)"\s*$', fm, re.MULTILINE)
+    if not m:
+        m = re.search(r"^argument-hint:\s*'(.*)'\s*$", fm, re.MULTILINE)
+    if not m:
+        m = re.search(r'^argument-hint:\s*(.*)$', fm, re.MULTILINE)
+    if m:
+        return m.group(1).strip()
+    return None
+
+def extract_help_card_body(text):
+    # 取 ## Help 段后第一个 ``` fenced block 内容
+    h2_match = re.search(r'^## Help\b', text, re.MULTILINE)
+    if not h2_match:
+        return None
+    after = text[h2_match.end():]
+    fence_match = re.search(r"\n```[a-zA-Z]*\n(.*?)\n```", after, re.DOTALL)
+    if not fence_match:
+        return None
+    return fence_match.group(1)
+
+def check_skill_md(path, label):
+    try:
+        with open(path, 'r', encoding='utf-8') as fh:
+            text = fh.read()
+    except Exception:
+        return None
+    hint = extract_argument_hint(text)
+    if hint is None:
+        return None  # 无 argument-hint 字段 → 豁免(子命令型 skill 也常这样)
+    hint_flags = set(flag_re.findall(hint))
+    if not hint_flags:
+        return None  # 子命令模式(无 --flag) → 豁免
+    body = extract_help_card_body(text)
+    if body is None:
+        return None  # Help 段或 fenced block 缺失 → S25 已报,S34 跳过避免重复
+    help_flags = set(flag_re.findall(body))
+    missing = hint_flags - help_flags
+    if missing:
+        return f"S34: {label} argument-hint has flags not listed in help card: {' '.join(sorted(missing))}"
+    return None
+
+issues = []
+checked = 0
+skills_dir = os.path.join(root, "skills")
+if os.path.isdir(skills_dir):
+    for name in sorted(os.listdir(skills_dir)):
+        if name.startswith('_'):
+            continue
+        skill_md = os.path.join(skills_dir, name, "SKILL.md")
+        if os.path.isfile(skill_md):
+            checked += 1
+            r = check_skill_md(skill_md, f"skills/{name}/SKILL.md")
+            if r:
+                issues.append(r)
+
+for plat in platforms:
+    plat_dir = os.path.join(root, "platforms", plat)
+    if not os.path.isdir(plat_dir):
+        continue
+    for name in sorted(os.listdir(plat_dir)):
+        if name.startswith('_'):
+            continue
+        skill_md = os.path.join(plat_dir, name, "SKILL.md")
+        if os.path.isfile(skill_md):
+            checked += 1
+            r = check_skill_md(skill_md, f"platforms/{plat}/{name}/SKILL.md")
+            if r:
+                issues.append(r)
+
+print(f"##S34_CHECKED count={checked}")
+for i in issues:
+    print(i)
+S34EOF
+)
+    s34_fail=0
+    while IFS= read -r line; do
+        case "$line" in
+            "##S34_CHECKED"*) ;;
+            "S34:"*)
+                if [ "$CFG_VERIFY_HELP_CARD_FLAG_COVERAGE" = "error" ]; then
+                    add_error "$line"
+                else
+                    add_warning "$line"
+                fi
+                s34_fail=1
+                ;;
+            "") ;;
+        esac
+    done <<< "$s34_raw"
+    [ "$s34_fail" -eq 0 ] && add_passed "S34: All argument-hint --flags are documented in their help card (canonical + platforms)"
 fi
 
 # --- Output JSON ---

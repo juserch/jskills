@@ -42,6 +42,7 @@ CFG_VERIFY_HELP_CARD_VERSION_LINE=""
 CFG_VERIFY_CHANGELOG_ENTRY=""
 CFG_VERIFY_DOCS_VERSION_DRIFT=""
 CFG_VERIFY_ARCHIVED_SPEC_MERGE=""
+CFG_VERIFY_HELP_CARD_FLAG_COVERAGE=""
 CFG_REQUIRE_HELP_SECTION=""
 # Path config (see rules.md): fallback to legacy layout if keys absent.
 # i18n is single-track: <i18n-dir>/<lang>/{README.md, <skill>-guide.md}
@@ -102,6 +103,11 @@ if archived_merge_rule is True or archived_merge_rule == 'error':
     print('CFG_VERIFY_ARCHIVED_SPEC_MERGE=error')
 elif archived_merge_rule == 'warn':
     print('CFG_VERIFY_ARCHIVED_SPEC_MERGE=warn')
+help_flag_coverage_rule = rules.get('verify-help-card-flag-coverage')
+if help_flag_coverage_rule is True or help_flag_coverage_rule == 'error':
+    print('CFG_VERIFY_HELP_CARD_FLAG_COVERAGE=error')
+elif help_flag_coverage_rule == 'warn':
+    print('CFG_VERIFY_HELP_CARD_FLAG_COVERAGE=warn')
 # require-help-section: tri-value 'warn' / 'error' / 'off' (also accepts true/false for back-compat)
 help_rule = rules.get('require-help-section')
 if help_rule is True or help_rule == 'error':
@@ -1173,6 +1179,119 @@ S33EOF
         esac
     done <<< "$s33_raw"
     [ "$s33_fail" -eq 0 ] && add_passed "S33: All archived change spec deltas are referenced in main specs (merge marks present)"
+fi
+
+# --- S34: help-card-flag-coverage (warn by default) ---
+# 解析每个 SKILL.md frontmatter argument-hint 中的所有 --flag,与
+# `## Help` 段第一个 fenced code block 内出现的 --flag 集合比对;hint 有但 help 漏 → 报。
+# 子命令模式(argument-hint 不含任何 --flag)豁免;无 argument-hint 字段也豁免。
+# canonical + platform mirror 同等约束(mirror 含 Help 段时一并扫)。
+if [ -n "$CFG_VERIFY_HELP_CARD_FLAG_COVERAGE" ]; then
+    s34_raw=$(python3 - "$PLUGIN_ROOT" "${CFG_PLATFORMS:-}" << 'S34EOF' 2>/dev/null || true
+import os, re, sys
+
+root = sys.argv[1]
+platforms_raw = sys.argv[2] if len(sys.argv) > 2 else ""
+platforms = [p for p in platforms_raw.split() if p]
+
+flag_re = re.compile(r"--[a-z][a-z0-9-]+")
+
+def extract_argument_hint(text):
+    # 取 frontmatter 区域(--- ... ---)中的 argument-hint 字段值
+    fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.DOTALL)
+    if not fm_match:
+        return None
+    fm = fm_match.group(1)
+    m = re.search(r'^argument-hint:\s*"(.*)"\s*$', fm, re.MULTILINE)
+    if not m:
+        m = re.search(r"^argument-hint:\s*'(.*)'\s*$", fm, re.MULTILINE)
+    if not m:
+        m = re.search(r'^argument-hint:\s*(.*)$', fm, re.MULTILINE)
+    if m:
+        return m.group(1).strip()
+    return None
+
+def extract_help_card_body(text):
+    # 取 ## Help 段后第一个 ``` fenced block 内容
+    h2_match = re.search(r'^## Help\b', text, re.MULTILINE)
+    if not h2_match:
+        return None
+    after = text[h2_match.end():]
+    fence_match = re.search(r"\n```[a-zA-Z]*\n(.*?)\n```", after, re.DOTALL)
+    if not fence_match:
+        return None
+    return fence_match.group(1)
+
+def check_skill_md(path, label):
+    try:
+        with open(path, 'r', encoding='utf-8') as fh:
+            text = fh.read()
+    except Exception:
+        return None
+    hint = extract_argument_hint(text)
+    if hint is None:
+        return None  # 无 argument-hint 字段 → 豁免(子命令型 skill 也常这样)
+    hint_flags = set(flag_re.findall(hint))
+    if not hint_flags:
+        return None  # 子命令模式(无 --flag) → 豁免
+    body = extract_help_card_body(text)
+    if body is None:
+        return None  # Help 段或 fenced block 缺失 → S25 已报,S34 跳过避免重复
+    help_flags = set(flag_re.findall(body))
+    missing = hint_flags - help_flags
+    if missing:
+        return f"S34: {label} argument-hint has flags not listed in help card: {' '.join(sorted(missing))}"
+    return None
+
+issues = []
+checked = 0
+skills_dir = os.path.join(root, "skills")
+if os.path.isdir(skills_dir):
+    for name in sorted(os.listdir(skills_dir)):
+        if name.startswith('_'):
+            continue
+        skill_md = os.path.join(skills_dir, name, "SKILL.md")
+        if os.path.isfile(skill_md):
+            checked += 1
+            r = check_skill_md(skill_md, f"skills/{name}/SKILL.md")
+            if r:
+                issues.append(r)
+
+for plat in platforms:
+    plat_dir = os.path.join(root, "platforms", plat)
+    if not os.path.isdir(plat_dir):
+        continue
+    for name in sorted(os.listdir(plat_dir)):
+        if name.startswith('_'):
+            continue
+        skill_md = os.path.join(plat_dir, name, "SKILL.md")
+        if os.path.isfile(skill_md):
+            checked += 1
+            r = check_skill_md(skill_md, f"platforms/{plat}/{name}/SKILL.md")
+            if r:
+                issues.append(r)
+
+print(f"##S34_CHECKED count={checked}")
+for i in issues:
+    print(i)
+S34EOF
+)
+    s34_fail=0
+    while IFS= read -r line; do
+        case "$line" in
+            "##S34_CHECKED"*) ;;
+            "S34:"*)
+                if [ "$CFG_VERIFY_HELP_CARD_FLAG_COVERAGE" = "error" ]; then
+                    add_error "$line"
+                else
+                    add_warning "$line"
+                fi
+                s34_fail=1
+                ;;
+            "") ;;
+        esac
+    done <<< "$s34_raw"
+    [ "$s34_fail" -eq 0 ] && add_passed "S34: All argument-hint --flags are documented in their help card (canonical + platforms)"
 fi
 
 # --- Output JSON ---

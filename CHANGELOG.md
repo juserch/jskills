@@ -139,6 +139,20 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 
 ## skill-lint
 
+### [1.1.0] — 2026-05-08
+
+#### Added
+- **S34 help-card-flag-coverage** (warn): each SKILL.md frontmatter `argument-hint`'s `--flag` set MUST appear in the `## Help` section's first fenced code block. Canonical + platform mirror both checked. Subcommand-only skills (no `--flag` in argument-hint) and skills without an `argument-hint` field are exempt. Initial severity = warn during observation period; upgrade to error after follow-up RFC `fix-help-card-flag-coverage` makes all skills clean.
+- Reference: [openspec/changes/add-skill-lint-s34-help-flag-coverage](openspec/changes/add-skill-lint-s34-help-flag-coverage/proposal.md)
+
+#### Backfilled (silent additions in earlier commits, now formally documented)
+- **S29 version-lockstep** (error): marketplace.json `plugins[].version` MUST be SemVer 2.0.0; SKILL.md frontmatter MUST NOT have `version:` field (Claude Code schema rejects). Canonical + platform mirror.
+- **S30 help-card-version-line** (error): SKILL.md help card first line MUST match `<Name> v<X.Y.Z> — <tagline>` with `X.Y.Z` equal to marketplace SSOT.
+- **S31 changelog-entry** (error): each marketplace `version` MUST equal the top `### [X.Y.Z]` entry under that skill's section in root `/CHANGELOG.md`.
+- **S32 docs-version-drift** (warn): `docs/user-guide/<skill>-guide.md` + `docs/i18n/<lang>/<skill>-guide.md` H1 versions MUST prefix-match marketplace SSOT.
+- **S33 archived-spec-merge** (warn): each archived `openspec/changes/archive/<id>/specs/<capability>/spec.md` Requirement MUST be referenced by the main spec (`合并自 archive/<id>` mark).
+- References: [openspec/changes/archive/version-governance](openspec/changes/archive/version-governance/proposal.md) (S29-S31), [openspec/changes/archive/openclaw-drift-fix](openspec/changes/archive/openclaw-drift-fix/proposal.md) (S32-S33)
+
 ### [1.0.0]
 - Initial release. Structural rules S01–S28 covering plugin metadata / SKILL.md / references / evals / i18n / platform mirror / cross-namespace protection / hook parity / terminology watchlist, with tri-state config in `.skill-lint.json`.
 

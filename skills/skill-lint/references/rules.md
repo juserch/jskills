@@ -161,6 +161,33 @@
 - **说明**: per [platform-parity spec ADDED Requirement](../../../openspec/specs/platform-parity/spec.md) — hook 等价镜像从 advisory 升 mandatory 的强制点。若平台真无等价 hook 系统，需在 SKILL.md `## 平台 hook 等价位置` 段明示"无等价机制可用"，本规则需配合此段做豁免（实施时检测段内文本）
 - **真实案例**: claim-ground 在 `platforms/openclaw/claim-ground/` 下原本无 `hooks/openclaw/`，导致 epistemic-pushback / frustration / evidence-reminder 等 hook 在 openclaw 上完全失效
 
+### S29-S33: 版本治理 + 文档漂移 + 归档归并完整性（v1.1）
+
+S29-S33 在 commit `cf79b1d`（version-governance change）与 `f0a91e9`（version-governance archival）静默引入，本文档迟于实现。详见各自的 archived openspec change：
+
+- **S29 version-lockstep**：marketplace.json `plugins[].version` MUST 是 SemVer 2.0.0；SKILL.md frontmatter MUST NOT 含 `version:` 字段（Claude Code schema 拒绝）。canonical + platform mirror 同等约束。**级别**: error
+- **S30 help-card-version-line**：SKILL.md `## Help` 段第一行字面量 MUST 匹配 `<Name> v<X.Y.Z> — <tagline>`；`X.Y.Z` 等于 marketplace SSOT。**级别**: error
+- **S31 changelog-entry**：marketplace.json `plugins[].version` MUST 等于根 [/CHANGELOG.md](../../../CHANGELOG.md) `## <skill-name>` 段下 top-most `### [X.Y.Z]` 条目。**级别**: error
+- **S32 docs-version-drift**：扫 `docs/user-guide/<skill>-guide.md` + `docs/i18n/<lang>/<skill>-guide.md` 首行 H1 提取 `v<X.Y.Z>`；与 marketplace SSOT 做 prefix-match。**级别**: warn（观察期）
+- **S33 archived-spec-merge**：扫 `openspec/changes/archive/<id>/specs/<capability>/spec.md`；若主 spec 没有 `合并自 archive/<id>` 引用 → 报。**级别**: warn（观察期）
+
+实现位置：[scripts/skill-lint.sh](../scripts/skill-lint.sh) 各自独立 Python 子进程。详细配置与 fail 模式参考 archived [openspec/changes/archive/version-governance/](../../../openspec/changes/archive/version-governance/) 与 [openclaw-drift-fix/](../../../openspec/changes/archive/openclaw-drift-fix/)。
+
+### S34: Help-card flag 覆盖率（v1.1）
+
+- **检查**: SKILL.md frontmatter `argument-hint` 中所有以 `--` 开头的 flag MUST 在 `## Help` 段的第一个 fenced code block 内至少出现一次。canonical + platform mirror 同等约束（mirror 含 Help 段时一并扫）
+- **级别**: warn（初期观察期；现有 4 个 skill 漏列待 follow-up RFC `fix-help-card-flag-coverage` 修完后升 error）
+- **配置**: `.skill-lint.json` 中 `verify-help-card-flag-coverage` 三态 (`off` / `warn` / `error`)
+- **豁免**:
+  - argument-hint 字段缺失 → 跳过（claim-ground / skill-lint / block-break 等无字段 skill）
+  - argument-hint 仅含子命令枚举（`[setup|run|...]`）无 `--flag` → 跳过（ralph-boost / tome-forge subcommand-only skill）
+  - Help 段缺失或无 fenced code block → 跳过（S25 已报，避免重复）
+- **真实案例**:
+  - council-fuse: `argument-hint: "[question or task] [--no-save]"`，help card 没列 `--no-save` → S34 warn
+  - news-fetch: 同上，`--no-save` 漏列
+  - insight-fuse: argument-hint 含 11 flag，help "Key flags" 仅列 4 → S34 warn 列出漏的 7 个
+- **检测方式**: 正则 `--[a-z][a-z0-9-]+` 提取两侧 flag 集合，用集合差返回缺失项
+
 ## 语义检查规则（AI 执行）
 
 ### M01: Description 质量

@@ -41,14 +41,14 @@
         {
             "name": "skill-lint",
             "description": "Skill Lint — Validate Claude Code skill plugins. Structural (bash) + semantic (AI) checks. Works on any plugin project. Zero-dep.",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": "./skills/skill-lint",
             "author": {
                 "name": "Juneq Cheung",
                 "url": "https://github.com/juserai"
             },
             "integrity": {
-                "skill-md-sha256": "c9e3915c00edbe22def3fe41eba3f45290461b8e2a953e3da1c7f1802c19fd10"
+                "skill-md-sha256": "5003b1421bf6ea84660ed4c543ef81222b5144a9674e55077e9b67d0544464ef"
             },
             "skills": [
                 "./"
