@@ -1,6 +1,6 @@
-# Peer Fuse v0.1.0 使用手册
+# Peer Fuse v0.2.0 使用手册
 
-> 通用调研工件评议器 — **8 阶段流水线（Stage 7 KB 归档 mandatory + observable，可用 `--no-save` 退出）+ 10 格式输入适配器（md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html，三层分发）+ 6 种研究类型预设（自动分类）+ 8 维加权评分表 + 18 项 flag 分类法 + 3 视角评议团 + § Document Reading 冻结（评议隔离硬约束）**。
+> 通用调研工件评议器 — **8 阶段流水线（Stage 7 KB 归档 mandatory + observable，可用 `--no-save` 退出）+ 10 格式输入适配器（md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html，三层分发）+ 6 种研究类型预设（自动分类）+ 8 维加权评分表 + 18 项 flag 分类法 + 3 视角评议团 + § Document Reading 5-9 段连贯叙事（6 条 narrative discipline + 评议隔离冻结）**。
 
 Peer-Fuse 接收任意 markdown / PDF / Office 文档，产出一份 markdown 评议报告，含 A+/A−/.../D 等级、分级 quality flag 列表、多视角评议团综合意见，以及 patch 风格的 diff 改写建议。它与 [insight-fuse Stage 6.5 评议器](insight-fuse-guide.md) 共存 —— Stage 6.5 是 IF 内部的同源评议；peer-fuse 则是**跨 skill 外部评议器**，覆盖 Stage 6.5 处理不了的格式与场景。
 

@@ -133,6 +133,37 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 
 ## peer-fuse
 
+### [0.2.0] — 2026-05-08
+
+#### Changed
+- `§ Document Reading`（Stage 3.5）从 300-600 字 / 5 段固定提纲扩写为
+  1500-3500 字 / 5-9 段（standard 7-8）narrative arc：contextual 开场 →
+  核心论点浓缩 → 章节叙事串联 → 关键张力 → meta-reflective 末段。便于直接
+  对外讲述被评报告骨架。
+- 禁词清单按 interpretive vs judgmental 双向重写：允许"骨架性 / 真正想交付的
+  / 最值得读的 / 反直觉 / 诚实记录"等元解读语；继续禁 grade / score / flag
+  code / 字母 grade / "优点 / 缺点 / 不足 / 薄弱 / 错误 / 应当改" 等质量评价语。
+
+#### Added
+- `references/narrative-discipline.md` 编码 6 条 narrative discipline 为可执行
+  regex（opening / closing / verbatim / number-density / limitation-as-strength
+  / output-language），含 4 个 few-shot 样本（取自既有 wiki/notes/）。能力来源：
+  `plans/skill-hashed-forest.md`（原本规划为独立 skill `prose-fuse / lectio`，
+  本版本融入 peer-fuse Stage 3.5）。
+- 新增引用要求：≥ 3 处章节锚定（§X.Y / p.X / slide.N，按 target_format 适配）
+  + ≥ 1 处 inline 外链 + verbatim 1-4 处 bold/italic 内嵌渲染。
+- Stage 3.5 末尾新增 6 条 discipline regex 自检（warn-only 初版）；
+  Discipline 3 渲染禁用（block quote `>` / 「」 / 编号引用） + 评审隔离禁词
+  保持 fail-closed。
+
+#### Preserved
+- Stage 3.5 评审隔离三层防御中前两层不变：架构隔离（输入边界 MUST 严格）
+  + 写后冻结（SHA-256 快照 + Stage 7 hash diff fail-closed）。
+- review-report.md 渲染顺序不变：§ Document Reading 永在 § Holistic
+  Assessment 之前。
+- 不新增 `--length` 或 `--lang` flag——段数 / 语言由源报告自动适配，
+  保持 peer-fuse 的 CLI surface 不变。
+
 ### [0.1.0] — 2026-05-07
 
 - Initial release: generic peer-reviewer for research artifacts in 10 formats

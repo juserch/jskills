@@ -1,5 +1,5 @@
 #!/bin/bash
-# peer-fuse v0.1.0 trigger test — verifies structural integrity
+# peer-fuse v0.2.0 trigger test — verifies structural integrity
 # Usage: ./evals/peer-fuse/run-trigger-test.sh
 # Exit: 0 = all PASS, 1+ = number of FAIL items
 
@@ -83,7 +83,7 @@ check_executable "$SKILL_DIR/scripts/classify-research-type.sh"
 echo ""
 echo "=== Phase C: SKILL.md frontmatter ==="
 check_frontmatter_field "$SKILL_DIR/SKILL.md" "name" "peer-fuse"
-check_frontmatter_field "$SKILL_DIR/SKILL.md" "description" "Peer-Fuse v0.1.0"
+check_frontmatter_field "$SKILL_DIR/SKILL.md" "description" "Peer-Fuse v0.2.0"
 check_frontmatter_field "$SKILL_DIR/SKILL.md" "license" "MIT"
 check_frontmatter_field "$SKILL_DIR/SKILL.md" "user-invokable" "true"
 check_frontmatter_field "$SKILL_DIR/SKILL.md" "argument-hint" ""
@@ -94,12 +94,12 @@ if head -20 "$SKILL_DIR/SKILL.md" | grep -qE "^\s*version:"; then
 fi
 
 echo ""
-echo "=== Phase D: Help card v0.1.0 line (S30) ==="
-if ! grep -qE "^Peer-Fuse v0\.1\.0 —" "$SKILL_DIR/SKILL.md"; then
-  echo "FAIL: $SKILL_DIR/SKILL.md help card missing 'Peer-Fuse v0.1.0 —' first line"
+echo "=== Phase D: Help card v0.2.0 line (S30) ==="
+if ! grep -qE "^Peer-Fuse v0\.2\.0 —" "$SKILL_DIR/SKILL.md"; then
+  echo "FAIL: $SKILL_DIR/SKILL.md help card missing 'Peer-Fuse v0.2.0 —' first line"
   ERRORS=$((ERRORS + 1))
 else
-  echo "  OK: help card v0.1.0 line present"
+  echo "  OK: help card v0.2.0 line present"
 fi
 
 echo ""

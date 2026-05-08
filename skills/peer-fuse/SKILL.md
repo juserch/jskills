@@ -1,6 +1,6 @@
 ---
 name: peer-fuse
-description: "Peer-Fuse v0.1.0 — Generic peer-reviewer for research artifacts in md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html. 8-dim rubric weighted by 6 research types (auto-classified) + 18-flag taxonomy + 3-perspective panel. Stage 7 KB archival mandatory + observable, opt-out via --no-save."
+description: "Peer-Fuse v0.2.0 — Generic peer-reviewer for research artifacts in md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html. 8-dim rubric weighted by 6 research types (auto-classified) + 18-flag taxonomy + 3-perspective panel + narrative-style § Document Reading (5-9 paras, 6-rule discipline). Stage 7 KB archival mandatory + observable, opt-out via --no-save."
 license: MIT
 user-invokable: true
 metadata:
@@ -13,16 +13,16 @@ metadata:
 argument-hint: "<path-to-artifact> [--type auto|overview|technology|market|academic|product|competitive] [--depth quick|standard|deep|full] [--no-save]"
 ---
 
-# Peer-Fuse v0.1.0 — 通用调研工件 peer-review 引擎
+# Peer-Fuse v0.2.0 — 通用调研工件 peer-review 引擎
 
-跨 skill 外审引擎：给定任意调研工件（md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html），输出**同行评议 markdown 报告**——含 § Document Reading（评审隔离的连贯解读）+ § Holistic Assessment（评价综述）+ Score Matrix（8 维加权 → A+...D）+ Flag List（18 类 taxonomy）+ Multi-Perspective Panel（3 视角）+ Diff Suggestions + Reconciliation。与 [skills/insight-fuse/](../insight-fuse/) Stage 6.5 同源内审并存——peer-fuse 是**他源外审**，覆盖 IF Stage 6.5 不能审的所有场景（跨 skill / 跨格式 / 显式触发）。
+跨 skill 外审引擎：给定任意调研工件（md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html），输出**同行评议 markdown 报告**——含 § Document Reading（评审隔离的 5-9 段连贯叙事性重读，遵守 6 条 narrative discipline）+ § Holistic Assessment（评价综述）+ Score Matrix（8 维加权 → A+...D）+ Flag List（18 类 taxonomy）+ Multi-Perspective Panel（3 视角）+ Diff Suggestions + Reconciliation。与 [skills/insight-fuse/](../insight-fuse/) Stage 6.5 同源内审并存——peer-fuse 是**他源外审**，覆盖 IF Stage 6.5 不能审的所有场景（跨 skill / 跨格式 / 显式触发）。
 
 ## Help
 
 当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [openspec/specs/help-mode/spec.md](../../openspec/specs/help-mode/spec.md)）：
 
 ```
-Peer-Fuse v0.1.0 — Generic peer-reviewer for research artifacts (md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html).
+Peer-Fuse v0.2.0 — Generic peer-reviewer for research artifacts (md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html).
 
 Usage:
   /peer-fuse <path>                              Review with auto-detected type
@@ -145,16 +145,40 @@ Stage 7 在所有 depth 下都执行；`--no-save` 时进入但立即输出 skip
 
 ### Stage 3.5 — § Document Reading（评审隔离区）⚡硬约束
 
-主线程仅基于 `source_view` + `canonical_view` + Stage 1-3 中性扫描结果（结构 / 引用密度 / FIR 标签等**事实性**数据）写 3-5 段 ~300-600 字描述性叙述。模板与禁词清单见 [templates/document-reading.md](templates/document-reading.md)。
+主线程仅基于 `source_view` + `canonical_view` + Stage 1-3 中性扫描结果（结构 / 引用密度 / FIR 标签等**事实性**数据）写 5-9 段（standard 7-8 段）~1500-3500 字**连贯叙事性重读**。完整模板见 [templates/document-reading.md](templates/document-reading.md)；6 条 narrative discipline 见 [references/narrative-discipline.md](references/narrative-discipline.md)；评审隔离三层防御见 [references/document-reading-guard.md](references/document-reading-guard.md)。
+
+**narrative arc**（按报告自身骨架递进）：
+1. Para 1 — Contextual 开场（artifact 定位 + 核心 thesis 浓缩 + 报告自我边界）
+2. Para 2 — 核心论点浓缩
+3. Para 3..N-1 — 章节叙事串联（多段，技术段 8-15 numerics / framing 段 ≤5）
+4. Para N-1 — 关键张力段（hypothesis falsification status / 自承空白）
+5. Para N — Meta-reflective 收束（报告姿态评论，禁纯结论复读）
+
+**6 条 narrative discipline 摘要**（详见 [narrative-discipline.md](references/narrative-discipline.md)）：
+
+1. **Opening discipline** — Para 1 禁`^这份报告说\|讲\|提到`等起手；必含 artifact 定位 + thesis + 自我边界
+2. **Closing discipline** — 末段必含 meta-reflective 标志短语（`整(份|体)读(下来|完)` / `posture` / `知识姿态`等），禁纯结论复读
+3. **Verbatim discipline** — 全文 ≤4 / 单段 ≤1 / `**...**` (zh) `_..._` (en) 内嵌 / ≤ 40 字 / **禁** block quote `>` / 「」 / 编号引用
+4. **Number-density discipline** — 技术段 8-15 numerics / framing 段 ≤5（呼吸感）
+5. **Limitation-as-strength rule** — 限制条款必须前缀 `报告自承` / `§N 自承的`；外部反驳须显式声明
+6. **Output language matches source** — 中源→中文叙事 / 英源→英文叙事
 
 **输入边界**（MUST 严格）：
 
-- ✅ 接受：原文档 `source_view` / `canonical_view` / Stage 1-3 中性扫描结果（"frontmatter 缺失"是事实，"frontmatter 不完整"是评价——前者可入，后者不可）
+- ✅ 接受：原文档 `source_view` / `canonical_view` / Stage 1-3 中性扫描结果（"frontmatter 缺失"是事实可入；"frontmatter 不完整"是 judgmental 评价不可入）
+- ✅ 接受（v0.2.0 新增）：interpretive 解读语（"骨架性的 / 真正想交付的 / 最值得读的 / 反直觉 / 诚实记录"）
 - ❌ 拒绝：Stage 4 panel verdict / Stage 5 scores / Stage 5/6 命中的 flag
+- ❌ 拒绝：judgmental 质量评价语（`优点 / 缺点 / 不足 / 薄弱 / strong / weak / concern / issue / problem`）
 
-**禁词扫描**（lint 强制）：本节内不得出现 `grade / score / flag / F-XXX-NN / strong / weak / concern / issue / problem / fail / violate / 优点 / 缺点 / 不足 / 薄弱 / 应当改 / 建议` + 字母 grade（A+/A−/B+/...）。
+**禁词扫描**（lint 强制）：本节内不得出现 `grade / score / flag / F-XXX-NN / strong / weak / concern / issue / problem / fail / violate / better / worse / 优点 / 缺点 / 不足 / 薄弱 / 错误 / 缺陷 / 应当改 / 建议` + 字母 grade（A+/A−/B+/...）+ 评价节引用（`§ Score Matrix / § Flag List / § Multi-Perspective Panel / § Diff Suggestions / § Holistic Assessment`）。**v0.2.0 起明确允许** interpretive 解读语（见 [document-reading-guard.md § 第三层](references/document-reading-guard.md)）。
 
-**verbatim 引用**：≥ 1 处带位置标记。位置标记按格式：
+**引用要求**：
+
+- Verbatim 引用：1-4 处带位置标记，bold/italic 内嵌（**禁** block quote / 「」 / 编号引用 → fail-closed）
+- 章节锚定：≥ 3 处（按 `target_format` 适配）
+- inline 外链：≥ 1 处（仅当源报告含外链时）
+
+位置标记按格式：
 
 | target_format | 位置标记 |
 |---|---|
@@ -162,6 +186,8 @@ Stage 7 在所有 depth 下都执行；`--no-save` 时进入但立即输出 skip
 | pdf | `p.<page>` |
 | pptx / odp | `slide.<n>` |
 | txt / rtf | `L<line>` |
+
+**Stage 3.5 末尾自检**：主线程对照 [narrative-discipline.md § Lint 模式总表](references/narrative-discipline.md) 跑 6 条 discipline regex。Discipline 3 渲染禁用 + 评审隔离禁词 = **fail-closed**；其余 = **warn-only**（初版）。
 
 **写后冻结**：Stage 3.5 输出节字节级哈希在 Stage 4 启动前快照；Stage 7 归档前 diff 校验，发现修改 → fail-closed 拒绝归档。
 

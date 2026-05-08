@@ -1,6 +1,6 @@
-# Peer Fuse v0.1.0 Guide
+# Peer Fuse v0.2.0 Guide
 
-> Generic peer-reviewer for research artifacts — **8-stage pipeline (Stage 7 KB archival mandatory + observable, opt-out via `--no-save`) + 10-format input adapter (md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html, 3-tier dispatch) + 6 research-type presets (auto-classified) + 8-dimensional weighted rubric + 18-flag taxonomy + 3-perspective panel + § Document Reading freeze (review-isolation hard constraint)**.
+> Generic peer-reviewer for research artifacts — **8-stage pipeline (Stage 7 KB archival mandatory + observable, opt-out via `--no-save`) + 10-format input adapter (md / pdf / docx / pptx / doc / ppt / odt / odp / txt / html, 3-tier dispatch) + 6 research-type presets (auto-classified) + 8-dimensional weighted rubric + 18-flag taxonomy + 3-perspective panel + narrative-style § Document Reading (5-9 paras / 6-rule discipline / review-isolation freeze)**.
 
 Peer-Fuse takes any markdown / PDF / Office document and produces a peer-review markdown report with an A+/A−/.../D grade, a tiered list of quality flags, a multi-perspective panel synthesis, and patch-style diff suggestions. It coexists with [insight-fuse Stage 6.5 reviewer](insight-fuse-guide.md) — Stage 6.5 is IF-internal same-source review; peer-fuse is the **cross-skill external reviewer** that handles formats and skills Stage 6.5 cannot.
 
