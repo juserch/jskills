@@ -21,7 +21,7 @@ argument-hint: "[question or task] [--no-save]"
 当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行：
 
 ```
-Council Fuse v1.1.1 — Multi-perspective deliberation engine (3 agents + Chairman synthesis)
+Council Fuse v1.1.2 — Multi-perspective deliberation engine (3 agents + Chairman synthesis)
 
 Usage:
   /council-fuse <question or task>          Deliberate, synthesize, archive to KB

@@ -12,6 +12,11 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 
 ## block-break
 
+### [1.0.2] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/block-break/skills/block-break/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
+
 ### [1.0.1] — 2026-05-08
 
 #### Changed
@@ -25,6 +30,11 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 ---
 
 ## claim-ground
+
+### [1.2.2] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/claim-ground/skills/claim-ground/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
 
 ### [1.2.1] — 2026-05-08
 
@@ -53,6 +63,11 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 
 ## council-fuse
 
+### [1.1.2] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/council-fuse/skills/council-fuse/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
+
 ### [1.1.1] — 2026-05-08
 
 #### Changed
@@ -73,6 +88,11 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 ---
 
 ## insight-fuse
+
+### [3.4.3] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/insight-fuse/skills/insight-fuse/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
 
 ### [3.4.2] — 2026-05-09
 
@@ -118,6 +138,11 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 
 ## news-fetch
 
+### [1.1.2] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/news-fetch/skills/news-fetch/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
+
 ### [1.1.1] — 2026-05-08
 
 #### Changed
@@ -138,6 +163,11 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 ---
 
 ## peer-fuse
+
+### [0.2.1] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/peer-fuse/skills/peer-fuse/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
 
 ### [0.2.0] — 2026-05-08
 
@@ -200,12 +230,22 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 
 ## ralph-boost
 
+### [1.0.1] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/ralph-boost/skills/ralph-boost/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
+
 ### [1.0.0]
 - Initial release. Autonomous dev loop with built-in Block Break L0–L4 escalation and 5-step methodology, isolated to `.ralph-boost/`.
 
 ---
 
 ## skill-lint
+
+### [1.1.2] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/skill-lint/skills/skill-lint/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
 
 ### [1.1.1] — 2026-05-08
 
@@ -233,6 +273,11 @@ Detailed rationale for each entry lives under `openspec/changes/<id>/` (active o
 ---
 
 ## tome-forge
+
+### [1.1.1] — 2026-05-11
+
+#### Fixed
+- Packaging: moved `SKILL.md` (and `references/` / `templates/` where present) into `skills/tome-forge/skills/tome-forge/` to satisfy Claude Code v2.1.137's new path-traversal validator. Removes `"skills": ["./"]` from `marketplace.json`. No behavioral changes — slash command, hooks, subagents, scripts unchanged. (#TBD-pr-link)
 
 ### [1.1.0] — 2026-04-22
 

@@ -18,9 +18,17 @@ data = json.loads(mk_path.read_text())
 changed = 0
 for p in data["plugins"]:
     source = p.get("source", "./").lstrip("./").rstrip("/")
-    skill_md = pathlib.Path(source, "SKILL.md") if source else pathlib.Path("SKILL.md")
-    if not skill_md.exists():
-        print(f"[skip] {p['name']}: {skill_md} not found", file=sys.stderr)
+    name = p["name"]
+    # Prefer nested layout (skills/<name>/skills/<name>/SKILL.md) introduced for
+    # Claude Code 2.1.137 path-traversal validator; fall back to legacy flat.
+    nested = pathlib.Path(source, "skills", name, "SKILL.md") if source else pathlib.Path("skills", name, "SKILL.md")
+    legacy = pathlib.Path(source, "SKILL.md") if source else pathlib.Path("SKILL.md")
+    if nested.exists():
+        skill_md = nested
+    elif legacy.exists():
+        skill_md = legacy
+    else:
+        print(f"[skip] {p['name']}: neither {nested} nor {legacy} found", file=sys.stderr)
         continue
     new_hash = hashlib.sha256(skill_md.read_bytes()).hexdigest()
     old_hash = p.get("integrity", {}).get("skill-md-sha256", "")

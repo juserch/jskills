@@ -19,10 +19,10 @@ metadata:
 ## Help
 
 **无参数 ≠ help**：Block Break 无参数时运行默认行为约束（本 SKILL.md 后续所有章节即默认行为）。
-仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
+仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../../../CLAUDE.md)）：
 
 ```
-Block Break v1.0.1 — Behavioral constraint engine (L0-L4 pressure escalation)
+Block Break v1.0.2 — Behavioral constraint engine (L0-L4 pressure escalation)
 
 Usage:
   /block-break                   Activate at L0 (default trust level — see rest of SKILL.md)
@@ -108,7 +108,7 @@ Guide: docs/user-guide/block-break-guide.md
 
 ## Sub-agent 约束
 
-Spawn sub-agent 时必须注入行为约束。使用 `forge:block-break-worker` 类型的 agent（定义在同目录 `agents/block-break-worker.md`），确保子 agent 也遵循三条红线。空白上下文的 sub-agent = 裸奔。
+Spawn sub-agent 时必须注入行为约束。使用 `forge:block-break-worker` 类型的 agent（定义在同目录 `../../agents/block-break-worker.md`），确保子 agent 也遵循三条红线。空白上下文的 sub-agent = 裸奔。
 
 ## 体面的退出
 
@@ -118,17 +118,17 @@ Spawn sub-agent 时必须注入行为约束。使用 `forge:block-break-worker` 
 
 ## 平台 hook 等价位置
 
-per [openspec/specs/platform-parity/spec.md](../../openspec/specs/platform-parity/spec.md) §"Hook 在平台版的处理"——block-break 在 Claude Code 持有 3 个 hook(bash 脚本),OpenClaw 当前**无等价镜像**:
+per [openspec/specs/platform-parity/spec.md](../../../../openspec/specs/platform-parity/spec.md) §"Hook 在平台版的处理"——block-break 在 Claude Code 持有 3 个 hook(bash 脚本),OpenClaw 当前**无等价镜像**:
 
 | Hook | Claude Code(canonical) | OpenClaw |
 |---|---|---|
-| frustration-trigger | [hooks/frustration-trigger.sh](hooks/frustration-trigger.sh) — UserPromptSubmit 检测挫败词 | **无等价机制可用** — 可映射到 `message:received`,待后续 RFC `block-break-openclaw-hooks` 落地 |
-| failure-detector | [hooks/failure-detector.sh](hooks/failure-detector.sh) — PostToolUse 跟踪 Bash 失败计数 | **无等价机制可用** — OpenClaw 无 PostToolUse 等价事件(架构差异) |
-| session-restore | [hooks/session-restore.sh](hooks/session-restore.sh) — SessionStart 恢复压力等级 | **无等价机制可用** — 可映射到 `agent:bootstrap`,待后续 RFC `block-break-openclaw-hooks` 落地 |
+| frustration-trigger | [hooks/frustration-trigger.sh](../../hooks/frustration-trigger.sh) — UserPromptSubmit 检测挫败词 | **无等价机制可用** — 可映射到 `message:received`,待后续 RFC `block-break-openclaw-hooks` 落地 |
+| failure-detector | [hooks/failure-detector.sh](../../hooks/failure-detector.sh) — PostToolUse 跟踪 Bash 失败计数 | **无等价机制可用** — OpenClaw 无 PostToolUse 等价事件(架构差异) |
+| session-restore | [hooks/session-restore.sh](../../hooks/session-restore.sh) — SessionStart 恢复压力等级 | **无等价机制可用** — 可映射到 `agent:bootstrap`,待后续 RFC `block-break-openclaw-hooks` 落地 |
 
-**架构限制后果**:OpenClaw 平台上 Block Break 进入"自我监控模式"——靠平台版 SKILL.md §"自动激活(无 Hook 环境)"的自检规则代替 hook 自动触发(详见 [platforms/openclaw/block-break/SKILL.md](../../platforms/openclaw/block-break/SKILL.md))。
+**架构限制后果**:OpenClaw 平台上 Block Break 进入"自我监控模式"——靠平台版 SKILL.md §"自动激活(无 Hook 环境)"的自检规则代替 hook 自动触发(详见 [platforms/openclaw/block-break/SKILL.md](../../../../platforms/openclaw/block-break/SKILL.md))。
 
-跨平台能力对照参考 [docs/design/cross/openclaw-capability-gap-design.md](../../docs/design/cross/openclaw-capability-gap-design.md)。
+跨平台能力对照参考 [docs/design/cross/openclaw-capability-gap-design.md](../../../../docs/design/cross/openclaw-capability-gap-design.md)。
 
 ## Attribution & Cross-Skill
 

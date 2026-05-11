@@ -20,10 +20,10 @@ argument-hint: "[setup|run|status|clean]"
 
 ## Help
 
-当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
+当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../../../CLAUDE.md)）：
 
 ```
-Ralph Boost v1.0.0 — Autonomous dev loop engine with convergence guarantee
+Ralph Boost v1.0.1 — Autonomous dev loop engine with convergence guarantee
 
 Usage:
   /ralph-boost setup             Initialize ralph-boost in current project
@@ -190,7 +190,7 @@ Read `.ralph-boost/state.json`，提取：
 **Step 5 — Spawn Agent**
 
 使用 Agent 工具 spawn 前台子 agent：
-- 读取 `agents/loop-worker.md` 作为 agent 行为基础
+- 读取 `../../agents/loop-worker.md` 作为 agent 行为基础
 - 读取 `.ralph-boost/PROMPT.md` 获取项目专属指令
 - 将 PROMPT.md 内容 + 压力上下文作为 agent prompt：
 
@@ -344,7 +344,7 @@ This will delete .ralph-boost/ and all state. Continue? [y/N]
 
 详细规则见 `references/escalation-rules.md`。
 BOOST_STATUS 格式见 `references/boost-status-protocol.md`。
-循环 Agent 行为定义见 `agents/loop-worker.md`。
+循环 Agent 行为定义见 `../../agents/loop-worker.md`。
 
 ## Attribution & Cross-Skill
 

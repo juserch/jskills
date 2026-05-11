@@ -19,10 +19,10 @@ argument-hint: "[topic] [--type overview|technology|market|academic|product|comp
 
 ## Help
 
-当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
+当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../../../CLAUDE.md)）：
 
 ```
-Insight Fuse v3.4.2 — Systematic multi-source research engine (8-stage pipeline)
+Insight Fuse v3.4.3 — Systematic multi-source research engine (8-stage pipeline)
 
 Usage:
   /insight-fuse <topic> [flags]      Run research
@@ -131,7 +131,7 @@ Spawn `insight-methodologist` sub-agent。构造 `~/.forge/insight-fuse/skeleton
 
 Per `skeleton.hypotheses[]`（或子问题）spawn 1 Generalist agent，**并行**。每 agent prompt 以**不可变 skeleton 块**起头（prefix cache 跨 agent 共享，节省 ~50% token），再拼 hypothesis-specific ask。
 
-- 每 agent 读 [agents/insight-generalist.md](agents/insight-generalist.md) + [references/research-protocol.md](references/research-protocol.md)
+- 每 agent 读 [agents/insight-generalist.md](../../agents/insight-generalist.md) + [references/research-protocol.md](references/research-protocol.md)
 - 输出 INSIGHT_RESPONSE 之前默读 [references/pre-flight-checklist.md](references/pre-flight-checklist.md)（8 项自检）
 - 收集所有 INSIGHT_RESPONSE v2 块，按 `--type` 对应 template 编排标准报告
 - 若 `--depth standard`：直接 Stage 6
@@ -199,7 +199,7 @@ Stage 6 渲染完成后、Stage 7 归档前，dispatch `insight-reviewer` sub-ag
 
 1. **合并视图**：main agent 把 `--sections` 选中的多文件输出 cat 成一个内存合并 markdown（等价 `--merge` 的渲染结果），传给 reviewer。多文件用户**不**需开 `--merge` 即可享受 reviewer pass。
 2. **隔离输入**：reviewer 仅读最终报告 + 19 checks 定义 + 6 dims rubric + `--type` / `--depth` 参数；**禁读** `skeleton.yaml` / `SOURCES_USED` / `EVIDENCE_CHAIN` / Stage 5 草稿 / Stage 6 author 6-dim 自评分。
-3. **运行 LOAD_BEARING 扫描**：main agent 在调用 reviewer 前先跑 `scripts/scan-load-bearing.sh` 对合并视图，把输出作为 reviewer 输入的一部分（reviewer 复核 + 判定 advisory vs blocking）。
+3. **运行 LOAD_BEARING 扫描**：main agent 在调用 reviewer 前先跑 `../../scripts/scan-load-bearing.sh` 对合并视图，把输出作为 reviewer 输入的一部分（reviewer 复核 + 判定 advisory vs blocking）。
 4. **接收 REVIEWER_RESPONSE**：含 `DIM_SCORES` / `REVIEWER_TOTAL` / `REVIEWER_GRADE` / `BLOCKING_CHECKS` (C1-C19) / `DISPUTED_CHECKS` / `DOWNGRADES` / `LOAD_BEARING_FOUND` / `CALIBRATION_VIOLATIONS`。
 5. **计算 Δ = abs(author_total - reviewer_total)**：
    - `Δ < 1.0`：直接写入 footer（[references/scoring-rubric.md §五](references/scoring-rubric.md) 的 `Author/Reviewer/Δ/Disputed checks` 四字段）→ Stage 7
@@ -277,7 +277,7 @@ Stage 6 渲染完成（含 Advisory Appendix 若有）后、最终 forge attribu
 
 ## 定制
 
-- **视角**：stance-override（改 [references/perspectives.md](references/perspectives.md) §二 Stance Registry）或新增 `agents/insight-<name>.md`
+- **视角**：stance-override（改 [references/perspectives.md](references/perspectives.md) §二 Stance Registry）或新增 `../../agents/insight-<name>.md`
 - **模板**：添加 `.md` 文件到 `templates/`，参考 [templates/custom-example.md](templates/custom-example.md) 的 skeleton hooks
 - **Research type**：扩展 [references/research-types.md](references/research-types.md) 的预设矩阵
 - **质量 check**：扩展 [references/quality-standards.md](references/quality-standards.md) 的 Check 编号（从 15 起）

@@ -18,10 +18,10 @@ Based on Karpathy's LLM Wiki pattern: raw materials + LLM compilation = structur
 
 ## Help
 
-当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
+当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../../../CLAUDE.md)）：
 
 ```
-Tome Forge v1.1.0 — Personal Knowledge Base Engine
+Tome Forge v1.1.1 — Personal Knowledge Base Engine
 
 Usage:
   /tome-forge init              Initialize KB (default: ~/.tome-forge/)

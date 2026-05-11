@@ -18,10 +18,10 @@ metadata:
 
 ## Help
 
-当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）。Hook 自动触发（UserPromptSubmit + PostToolUse + SessionStart）不受此路径影响。手动执行路径见下方 §Manual Execution。
+当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../../../CLAUDE.md)）。Hook 自动触发（UserPromptSubmit + PostToolUse + SessionStart）不受此路径影响。手动执行路径见下方 §Manual Execution。
 
 ```
-Claim Ground v1.2.1 — Epistemic constraint engine (runtime evidence before assertions)
+Claim Ground v1.2.2 — Epistemic constraint engine (runtime evidence before assertions)
 
 Usage:
   /claim-ground                       Show this help
@@ -167,7 +167,7 @@ For arbitrary multi-source research, use /insight-fuse instead.
 - 单写者契约：读→改→原子写，避免并发损坏
 - 被质疑时仍适用 Red Line 3：anchor 不是"免死金牌"，必须重查
 
-schema 与生命周期详见 `references/anchors.md`。SessionStart 侧由 `hooks/session-anchor.sh` 自动读并注入 `<CLAIM_GROUND_ANCHORS>` context 块。
+schema 与生命周期详见 `references/anchors.md`。SessionStart 侧由 `../../hooks/session-anchor.sh` 自动读并注入 `<CLAIM_GROUND_ANCHORS>` context 块。
 
 ## 与 block-break 的协同
 
@@ -177,15 +177,15 @@ prompt-gate 与 frustration-trigger / epistemic-pushback-trigger 互斥让位（
 
 ## 平台 hook 等价位置
 
-per [openspec/specs/platform-parity/spec.md](../../openspec/specs/platform-parity/spec.md) §"Hook 镜像在有等价系统的平台为 mandatory"——claim-ground 的 5 个 hook 在两平台等价镜像如下：
+per [openspec/specs/platform-parity/spec.md](../../../../openspec/specs/platform-parity/spec.md) §"Hook 镜像在有等价系统的平台为 mandatory"——claim-ground 的 5 个 hook 在两平台等价镜像如下：
 
 | Hook | Claude Code（bash） | OpenClaw（TS/JS） |
 |---|---|---|
-| epistemic-pushback | [skills/claim-ground/hooks/epistemic-pushback-trigger.sh](hooks/epistemic-pushback-trigger.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/epistemic-pushback/` (PR-3) |
-| prompt-gate | [skills/claim-ground/hooks/prompt-gate.sh](hooks/prompt-gate.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/prompt-gate/` (PR-3) |
-| pre-tool-gate | [skills/claim-ground/hooks/pre-tool-gate.sh](hooks/pre-tool-gate.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/pre-tool-gate/` (PR-3) |
-| evidence-reminder | [skills/claim-ground/hooks/evidence-reminder.sh](hooks/evidence-reminder.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/evidence-reminder/` (PR-3) |
-| session-anchor | [skills/claim-ground/hooks/session-anchor.sh](hooks/session-anchor.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/session-anchor/` (PR-3) |
+| epistemic-pushback | [skills/claim-ground/hooks/epistemic-pushback-trigger.sh](../../hooks/epistemic-pushback-trigger.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/epistemic-pushback/` (PR-3) |
+| prompt-gate | [skills/claim-ground/hooks/prompt-gate.sh](../../hooks/prompt-gate.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/prompt-gate/` (PR-3) |
+| pre-tool-gate | [skills/claim-ground/hooks/pre-tool-gate.sh](../../hooks/pre-tool-gate.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/pre-tool-gate/` (PR-3) |
+| evidence-reminder | [skills/claim-ground/hooks/evidence-reminder.sh](../../hooks/evidence-reminder.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/evidence-reminder/` (PR-3) |
+| session-anchor | [skills/claim-ground/hooks/session-anchor.sh](../../hooks/session-anchor.sh) | `platforms/openclaw/claim-ground/hooks/openclaw/session-anchor/` (PR-3) |
 
 **openclaw 启用命令**（PR-3 实施后可用）：
 

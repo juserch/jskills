@@ -18,10 +18,10 @@ argument-hint: "[question or task] [--no-save]"
 
 ## Help
 
-当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
+当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../../../CLAUDE.md)）：
 
 ```
-Council Fuse v1.1.1 — Multi-perspective deliberation engine (3 agents + Chairman synthesis)
+Council Fuse v1.1.2 — Multi-perspective deliberation engine (3 agents + Chairman synthesis)
 
 Usage:
   /council-fuse <question or task>          Deliberate, synthesize, archive to KB
@@ -64,17 +64,17 @@ council-fuse 是一个**独立**的议会蒸馏工具。每次运行是一次从
 在**同一个 response 中发起 3 个 Agent tool 调用**，确保并行执行：
 
 **Agent 1 — Generalist（通才）**：
-- 读取 `agents/council-generalist.md` 获取角色定义
+- 读取 `../../agents/council-generalist.md` 获取角色定义
 - model: sonnet
 - prompt: 用户问题 + "Read `references/council-protocol.md` for the output format. Answer independently."
 
 **Agent 2 — Critic（批评者）**：
-- 读取 `agents/council-critic.md` 获取角色定义
+- 读取 `../../agents/council-critic.md` 获取角色定义
 - model: opus
 - prompt: 用户问题 + "Read `references/council-protocol.md` for the output format. Answer independently."
 
 **Agent 3 — Specialist（专家）**：
-- 读取 `agents/council-specialist.md` 获取角色定义
+- 读取 `../../agents/council-specialist.md` 获取角色定义
 - model: sonnet
 - prompt: 用户问题 + "Read `references/council-protocol.md` for the output format. Answer independently."
 
@@ -172,7 +172,7 @@ Stage 3 输出 `## Council Fuse — Deliberation` 之后、Attribution 之前，
 
 ## 自定义
 
-- 修改 `agents/*.md` 可更换视角或模型
+- 修改 `../../agents/*.md` 可更换视角或模型
 - 默认三元组：通才/批评者/专家
 - 替代三元组建议：乐观者/悲观者/务实者、架构师/实现者/测试者、用户代言人/开发者/安全专家
 - 修改 `model:` 字段可调整成本：全用 haiku 省成本，全用 opus 最深度

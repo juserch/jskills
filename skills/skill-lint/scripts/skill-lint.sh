@@ -173,7 +173,12 @@ if [ ${#SKILL_NAMES[@]} -eq 0 ]; then
 fi
 
 for skill_name in "${SKILL_NAMES[@]}"; do
-    skill_md="$SKILLS_DIR/$skill_name/SKILL.md"
+    # Resolve SKILL.md location: nested (post-Claude-Code-2.1.137 path-validator
+    # layout) takes precedence; flat (legacy) is fallback so external consumers
+    # using the older shape still lint.
+    skill_md="$SKILLS_DIR/$skill_name/skills/$skill_name/SKILL.md"
+    [ -f "$skill_md" ] || skill_md="$SKILLS_DIR/$skill_name/SKILL.md"
+    skill_content_dir="$(dirname "$skill_md")"
 
     # --- S03: SKILL.md existence ---
     if [ -f "$skill_md" ]; then
@@ -229,7 +234,7 @@ sys.exit(1)
         | sed -E 's/^[^r]//' || true)
     if [ -n "$ref_mentions" ]; then
         while IFS= read -r ref_path; do
-            full_path="$SKILLS_DIR/$skill_name/$ref_path"
+            full_path="$skill_content_dir/$ref_path"
             if [ -f "$full_path" ]; then
                 add_passed "S07: skills/$skill_name/$ref_path exists"
             else
@@ -376,8 +381,14 @@ fi
 # --- S18: permissions declaration ---
 if [ -n "$CFG_REQUIRE_PERMISSIONS" ]; then
     s18_fail=0
-    for skill_md in "$PLUGIN_ROOT"/skills/*/SKILL.md; do
+    # Discover SKILL.md across both nested + flat layouts; nested takes priority
+    # (post-Claude-Code-2.1.137 path-validator layout), flat is legacy fallback.
+    for skill_md in "$PLUGIN_ROOT"/skills/*/skills/*/SKILL.md "$PLUGIN_ROOT"/skills/*/SKILL.md; do
         [ -f "$skill_md" ] || continue
+        # Skip flat path if a nested counterpart for the same skill_name exists
+        _skill_name="$(basename "$(dirname "$skill_md")")"
+        _nested="$PLUGIN_ROOT/skills/$_skill_name/skills/$_skill_name/SKILL.md"
+        [ "$skill_md" != "$_nested" ] && [ -f "$_nested" ] && continue
         skill_name="$(basename "$(dirname "$skill_md")")"
         if ! head -30 "$skill_md" | grep -q "permissions:"; then
             add_error "S18: $skill_name/SKILL.md missing metadata.permissions declaration"
@@ -390,8 +401,14 @@ fi
 # --- S19: integrity hash verification ---
 if [ -n "$CFG_VERIFY_INTEGRITY" ] && [ -f "$PLUGIN_ROOT/.claude-plugin/marketplace.json" ]; then
     s19_fail=0
-    for skill_md in "$PLUGIN_ROOT"/skills/*/SKILL.md; do
+    # Discover SKILL.md across both nested + flat layouts; nested takes priority
+    # (post-Claude-Code-2.1.137 path-validator layout), flat is legacy fallback.
+    for skill_md in "$PLUGIN_ROOT"/skills/*/skills/*/SKILL.md "$PLUGIN_ROOT"/skills/*/SKILL.md; do
         [ -f "$skill_md" ] || continue
+        # Skip flat path if a nested counterpart for the same skill_name exists
+        _skill_name="$(basename "$(dirname "$skill_md")")"
+        _nested="$PLUGIN_ROOT/skills/$_skill_name/skills/$_skill_name/SKILL.md"
+        [ "$skill_md" != "$_nested" ] && [ -f "$_nested" ] && continue
         skill_name="$(basename "$(dirname "$skill_md")")"
         skill_rel="./skills/$skill_name"
         expected_hash=$(python -c "
@@ -436,8 +453,14 @@ if [ -n "$CFG_REQUIRE_HELP_SECTION" ]; then
             warn)  add_warning "$msg" ;;
         esac
     }
-    for skill_md in "$PLUGIN_ROOT"/skills/*/SKILL.md; do
+    # Discover SKILL.md across both nested + flat layouts; nested takes priority
+    # (post-Claude-Code-2.1.137 path-validator layout), flat is legacy fallback.
+    for skill_md in "$PLUGIN_ROOT"/skills/*/skills/*/SKILL.md "$PLUGIN_ROOT"/skills/*/SKILL.md; do
         [ -f "$skill_md" ] || continue
+        # Skip flat path if a nested counterpart for the same skill_name exists
+        _skill_name="$(basename "$(dirname "$skill_md")")"
+        _nested="$PLUGIN_ROOT/skills/$_skill_name/skills/$_skill_name/SKILL.md"
+        [ "$skill_md" != "$_nested" ] && [ -f "$_nested" ] && continue
         skill_name="$(basename "$(dirname "$skill_md")")"
         # 1) Must contain `## Help` heading (standalone, not `## Help Text` variants)
         if ! grep -qE '^## Help[[:space:]]*$' "$skill_md"; then
@@ -582,7 +605,8 @@ if [ -n "$CFG_VERIFY_CROSS_SKILL_CATEGORY" ]; then
     declare -A seen_categories
     # Build skill → category map
     for skill_name in "${SKILL_NAMES[@]}"; do
-        skill_md="$SKILLS_DIR/$skill_name/SKILL.md"
+        skill_md="$SKILLS_DIR/$skill_name/skills/$skill_name/SKILL.md"
+        [ -f "$skill_md" ] || skill_md="$SKILLS_DIR/$skill_name/SKILL.md"
         [ -f "$skill_md" ] || continue
         cat_val=$(grep -E '^\s*category:' "$skill_md" | head -1 | sed 's/.*category:[[:space:]]*//' | tr -d '[:space:]')
         [ -n "$cat_val" ] && seen_categories[$skill_name]=$cat_val
@@ -922,8 +946,15 @@ if do_s29:
             errors.append(f"S29: marketplace.json plugin '{skill_name}' version='{mk_v}' is non-SemVer-2.0.0 format")
 
 for skill_name in sorted(os.listdir(skills_dir)):
-    skill_md = os.path.join(skills_dir, skill_name, "SKILL.md")
-    if not os.path.isfile(skill_md):
+    # Nested layout (post-Claude-Code-2.1.137 path validator) takes precedence;
+    # flat layout is the legacy fallback.
+    _nested = os.path.join(skills_dir, skill_name, "skills", skill_name, "SKILL.md")
+    _flat = os.path.join(skills_dir, skill_name, "SKILL.md")
+    if os.path.isfile(_nested):
+        skill_md = _nested
+    elif os.path.isfile(_flat):
+        skill_md = _flat
+    else:
         continue
     try:
         with open(skill_md, "r", encoding="utf-8") as fh:

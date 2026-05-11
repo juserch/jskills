@@ -22,7 +22,7 @@ argument-hint: "[topic] [--type overview|technology|market|academic|product|comp
 当第一参数为 `help` / `--help`，**或无参数**时，输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
 
 ```
-Insight Fuse v3.4.2 — Systematic multi-source research engine (8-stage pipeline)
+Insight Fuse v3.4.3 — Systematic multi-source research engine (8-stage pipeline)
 
 Usage:
   /insight-fuse <topic> [flags]      Run research

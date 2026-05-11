@@ -19,10 +19,10 @@ metadata:
 ## Help
 
 **无参数 ≠ help**：Skill Lint 无参数时对当前工作目录运行完整 lint（默认行为）。
-仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../CLAUDE.md)）：
+仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行（parsing 规则详见 [CLAUDE.md § Help 模式约定](../../../../CLAUDE.md)）：
 
 ```
-Skill Lint v1.1.1 — Validate Claude Code skill plugins (structural + semantic)
+Skill Lint v1.1.2 — Validate Claude Code skill plugins (structural + semantic)
 
 Usage:
   /skill-lint                    Lint the current working directory (default)
@@ -40,7 +40,7 @@ Guide: docs/user-guide/skill-lint-guide.md
 ## 工作流
 
 1. 确定目标路径（用户参数或当前目录）
-2. 运行 `scripts/skill-lint.sh [path]` 获取结构检查 JSON 结果
+2. 运行 `../../scripts/skill-lint.sh [path]` 获取结构检查 JSON 结果
 3. 读取目标路径下所有 skill 文件，执行语义检查
 4. 合并输出，按 error > warning > passed 排列
 
@@ -77,7 +77,7 @@ Guide: docs/user-guide/skill-lint-guide.md
 
 **防范类新增规则（基于过往回归事故加固）：**
 
-22. **Platform 子目录镜像（`verify-platform-subdirs`）** — 除了 references/，还检查 `agents/` / `templates/` / `scripts/` 三个子目录是否在 `platforms/<p>/<skill>/` 下对称存在。防止 ralph-boost agents 或 insight-fuse templates 类型的孤岛。
+22. **Platform 子目录镜像（`verify-platform-subdirs`）** — 除了 references/，还检查 `../../agents/` / `templates/` / `../../scripts/` 三个子目录是否在 `platforms/<p>/<skill>/` 下对称存在。防止 ralph-boost agents 或 insight-fuse templates 类型的孤岛。
 23. **i18n 结构 parity（`verify-i18n-structure-parity`）** — 每份 `<i18n-dir>/<lang>/<name>-guide.md`（典型路径 `docs/i18n/<lang>/<name>-guide.md`）的 H2 heading 数必须 ≥ 英文版的 90%。防止 i18n guide 在英文版扩展新 section 后结构性缺失（例如 claim-ground Red lines）。
 24. **Cross-skill 分类声明（`verify-cross-skill-category-claim`）** — 扫描所有 guide 里的 "Same category" / "同一分类" / "Different categories" 等 12 语言关键词，对引用的目标 skill 查 frontmatter category，若声明与事实不符即报 error。防止分类翻修后 guide 跨引用段落变成 stale（本次审计即源于此类 bug）。
 

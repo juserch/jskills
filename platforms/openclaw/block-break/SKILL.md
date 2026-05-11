@@ -22,7 +22,7 @@ metadata:
 仅当第一参数为 `help` / `--help` 时输出以下 help card 并停止执行：
 
 ```
-Block Break v1.0.1 — Behavioral constraint engine (L0-L4 pressure escalation)
+Block Break v1.0.2 — Behavioral constraint engine (L0-L4 pressure escalation)
 
 Usage:
   /block-break                   Activate at L0 (default trust level — see rest of SKILL.md)
